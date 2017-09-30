@@ -8,8 +8,11 @@ import { AppComponent } from './components/app/app.component';
 import { LoginComponent } from './components/app/login/login.component';
 import { AuthService } from './services/auth.service';
 import { LabelComponent } from "./components/app/label/label.component";
+
 import {MessageService} from "primeng/components/common/messageservice";
 import {MessagesModule} from 'primeng/primeng';
+import {PasswordModule} from 'primeng/primeng';
+import {InputTextModule} from 'primeng/primeng';
 
 @NgModule({
     declarations: [
@@ -19,6 +22,8 @@ import {MessagesModule} from 'primeng/primeng';
     ],
     imports: [
         BrowserModule,
+        PasswordModule,
+        InputTextModule,
         FormsModule,
         HttpModule,
         MessagesModule,
@@ -26,7 +31,7 @@ import {MessagesModule} from 'primeng/primeng';
                 { path: "label", component: LabelComponent },
                 { path: "login", component: LoginComponent },
             ],
-            { enableTracing: true } // <-- debugging purposes only
+            { enableTracing: false } // <-- debugging purposes only
         ),
     ],
     providers: [
