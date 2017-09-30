@@ -9,23 +9,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-/**
- * @author saka7
- * JwtUserDetailsServiceImp is used to find UserDetails by name
- */
+
 @Service
 public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
+    @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Injects UserRepository instance
-     * @param userRepository to inject
-     */
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     /**
      * Finds UserDetails by given username
@@ -42,4 +32,5 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
         }
         return JwtUserFactory.create(user);
     }
+
 }

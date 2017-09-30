@@ -4,10 +4,7 @@ import net.wohlfart.mercury.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- * @author saka7
- * Provides basic CURD operations with User entity
- */
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
 

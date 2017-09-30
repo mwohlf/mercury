@@ -1,9 +1,18 @@
 
+
+# see: http://memorynotfound.com/spring-boot-spring-data-jpa-hibernate-h2-web-console/
+
 server:
   port: 8080
 
-spring.jpa:
-    database: HSQL
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:~/test;AUTO_SERVER=TRUE
+    username: sa
+    password: sa
+  jpa:
+    database: H2
     show-sql: true
     hibernate:
       ddl-auto: validate
@@ -11,14 +20,19 @@ spring.jpa:
         strategy: org.hibernate.cfg.ImprovedNamingStrategy
     properties.hibernate.dialect: org.hibernate.dialect.H2Dialect
 
-spring.datasource:
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:bootexample
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: true
+        web-allow-others: true
 
 
 # database setup config
 liquibase:
-  change-log: classpath:/db/changelog/db.changelog-master.sql
+  change-log: classpath:/db/changelog/db.changelog-master.xml
 
 
 # JWT Auth

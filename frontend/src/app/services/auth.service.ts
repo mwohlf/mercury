@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
 
 /**
 * AuthService uses JSON-Web-Token authorization strategy.

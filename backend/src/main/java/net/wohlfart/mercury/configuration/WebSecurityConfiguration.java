@@ -1,11 +1,9 @@
 package net.wohlfart.mercury.configuration;
 
-import net.wohlfart.mercury.security.auth.JwtAuthenticationEntryPoint;
 import net.wohlfart.mercury.security.auth.JwtAuthenticationTokenFilter;
+import net.wohlfart.mercury.security.auth.JwtAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,14 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * @author saka7
- * Secutiry configuration
- */
+import static net.wohlfart.mercury.SecurityConstants.*;
+
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -33,24 +29,65 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtAuthenticationTokenFilter authenticationTokenFilter;
+
+    private static final String SIGN_UP_URL = "login/";
+
+    @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
+                //.authenticationProvider()
                 .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .passwordEncoder(passwordEncoder);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    /*
+    @Override
+    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) {
 
-    @Bean
-    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-        return new JwtAuthenticationTokenFilter();
     }
+    */
 
+    // see: http://www.svlada.com/jwt-token-authentication-with-spring-boot/
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+        // @formatter:off
+        httpSecurity     // implements HttpsSecurityBuilder
+                .csrf().disable() // We don't need CSRF for JWT based authentication
+                .exceptionHandling()
+                //.authenticationEntryPoint(this.authenticationEntryPoint)
+            .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+            .and()
+                .authorizeRequests()
+                    .antMatchers(SIGN_UP_URL, SIGN_IN_URL).permitAll() // login end-point allowed by anyone
+                    .antMatchers(TOKEN_REFRESH_URL).permitAll() // token refresh end-point allowed by anyone
+                    .antMatchers(H2_CONSOLE_URL).permitAll() // H2 Console Dash-board allowed by anyone
+            .and()
+                .authorizeRequests()
+                    .antMatchers(API_URL).authenticated() // Protected API End-points
+            .and()
+                .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class) // authentication filter
+
+            ;
+                // @formatter:on
+        /*
+                    .cors()  // add a cors filter via corsConfigurationSource to the builder and returns it
+                .and()   // back to the builder
+                    .csrf().disable() // returns the csrf configurer and removes it
+                    .authorizeRequests() // returns the ExpressionInterceptUrlRegistry
+
+                    .antMatchers(HttpMethod.POST, SIGN_UP_URL, SIGN_IN_URL).permitAll()  // url allowed by anyone
+                    .anyRequest().authenticated() // any other request needs an authenticated user
+                .and()  // returns the SecurityBuilder again
+                .addFilter(authenticationTokenFilter)  // authentication filter
+                .addFilter(new JWTAuthorizationFilter(authenticationManager()));
+
         httpSecurity
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
@@ -59,17 +96,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
-                        "/**/*.html",
-                        "/**/*.{png,jpg,jpeg,svg.ico}",
-                        "/**/*.css",
-                        "/**/*.js"
+  ...
                 ).permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated();
 
         httpSecurity
-                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity.headers().cacheControl();
+        */
     }
 }

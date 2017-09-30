@@ -27,11 +27,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 
-/**
- * AuthController provides signup, signin and token refresh methods
- * @author saka7
- */
+
 @RestController
 public class AuthController extends BaseController {
 
@@ -103,7 +101,7 @@ public class AuthController extends BaseController {
         String password = authenticationRequest.getPassword();
         LOG.info("[POST] CREATING TOKEN FOR User " + name);
         Role role  = new Role(1L, "USER");
-        userService.save(new User(0L, name, email, password, role));
+        userService.save(new User(0L, name, email, password, Collections.singleton(role)));
         JwtUser userDetails;
 
         try {

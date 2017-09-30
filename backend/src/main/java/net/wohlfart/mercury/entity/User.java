@@ -2,6 +2,8 @@ package net.wohlfart.mercury.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Email;
@@ -9,10 +11,15 @@ import org.hibernate.validator.constraints.Email;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-@Entity(name = "user")
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "user")
+@Table(name = "USER", schema = "MC")
 public class User implements Serializable {
 
     @Id
@@ -30,21 +37,12 @@ public class User implements Serializable {
     @NotNull
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-
-    public User(String name, String email, String password, Role role) {
-        this.setName(name);
-        this.setEmail(email);
-        this.setPassword(password);
-        this.setRole(role);
-    }
-
-    public User(Long id, String name, String email, String password, Role role) {
-        this(name, email, password, role);
-        this.setId(id);
-    }
+    @ManyToMany
+    @JoinTable(name = "MEMBERSHIP",
+            joinColumns = @JoinColumn(name = "ROLE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @JsonIgnore
     public String getPassword() {

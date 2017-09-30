@@ -11,23 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author saka7
- * UserService provides basic CRUD funtionality for User entity
- */
+
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Injects UserRepository instance
-     * @param userRepository to inject
-     */
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Bean
     private PasswordEncoder passwordEncoder() {

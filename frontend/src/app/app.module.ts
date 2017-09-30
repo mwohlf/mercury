@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
-import { AppComponent } from './app.component';
-import { AuthService } from './services/auth/auth.service';
+import { AppComponent } from './components/app/app.component';
+import { LoginComponent } from './components/app/login/login.component';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+      AppComponent,
+      LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -17,6 +19,7 @@ import { AuthService } from './services/auth/auth.service';
     HttpModule,
     RouterModule.forRoot([
       {path: "**/*", component: AppComponent},
+      {path: "**/login", component: LoginComponent},
     ])
   ],
   providers: [
