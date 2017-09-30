@@ -7,7 +7,6 @@ module.exports = {
     'dist/*.js',
     'dist/*.css',
     'dist/*.woff2',
-    'dist/assets/favicon.png',
     'dist/assets/images/*.png',
     'dist/assets/images/*.jpg',
     'dist/assets/images/*.jpeg',

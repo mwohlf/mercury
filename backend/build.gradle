@@ -50,7 +50,7 @@ dependencies {
 }
 
 jar {
-  baseName='app-name'
+  baseName='mercury'
   version='0.0.1'
 }
 

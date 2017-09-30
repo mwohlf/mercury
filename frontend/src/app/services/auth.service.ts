@@ -10,8 +10,7 @@ import {
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-
-import { environment } from '../../environments/environment';
+import {User} from "../models/user.model";
 
 /**
 * AuthService uses JSON-Web-Token authorization strategy.
@@ -24,9 +23,9 @@ export class AuthService {
   private username: string;
   private userId: number;
   
-  public static readonly SIGNUP_URL = environment.apiUrl + "/api/auth/signup";
-  public static readonly SIGNIN_URL = environment.apiUrl + "/api/auth/signin";
-  public static readonly REFRESH_TOKEN_URL = environment.apiUrl + "/api/auth/token/refresh";
+  public static readonly SIGNUP_URL = "/api/register";
+  public static readonly SIGNIN_URL = "/api/authenticate";
+  public static readonly REFRESH_TOKEN_URL = "/api/auth/token/refresh";
   
   constructor(private http: Http) {
     this.refreshUserData();
@@ -37,31 +36,23 @@ export class AuthService {
   */
   public refreshUserData(): void {
     const user = sessionStorage.getItem('user');
-    if(user) {
+    if (user) {
       this.saveUserDetails(JSON.parse(user));
     }
   }
 
-  /**
-  * Registers new user and saves following token
-  * @param username
-  * @param email
-  * @param password
-  */
-  public signUp(username: string, email: string, password: string): Observable<void | {}> {
+
+  public login(username: string, password: string): Observable<void> {
 
     const requestParam = {
-      email: email,
       username: username,
       password: password
     };
 
-    return this.http.post(AuthService.SIGNUP_URL, requestParam, this.generateOptions())
-      .map((res: Response) => {
-        this.saveToken(res);
-        this.saveUserDetails(JSON.parse(sessionStorage.getItem('user')));
-      }).catch(err => {
-        throw Error(err.json().message);
+    return this.http.post(AuthService.SIGNIN_URL, requestParam, this.generateOptions())
+        .map((response: Response) => {
+                this.saveToken(response);
+                this.saveUserDetails(JSON.parse(sessionStorage.getItem('user')));
       });
   }
 

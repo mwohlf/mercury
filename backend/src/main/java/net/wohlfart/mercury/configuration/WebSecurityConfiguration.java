@@ -65,7 +65,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             .and()
                 .authorizeRequests()
-                    .antMatchers(SIGN_UP_URL, SIGN_IN_URL).permitAll() // login end-point allowed by anyone
+                    .antMatchers(SIGN_UP_URL, AUTHENTICATE_ENDPOINT).permitAll() // login end-point allowed by anyone
                     .antMatchers(TOKEN_REFRESH_URL).permitAll() // token refresh end-point allowed by anyone
                     .antMatchers(H2_CONSOLE_URL).permitAll() // H2 Console Dash-board allowed by anyone
             .and()
@@ -82,7 +82,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .csrf().disable() // returns the csrf configurer and removes it
                     .authorizeRequests() // returns the ExpressionInterceptUrlRegistry
 
-                    .antMatchers(HttpMethod.POST, SIGN_UP_URL, SIGN_IN_URL).permitAll()  // url allowed by anyone
+                    .antMatchers(HttpMethod.POST, SIGN_UP_URL, AUTHENTICATE_ENDPOINT).permitAll()  // url allowed by anyone
                     .anyRequest().authenticated() // any other request needs an authenticated user
                 .and()  // returns the SecurityBuilder again
                 .addFilter(authenticationTokenFilter)  // authentication filter
