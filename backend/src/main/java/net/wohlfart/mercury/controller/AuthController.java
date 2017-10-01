@@ -1,5 +1,6 @@
 package net.wohlfart.mercury.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import net.wohlfart.mercury.entity.Role;
 import net.wohlfart.mercury.entity.User;
 import net.wohlfart.mercury.exception.InvalidPasswordException;
@@ -30,8 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 
 
+@Slf4j
 @RestController
-public class AuthController extends BaseController {
+public class AuthController {
 
     @Value("${auth.header}")
     private String tokenHeader;
@@ -44,6 +46,9 @@ public class AuthController extends BaseController {
     private JwtUtil jwtUtil;
     private UserDetailsService userDetailsService;
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Injects AuthenticationManager instance
@@ -81,11 +86,6 @@ public class AuthController extends BaseController {
         this.userService = userService;
     }
 
-    @Bean
-    private PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     /**
      * Adds new user and returns authentication token
      * @param authenticationRequest request with username, email and password fields
@@ -99,7 +99,7 @@ public class AuthController extends BaseController {
         String name = authenticationRequest.getUsername();
         String email = authenticationRequest.getEmail();
         String password = authenticationRequest.getPassword();
-        LOG.info("[POST] CREATING TOKEN FOR User " + name);
+        log.info("[POST] CREATING TOKEN FOR User " + name);
         Role role  = new Role(1L, "USER");
         userService.save(new User(0L, name, email, password, Collections.singleton(role)));
         JwtUser userDetails;
@@ -107,10 +107,10 @@ public class AuthController extends BaseController {
         try {
             userDetails = (JwtUser) userDetailsService.loadUserByUsername(name);
         } catch (UsernameNotFoundException ex) {
-            LOG.error(ex.getMessage());
+            log.error(ex.getMessage());
             throw new UserNotFoundException();
         } catch (Exception ex) {
-            LOG.error(ex.getMessage());
+            log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
@@ -135,20 +135,20 @@ public class AuthController extends BaseController {
 
         String name = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
-        LOG.info("[POST] GETTING TOKEN FOR User " + name);
+        log.info("[POST] GETTING TOKEN FOR User " + name);
         JwtUser userDetails;
 
         try {
             userDetails = (JwtUser) userDetailsService.loadUserByUsername(name);
         } catch (UsernameNotFoundException | NoResultException ex) {
-            LOG.error(ex.getMessage());
+            log.error(ex.getMessage());
             throw new UserNotFoundException();
         } catch (Exception ex) {
-            LOG.error(ex.getMessage());
+            log.error(ex.getMessage());
             return new ResponseEntity<>(ex, HttpStatus.BAD_REQUEST);
         }
 
-        if(!passwordEncoder().matches(password, userDetails.getPassword())) {
+        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new InvalidPasswordException();
         }
 
@@ -169,7 +169,7 @@ public class AuthController extends BaseController {
     @PostMapping(REFRESH_TOKEN_URL)
     public ResponseEntity refreshAuthenticationToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
-        LOG.info("[POST] REFRESHING TOKEN");
+        log.info("[POST] REFRESHING TOKEN");
         String refreshedToken = jwtUtil.refreshToken(token);
         return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
     }

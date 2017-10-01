@@ -8,14 +8,17 @@
     <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
         <div class="ui-g-12">
         <span class="ui-float-label" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
-            <input type="text" id="username" name="username" [(ngModel)]="model.username" #username="ngModel" required pInputText />
+            <input type="text" id="username" name="username"
+                   pInputText
+                   [(ngModel)]="model.username" #username="ngModel" required />
             <label for="username">Username</label>
             <div *ngIf="f.submitted && !username.valid" class="help-block">Username is required</div>
         </span>
         </div>
         <div class="ui-g-12">
         <span class="ui-float-label" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
-            <input type="password" id="password" name="password" [(ngModel)]="model.password" #password="ngModel" required pPassword feedback="false"/>
+            <input type="password" id="password" name="password"
+                   [(ngModel)]="model.password" #password="ngModel" required />
             <label for="password">Password</label>
             <div *ngIf="f.submitted && !password.valid" class="help-block">Password is required</div>
         </span>

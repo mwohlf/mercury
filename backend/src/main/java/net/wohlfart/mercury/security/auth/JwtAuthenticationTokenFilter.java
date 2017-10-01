@@ -1,7 +1,10 @@
 package net.wohlfart.mercury.security.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.Data;
+import net.minidev.json.JSONObject;
 import net.wohlfart.mercury.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -18,21 +21,23 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import static net.wohlfart.mercury.SecurityConstants.*;
 
 
 /*
- * most of the work is done in thr super class like reading username and password,
- * calling the
+ * filter for authenticating a user request
  */
 @Component
 public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     public JwtAuthenticationTokenFilter() {
-        super(new AntPathRequestMatcher(AUTHENTICATE_ENDPOINT, "POST"));
+        super(new AntPathRequestMatcher(AUTHENTICATE_ENDPOINT, HttpMethod.POST.name()));
     }
 
     @Override
@@ -43,14 +48,15 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        if (!request.getMethod().equals(HttpMethod.POST.name())) {
+        if (!HttpMethod.POST.name().equals(request.getMethod())) {
             throw new AuthenticationServiceException( "Authentication method not supported: " + request.getMethod());
         }
 
-        String username = getUsername(request);
-        String password = getPassword(request);
+        // the request should contain the users credentials...
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserForm userForm = objectMapper.readValue(toString(request.getInputStream()), UserForm.class);
 
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userForm.username, userForm.password);
 
         setDetails(request, authRequest);
 
@@ -68,7 +74,7 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
                                             Authentication authentication) throws IOException, ServletException {
 
         String token = Jwts.builder()
-                .setSubject(((User) authentication.getPrincipal()).getName())
+                .setSubject(((JwtUser) authentication.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
@@ -77,20 +83,22 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
 
     }
 
-    private String getPassword(HttpServletRequest request) {
-        final String password = request.getParameter(FIELDNAME_PASSWORD);
-        if (password == null) {
-            return "";
+    private String toString(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
         }
-        return password;
+        return result.toString(StandardCharsets.UTF_8.name());
     }
 
-    private String getUsername(HttpServletRequest request) {
-        final String username = request.getParameter(FIELDNAME_USERNAME);
-        if (username == null) {
-            return "";
-        }
-        return username.trim();
-    }
 
+    @Data
+    public static class UserForm {
+
+        String username;
+        String password;
+
+    }
 }

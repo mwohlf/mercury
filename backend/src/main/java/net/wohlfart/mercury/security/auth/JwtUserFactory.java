@@ -25,9 +25,10 @@ public final class JwtUserFactory {
 
     private static List<GrantedAuthority> mapToGrantedAuthorities(Set<Role> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getLabel()));
-        }
+        // we have no hibernate session here
+//        for (Role role : roles) {
+//            authorities.add(new SimpleGrantedAuthority(role.getLabel()));
+//        }
         return authorities;
     }
 

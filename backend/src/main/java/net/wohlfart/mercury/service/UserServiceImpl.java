@@ -4,8 +4,6 @@ import net.wohlfart.mercury.entity.User;
 import net.wohlfart.mercury.exception.UserNotFoundException;
 import net.wohlfart.mercury.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +16,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-
-    @Bean
-    private PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Returns all users
@@ -79,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         if(!userRepository.exists(user.getId())) {
-            user.setPassword(passwordEncoder().encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         return userRepository.save(user);
     }

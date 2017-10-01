@@ -34,15 +34,17 @@ export class LoginComponent implements OnInit {
     login() {
 
         this.loading = true;
-        this.messageService.add({severity:'info', summary:'Info Message', detail:'PrimeNG rocks'})
         this.authService.login(this.model.username, this.model.password)
             .subscribe(
                 data => {
+                    console.info(data);
+                    this.messageService.add({severity:'info', summary:'Info Message', detail:'login validated'})
                     this.loading = false;
                     this.router.navigate([this.returnUrl]);
                 },
                 error => {
-                    // this.alertService.error(error);
+                    console.info(error);
+                    this.messageService.add({severity:'error', summary:'Info Message', detail:'login invalid'})
                     this.loading = false;
                 });
 
