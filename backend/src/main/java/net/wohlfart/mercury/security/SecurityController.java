@@ -3,13 +3,10 @@ package net.wohlfart.mercury.security;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import net.wohlfart.mercury.entity.Role;
 import net.wohlfart.mercury.entity.User;
-import net.wohlfart.mercury.exception.InvalidPasswordException;
 import net.wohlfart.mercury.exception.UserNotFoundException;
 import net.wohlfart.mercury.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Collections;
 
 import static net.wohlfart.mercury.SecurityConstants.*;
 
@@ -41,7 +37,7 @@ public class SecurityController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtTokenUtil jwtUtil;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -102,7 +98,7 @@ public class SecurityController {
         final Authentication authentication = authenticationManager.authenticate(token);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String tokenString = jwtUtil.generateToken(userDetails);
+        final String tokenString = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponse(tokenString));
     }
 
@@ -114,7 +110,7 @@ public class SecurityController {
     @PostMapping(REFRESH_ENDPOINT)
     public ResponseEntity refresh(HttpServletRequest request) {
         final String refreshTokenString = request.getHeader(TOKEN_HEADER);
-        final String tokenString = jwtUtil.refreshToken(refreshTokenString);
+        final String tokenString = jwtTokenUtil.refreshToken(refreshTokenString);
         log.info("<refresh> refreshTokenString '{}' tokenString '{}'", refreshTokenString, tokenString);
         return ResponseEntity.ok(new AuthenticationResponse(tokenString));
     }

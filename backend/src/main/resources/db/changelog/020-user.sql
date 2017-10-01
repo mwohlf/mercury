@@ -1,5 +1,6 @@
 --liquibase formatted sql
---changeset michael:11
+--changeset michael:20
+
 create table MC.USER (
     ID bigint primary key,
     EMAIL character varying(255) NOT NULL UNIQUE,

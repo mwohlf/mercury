@@ -1,5 +1,6 @@
 --liquibase formatted sql
---changeset michael:30
+--changeset michael:40
+
 create table MC.MEMBERSHIP (
     ID bigint primary key,
     USER_ID bigint,
@@ -9,4 +10,4 @@ create table MC.MEMBERSHIP (
     foreign key (ROLE_ID) references MC.ROLE(ID)
 );
 
---rollback drop table MC.ROLE;
+--rollback drop table MC.MEMBERSHIP;
