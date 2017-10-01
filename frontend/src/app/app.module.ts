@@ -11,6 +11,7 @@ import { LabelComponent } from "./components/app/label/label.component";
 import { FooterComponent } from "./components/app/footer/footer.component";
 import { MenuComponent } from "./components/app/menu/menu.component";
 import { ToolbarComponent } from "./components/app/toolbar/toolbar.component";
+import {RegisterComponent} from "./components/app/register/register.component";
 
 import {MessageService} from "primeng/components/common/messageservice";
 import {MessagesModule} from 'primeng/primeng';
@@ -22,6 +23,7 @@ import {Routing} from "./routing.module";
     declarations: [
         AppComponent,
         LoginComponent,
+        RegisterComponent,
         LabelComponent,
         FooterComponent,
         MenuComponent,
