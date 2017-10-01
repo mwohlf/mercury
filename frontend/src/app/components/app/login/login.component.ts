@@ -1,8 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../../services/auth.service";
-import {MessageService} from "primeng/components/common/messageservice";
-import {Message} from 'primeng/components/common/api';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
     templateUrl: 'login.component.html'
@@ -16,10 +12,10 @@ export class LoginComponent implements OnInit {
 
     returnUrl: string;
 
-    constructor(private route: ActivatedRoute,
+    constructor(/*private route: ActivatedRoute,
                 private router: Router,
                 private authService: AuthService,
-                private messageService: MessageService) {
+                private messageService: MessageService*/) {
         console.log("<constructor>");
     }
 
@@ -28,10 +24,11 @@ export class LoginComponent implements OnInit {
         // this.authenticationService.logout();
 
         // get return url from route parameters or default to '/'
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+       // this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     }
 
     login() {
+        /*
         this.loading = true;
         this.messageService.add({severity:'info', summary:'Info Message', detail:'PrimeNG rocks'})
         this.authService.login(this.model.username, this.model.password)
@@ -44,5 +41,6 @@ export class LoginComponent implements OnInit {
                     // this.alertService.error(error);
                     this.loading = false;
                 });
+                */
     }
 }
