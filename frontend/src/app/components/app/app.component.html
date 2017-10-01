@@ -1,12 +1,14 @@
 
 <div class="layout-wrapper menu-layout-static menu-layout-horizontal">
-  <p><a [routerLink]="['login']">Login</a></p>
-  <p><a [routerLink]="['label']">Label</a></p>
 
+  <mrc-toolbar></mrc-toolbar>
+  <mrc-menu></mrc-menu>
 
-  <div class="layout-main">
+  <div class="layout-content">
     <p-messages></p-messages>
     <router-outlet></router-outlet>
   </div>
 
+
+  <mrc-footer></mrc-footer>
 </div>
