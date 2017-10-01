@@ -1,11 +1,11 @@
 
-<div class="layout-wrapper">
+<div class="layout-wrapper menu-layout-static menu-layout-horizontal">
   <p><a [routerLink]="['login']">Login</a></p>
   <p><a [routerLink]="['label']">Label</a></p>
 
-  <p-messages></p-messages>
 
   <div class="layout-main">
+    <p-messages></p-messages>
     <router-outlet></router-outlet>
   </div>
 
