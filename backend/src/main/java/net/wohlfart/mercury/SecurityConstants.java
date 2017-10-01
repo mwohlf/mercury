@@ -1,15 +1,22 @@
 package net.wohlfart.mercury;
 
 public class SecurityConstants {
-    public static final byte[] SECRET = "SecretKeyToGenJWTs".getBytes();
+
+    public static final String ROOT = "/";
+    public static final String API = "/api";
+
+    // jwt token constants
+    public static final String SECRET = "SecretKeyToGenJWTs";
     public static final long EXPIRATION_TIME = 864_000_000; // 10 days
     public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String HEADER_STRING = "Authorization";
-    public static final String SIGN_UP_URL = "/signup";
+    public static final String TOKEN_HEADER = "Authorization";
 
-    public static final String AUTHENTICATE_ENDPOINT = "/api/authenticate";
-    public static final String TOKEN_REFRESH_URL = "/users/refresh";
-    public static final String API_URL = "/api";
+    // auth endpoints
+    public static final String AUTHENTICATE_ENDPOINT = API + "/authenticate";
+    public static final String SIGNUP_ENDPOINT = API + "/signup";
+    public static final String REFRESH_ENDPOINT = API + "/refresh";
+
+    // admin endpoints
     public static final String H2_CONSOLE_URL = "/h2-console";
 
 

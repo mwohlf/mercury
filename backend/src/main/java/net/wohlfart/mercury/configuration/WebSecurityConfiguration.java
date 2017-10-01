@@ -1,8 +1,8 @@
 package net.wohlfart.mercury.configuration;
 
-import net.wohlfart.mercury.security.auth.JwtAuthenticationTokenFilter;
-import net.wohlfart.mercury.security.auth.JwtAuthenticationEntryPoint;
+import net.wohlfart.mercury.security.SecurityTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,10 +20,8 @@ import static net.wohlfart.mercury.SecurityConstants.*;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@ComponentScan({"net.wohlfart"})
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -32,9 +30,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JwtAuthenticationTokenFilter authenticationTokenFilter;
-
-    private static final String SIGN_UP_URL = "login/";
+    private SecurityTokenFilter authenticationTokenFilter;
 
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -65,12 +61,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             .and()
                 .authorizeRequests()
-                    .antMatchers(SIGN_UP_URL, AUTHENTICATE_ENDPOINT).permitAll() // login end-point allowed by anyone
-                    .antMatchers(TOKEN_REFRESH_URL).permitAll() // token refresh end-point allowed by anyone
+                    .antMatchers(SIGNUP_ENDPOINT).permitAll() // sign in end-point allowed by anyone
+                    .antMatchers(AUTHENTICATE_ENDPOINT).permitAll() // login end-point allowed by anyone
+                    .antMatchers(REFRESH_ENDPOINT).permitAll() // token refresh end-point allowed by anyone
                     .antMatchers(H2_CONSOLE_URL).permitAll() // H2 Console Dash-board allowed by anyone
             .and()
                 .authorizeRequests()
-                    .antMatchers(API_URL).authenticated() // Protected API End-points
+                    .antMatchers(API).authenticated() // Protected API End-points
             .and()
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class) // authentication filter
 

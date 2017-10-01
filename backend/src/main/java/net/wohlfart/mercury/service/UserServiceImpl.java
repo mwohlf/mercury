@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         if(userRepository.exists(id)) {
             return userRepository.findOne(id);
         } else {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(null);
         }
     }
 
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
         if(userRepository.exists(id)) {
             userRepository.delete(id);
         } else {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(null);
         }
     }
 

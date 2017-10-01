@@ -1,8 +1,10 @@
-package net.wohlfart.mercury.security.auth;
+package net.wohlfart.mercury.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import net.wohlfart.mercury.SecurityConstants;
+import net.wohlfart.mercury.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -15,18 +17,16 @@ import java.util.Map;
  * Common helper methods to work with JWT
  */
 @Component
-public class JwtUtil implements Serializable {
+public class JwtTokenUtil implements Serializable {
 
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_ID = "id";
     private static final String CLAIM_KEY_ROLE = "role";
     private static final String CLAIM_KEY_CREATED = "created";
 
-    @Value("${auth.secret}")
-    private String secret;
+    private String secret = SecurityConstants.SECRET;
 
-    @Value("${auth.expires}")
-    private Long expiration;
+    private Long expiration  = SecurityConstants.EXPIRATION_TIME;
 
     /**
      * Returns user id from given token
@@ -99,7 +99,7 @@ public class JwtUtil implements Serializable {
      */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        JwtUser jwtUser = (JwtUser) userDetails;
+        UserDetailsImpl jwtUser = (UserDetailsImpl) userDetails;
         claims.put(CLAIM_KEY_ID, jwtUser.getId());
         claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
         claims.put(CLAIM_KEY_ROLE, userDetails.getAuthorities());
@@ -131,7 +131,7 @@ public class JwtUtil implements Serializable {
      * @return true if token valid else false
      */
     public Boolean validateToken(String token, UserDetails userDetails) {
-        JwtUser user = (JwtUser) userDetails;
+        UserDetailsImpl user = (UserDetailsImpl) userDetails;
         final String username = getUsernameFromToken(token);
         if(username == null) {
             return false;
@@ -154,7 +154,7 @@ public class JwtUtil implements Serializable {
     }
 
     private Date generateExpirationDate() {
-        return new Date(System.currentTimeMillis() + expiration * 1000);
+        return new Date(System.currentTimeMillis() + expiration);
     }
 
     private Boolean isTokenExpired(String token) {

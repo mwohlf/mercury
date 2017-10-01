@@ -1,51 +1,38 @@
-package net.wohlfart.mercury.security.auth;
+package net.wohlfart.mercury.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.Data;
-import net.minidev.json.JSONObject;
-import net.wohlfart.mercury.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import static net.wohlfart.mercury.SecurityConstants.*;
 
 
 /*
- * filter for authenticating a user request
+ * fetch jwt token from request and add userDetails if possible
+ *
+ * see: https://github.com/szerhusenBC/jwt-spring-security-demo/blob/master/src/main/java/org/zerhusen/security/JwtAuthenticationTokenFilter.java
  */
+@Slf4j
 @Component
-public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter {
+public class SecurityTokenFilter extends OncePerRequestFilter {
 
-    public JwtAuthenticationTokenFilter() {
-        super(new AntPathRequestMatcher(AUTHENTICATE_ENDPOINT, HttpMethod.POST.name()));
-    }
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     @Override
-    @Autowired
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        super.setAuthenticationManager(authenticationManager);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        log.info("<doFilterInternal>");
+        filterChain.doFilter(request, response);
     }
 
+    /*
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         if (!HttpMethod.POST.name().equals(request.getMethod())) {
@@ -74,12 +61,12 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
                                             Authentication authentication) throws IOException, ServletException {
 
         String token = Jwts.builder()
-                .setSubject(((JwtUser) authentication.getPrincipal()).getUsername())
+                .setSubject(((UserDetailsImpl) authentication.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
 
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+        response.addHeader(TOKEN_HEADER, TOKEN_PREFIX + token);
 
     }
 
@@ -94,6 +81,7 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
     }
 
 
+
     @Data
     public static class UserForm {
 
@@ -101,4 +89,5 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
         String password;
 
     }
+    */
 }

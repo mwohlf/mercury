@@ -1,10 +1,9 @@
 package net.wohlfart.mercury.controller;
 
 import net.wohlfart.mercury.entity.User;
-import net.wohlfart.mercury.security.auth.JwtAuthenticationRequest;
-import net.wohlfart.mercury.security.auth.JwtAuthenticationResponse;
-import net.wohlfart.mercury.security.auth.JwtUtil;
-import net.wohlfart.mercury.security.auth.JwtUser;
+import net.wohlfart.mercury.security.JwtTokenUtil;
+import net.wohlfart.mercury.security.UserDetailsImpl;
+import net.wohlfart.mercury.security.SecurityController;
 import net.wohlfart.mercury.service.UserService;
 import net.wohlfart.mercury.util.DummyDataGenerator;
 import net.wohlfart.mercury.util.JsonMapper;
@@ -21,8 +20,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
 
@@ -31,16 +32,16 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-public class AuthControllerTest extends BaseControllerTest {
+public class SecurityControllerTest {
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Mock
     private AuthenticationManager authenticationManager;
 
     @Mock
-    private JwtUtil jwtTokenUtil;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Mock
     private UserDetailsService userDetailsService;
@@ -50,29 +51,32 @@ public class AuthControllerTest extends BaseControllerTest {
 
     @InjectMocks
     @Autowired
-    private AuthController authController;
+    private SecurityController securityController;
+
+    private MockMvc mvc;
 
     private static final String TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
             ".eyJzdWIiOiJyYW5kb20tbmFtZSIsInJvbGUiOiJVU0VSIiwiY3JlYXRlZCI6MX0" +
             ".idLq2N5BJZiqkylavUVJTkGKiNlc_5xdFHISCoke3ss";
 
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        setUp(authController);
+        this.mvc = MockMvcBuilders.standaloneSetup(securityController).build();
     }
 
     @Test(timeout=1000)
     public void signUpTest() throws Exception {
         User user = DummyDataGenerator.getUsers(1).get(0);
-        JwtUser jwtUser = new JwtUser(0L, user.getName(), user.getEmail(), user.getPassword(),
+        UserDetailsImpl jwtUser = new UserDetailsImpl(0L, user.getName(), user.getEmail(), user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getLabel())));
 
         String password = passwordEncoder.encode(user.getPassword());
-        JwtAuthenticationRequest request = new JwtAuthenticationRequest(
+        SecurityController.JwtAuthenticationRequest request = new SecurityController.JwtAuthenticationRequest(
                 user.getName(), user.getEmail(), password);
 
-        JwtAuthenticationResponse expectedResponse = new JwtAuthenticationResponse(TOKEN);
+        SecurityController.JwtAuthenticationResponse expectedResponse = new SecurityController.JwtAuthenticationResponse(TOKEN);
 
         when(userService.save(any(User.class))).thenReturn(user);
 
@@ -110,13 +114,13 @@ public class AuthControllerTest extends BaseControllerTest {
         User user = DummyDataGenerator.getUsers(1).get(0);
 
         String password = passwordEncoder.encode(user.getPassword());
-        JwtUser jwtUser = new JwtUser(0L, user.getName(), user.getEmail(), password,
+        UserDetailsImpl jwtUser = new UserDetailsImpl(0L, user.getName(), user.getEmail(), password,
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getLabel())));
 
-        JwtAuthenticationRequest request = new JwtAuthenticationRequest(
+        SecurityController.JwtAuthenticationRequest request = new SecurityController.JwtAuthenticationRequest(
                 user.getName(), user.getEmail(), user.getPassword());
 
-        JwtAuthenticationResponse expectedResponse = new JwtAuthenticationResponse(TOKEN);
+        SecurityController.JwtAuthenticationResponse expectedResponse = new SecurityController.JwtAuthenticationResponse(TOKEN);
 
         when(userDetailsService.loadUserByUsername(anyString())).thenReturn(jwtUser);
         when(jwtTokenUtil.generateToken(any(UserDetails.class))).thenReturn(TOKEN);
@@ -143,7 +147,7 @@ public class AuthControllerTest extends BaseControllerTest {
 
     @Test(timeout=10000)
     public void refreshTest() throws Exception {
-        JwtAuthenticationResponse expectedResponse = new JwtAuthenticationResponse(TOKEN);
+        SecurityController.JwtAuthenticationResponse expectedResponse = new SecurityController.JwtAuthenticationResponse(TOKEN);
 
         when(jwtTokenUtil.refreshToken(anyString())).thenReturn(TOKEN);
 
