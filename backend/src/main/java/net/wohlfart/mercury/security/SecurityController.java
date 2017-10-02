@@ -111,6 +111,7 @@ public class SecurityController {
     public ResponseEntity refresh(HttpServletRequest request) {
         final String refreshTokenString = request.getHeader(TOKEN_HEADER);
         final String tokenString = jwtTokenUtil.refreshToken(refreshTokenString);
+        final String username = jwtTokenUtil.getUsernameFromToken(tokenString);
         log.info("<refresh> refreshTokenString '{}' tokenString '{}'", refreshTokenString, tokenString);
         return ResponseEntity.ok(new AuthenticationResponse(tokenString));
     }

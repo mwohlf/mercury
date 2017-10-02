@@ -1,12 +1,12 @@
 package net.wohlfart.mercury.entity;
 
-public class EntityWithRevision <T> {
+public class HasRevision<T> {
 
     private Revision revision;
 
     private T entity;
 
-    public EntityWithRevision(Revision revision, T entity) {
+    public HasRevision(Revision revision, T entity) {
         this.revision = revision;
         this.entity = entity;
     }
@@ -18,4 +18,5 @@ public class EntityWithRevision <T> {
     public T getEntity() {
         return entity;
     }
+
 }

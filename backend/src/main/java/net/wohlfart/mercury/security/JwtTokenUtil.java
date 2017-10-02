@@ -3,6 +3,7 @@ package net.wohlfart.mercury.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import net.wohlfart.mercury.SecurityConstants;
 import net.wohlfart.mercury.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,14 +16,16 @@ import java.util.Map;
 
 /**
  * Common helper methods to work with JWT
+ * see: https://tools.ietf.org/html/rfc7519
  */
+@Slf4j
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    private static final String CLAIM_KEY_USERNAME = "sub";
-    private static final String CLAIM_KEY_ID = "id";
-    private static final String CLAIM_KEY_ROLE = "role";
-    private static final String CLAIM_KEY_CREATED = "created";
+
+    // custom claims
+    private static final String CLAIM_KEY_USERID = "uid"; // userid
+    private static final String CLAIM_KEY_AUTHORITIES = "auth";
 
     private String secret = SecurityConstants.SECRET;
 
@@ -37,7 +40,7 @@ public class JwtTokenUtil implements Serializable {
         Long id = null;
         try {
             final Claims claims = getClaimsFromToken(token);
-            id = Long.valueOf((Integer) claims.get(CLAIM_KEY_ID));
+            id = Long.valueOf((Integer) claims.get(CLAIM_KEY_USERID));
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -53,7 +56,7 @@ public class JwtTokenUtil implements Serializable {
         String username;
         try {
             final Claims claims = getClaimsFromToken(token);
-            username = claims.getSubject();
+            username = String.valueOf(claims.get(Claims.SUBJECT));
         } catch (Exception e) {
             username = null;
         }
@@ -69,7 +72,7 @@ public class JwtTokenUtil implements Serializable {
         Date created;
         try {
             final Claims claims = getClaimsFromToken(token);
-            created = new Date((Long) claims.get(CLAIM_KEY_CREATED));
+            created = new Date((Long) claims.get(Claims.ISSUED_AT));
         } catch (Exception e) {
             created = null;
         }
@@ -100,10 +103,10 @@ public class JwtTokenUtil implements Serializable {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         UserDetailsImpl jwtUser = (UserDetailsImpl) userDetails;
-        claims.put(CLAIM_KEY_ID, jwtUser.getId());
-        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
-        claims.put(CLAIM_KEY_ROLE, userDetails.getAuthorities());
-        claims.put(CLAIM_KEY_CREATED, new Date());
+        claims.put(CLAIM_KEY_USERID, jwtUser.getId());
+        claims.put(Claims.SUBJECT, userDetails.getUsername());
+        claims.put(CLAIM_KEY_AUTHORITIES, userDetails.getAuthorities());
+        claims.put(Claims.ISSUED_AT, new Date());
         return generateToken(claims);
     }
 
@@ -116,7 +119,7 @@ public class JwtTokenUtil implements Serializable {
         String refreshedToken;
         try {
             final Claims claims = getClaimsFromToken(token);
-            claims.put(CLAIM_KEY_CREATED, new Date());
+            claims.put(Claims.ISSUED_AT, new Date());
             refreshedToken = generateToken(claims);
         } catch (Exception e) {
             refreshedToken = null;
@@ -133,7 +136,7 @@ public class JwtTokenUtil implements Serializable {
     public Boolean validateToken(String token, UserDetails userDetails) {
         UserDetailsImpl user = (UserDetailsImpl) userDetails;
         final String username = getUsernameFromToken(token);
-        if(username == null) {
+        if (username == null) {
             return false;
         } else {
             return username.equals(user.getUsername()) && !isTokenExpired(token);
