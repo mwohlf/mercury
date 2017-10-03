@@ -17,9 +17,10 @@
       "testTsconfig": "tsconfig.json",
       "prefix": "mercury",
       "styles": [
-        "styles.scss",
+        "styles.scss"
       ],
-      "scripts": [],
+      "scripts": [
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
@@ -38,7 +39,7 @@
     }
   },
   "defaults": {
-    "styleExt": "css",
+    "styleExt": "scss",
     "class": {
       "spec": false
     },

@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import { AppComponent } from './components/app/app.component';
 import { LoginComponent } from './components/app/login/login.component';
@@ -14,10 +15,6 @@ import {RegisterComponent} from "./components/app/register/register.component";
 import {SettingsComponent} from "./components/app/settings/settings.component";
 import {AdminComponent} from "./components/app/admin/admin.component";
 
-import {MessageService} from "primeng/components/common/messageservice";
-import {MessagesModule} from 'primeng/primeng';
-import {PasswordModule} from 'primeng/primeng';
-import {InputTextModule} from 'primeng/primeng';
 import {Routing} from "./routing.module";
 
 @NgModule({
@@ -34,16 +31,13 @@ import {Routing} from "./routing.module";
     ],
     imports: [
         BrowserModule,
-        PasswordModule,
-        InputTextModule,
+        BrowserAnimationsModule,
         FormsModule,
         HttpModule,
-        MessagesModule,
         Routing,
     ],
     providers: [
         AuthService,
-        MessageService,
     ],
     bootstrap: [
         AppComponent,

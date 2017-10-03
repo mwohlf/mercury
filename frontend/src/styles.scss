@@ -4,9 +4,9 @@ body {
   font-family: arial, sans-serif;
 }
 
+// reset styles
 @import "../node_modules/normalize.css/normalize.css";
+// fontawsome
 @import "../node_modules/font-awesome/css/font-awesome.min.css";
-@import "../node_modules/primeng/resources/themes/omega/theme.css";
-@import "../node_modules/primeng/resources/primeng.min.css";
-
-
+// material theme
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
