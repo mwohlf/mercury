@@ -6,11 +6,12 @@ buildscript {
     jcenter()
     mavenCentral()
     maven { url 'http://repo.spring.io/plugins-release' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
   }
   dependencies {
     classpath('io.spring.gradle:propdeps-plugin:0.0.9.RELEASE')
     classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    classpath('io.swagger:swagger-codegen:2.2.3')  // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example
+    classpath('io.swagger:swagger-codegen:2.3.0-SNAPSHOT')  // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example
   }
 }
 
@@ -35,12 +36,13 @@ import io.swagger.codegen.config.CodegenConfigurator
 import io.swagger.codegen.DefaultGenerator
 
 
-def swaggerInput = new File('build/api.json')
+// generate frontend code
+def swaggerInput = new File('../frontend/src/generated/api.json')
 if (!swaggerInput.exists()) {
   new URL('http://localhost:8080/v2/api-docs').withInputStream{ i -> swaggerInput.withOutputStream{ it << i }}
 }
 // def swaggerInput = file(new URL('http://localhost:8080/v2/api-docs').toURI())
-def swaggerOutputDir = file('build')
+def swaggerOutputDir = file('../frontend/src/generated')
 task generateApi {
   inputs.files(swaggerInput)
   outputs.dir(swaggerOutputDir)
@@ -48,7 +50,7 @@ task generateApi {
     def config = new CodegenConfigurator()
     config.setInputSpec(swaggerInput.toString())
     config.setOutputDir(swaggerOutputDir.path)
-    config.setLang('typescript-angular2')
+    config.setLang('typescript-angular')
     new DefaultGenerator().opts(config.toClientOptInput()).generate()
   }
 }
