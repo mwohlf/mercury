@@ -12,6 +12,7 @@ import { MenuComponent } from "./components/app/menu/menu.component";
 import { ToolbarComponent } from "./components/app/toolbar/toolbar.component";
 import {RegisterComponent} from "./components/app/register/register.component";
 import {SettingsComponent} from "./components/app/settings/settings.component";
+import {AdminComponent} from "./components/app/admin/admin.component";
 
 import {MessageService} from "primeng/components/common/messageservice";
 import {MessagesModule} from 'primeng/primeng';
@@ -28,7 +29,8 @@ import {Routing} from "./routing.module";
         FooterComponent,
         MenuComponent,
         ToolbarComponent,
-        SettingsComponent
+        SettingsComponent,
+        AdminComponent,
     ],
     imports: [
         BrowserModule,

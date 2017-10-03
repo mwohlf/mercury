@@ -1,6 +1,6 @@
 package net.wohlfart.mercury.service;
 
-import net.wohlfart.mercury.entity.User;
+import net.wohlfart.mercury.model.User;
 import net.wohlfart.mercury.repository.UserRepository;
 import net.wohlfart.mercury.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;

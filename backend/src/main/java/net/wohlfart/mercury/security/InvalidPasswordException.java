@@ -1,4 +1,4 @@
-package net.wohlfart.mercury.exception;
+package net.wohlfart.mercury.security;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

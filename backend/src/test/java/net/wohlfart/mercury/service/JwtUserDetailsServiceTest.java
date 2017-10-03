@@ -1,7 +1,7 @@
 package net.wohlfart.mercury.service;
 
 import net.wohlfart.mercury.BaseTest;
-import net.wohlfart.mercury.entity.User;
+import net.wohlfart.mercury.model.User;
 import net.wohlfart.mercury.repository.UserRepository;
 import net.wohlfart.mercury.util.DummyDataGenerator;
 import org.junit.Before;
@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import static net.wohlfart.mercury.util.DummyDataGenerator.getUsers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;

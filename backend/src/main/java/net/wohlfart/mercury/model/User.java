@@ -1,7 +1,5 @@
-package net.wohlfart.mercury.entity;
+package net.wohlfart.mercury.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

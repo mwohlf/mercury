@@ -1,11 +1,6 @@
-package net.wohlfart.mercury.entity;
+package net.wohlfart.mercury.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import net.wohlfart.mercury.repository.EntityRevisionListener;
-import org.hibernate.envers.Audited;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;

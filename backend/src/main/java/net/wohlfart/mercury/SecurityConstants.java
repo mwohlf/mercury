@@ -17,6 +17,10 @@ public class SecurityConstants {
     public static final String REFRESH_ENDPOINT = API + "/refresh";
 
     // admin endpoints
+    public static final String ACCOUNTS_ENDPOINT = API + "/accounts";
+
+
+    // admin endpoints
     public static final String H2_CONSOLE_URL = "/h2-console";
 
 

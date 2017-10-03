@@ -1,4 +1,4 @@
-package net.wohlfart.mercury.entity;
+package net.wohlfart.mercury.model;
 
 public class HasRevision<T> {
 

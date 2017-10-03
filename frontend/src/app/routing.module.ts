@@ -5,6 +5,7 @@ import {LoginComponent} from "./components/app/login/login.component";
 import {RegisterComponent} from "./components/app/register/register.component";
 import {SettingsComponent} from "./components/app/settings/settings.component";
 import {ErrorHandler} from "@angular/router/src/router";
+import {AdminComponent} from "./components/app/admin/admin.component";
 
 
 const APP_ROUTES: Routes = [
@@ -12,6 +13,7 @@ const APP_ROUTES: Routes = [
     { path: "login", component: LoginComponent },
     { path: "register", component: RegisterComponent },
     { path: "settings", component: SettingsComponent },
+    { path: "admin", component: AdminComponent },
 
     { path: '**', component: LabelComponent },
 ];

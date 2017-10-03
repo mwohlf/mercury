@@ -1,10 +1,10 @@
 package net.wohlfart.mercury.security;
 
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import net.wohlfart.mercury.entity.User;
-import net.wohlfart.mercury.exception.UserNotFoundException;
+import net.wohlfart.mercury.model.User;
 import net.wohlfart.mercury.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,7 @@ import java.io.Serializable;
 import static net.wohlfart.mercury.SecurityConstants.*;
 
 
+@Api
 @Slf4j
 @Controller
 public class SecurityController {
@@ -53,7 +54,7 @@ public class SecurityController {
      * @throws AuthenticationException
      */
     @PostMapping(AUTHENTICATE_ENDPOINT)
-    public ResponseEntity authenticate(@RequestBody AuthenticationRequest login) throws AuthenticationException {
+    public ResponseEntity<TokenResponse> authenticate(@RequestBody AuthenticationRequest login) throws AuthenticationException {
         log.info("<authenticate> login '{}'", login);
 
         final UserDetailsImpl userDetails;
@@ -65,7 +66,7 @@ public class SecurityController {
             throw new UserNotFoundException(ex);
         }
 
-        return createTokenResponse(userDetails);
+        return ResponseEntity.ok(createTokenResponse(userDetails));
     }
 
     /**
@@ -75,7 +76,7 @@ public class SecurityController {
      * @throws AuthenticationException
      */
     @PostMapping(SIGNUP_ENDPOINT)
-    public ResponseEntity signup(@RequestBody AuthenticationRequest register) throws AuthenticationException {
+    public ResponseEntity<TokenResponse> signup(@RequestBody AuthenticationRequest register) throws AuthenticationException {
         log.info("<signup> register '{}'", register);
 
         final UserDetailsImpl userDetails;
@@ -90,16 +91,16 @@ public class SecurityController {
             throw new UserNotFoundException(ex);
         }
 
-        return createTokenResponse(userDetails);
+        return ResponseEntity.ok(createTokenResponse(userDetails));
     }
 
-    private ResponseEntity createTokenResponse(UserDetailsImpl userDetails) {
+    private TokenResponse createTokenResponse(UserDetailsImpl userDetails) {
         final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
         final Authentication authentication = authenticationManager.authenticate(token);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String tokenString = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(tokenString));
+        return new TokenResponse(tokenString);
     }
 
     /**
@@ -108,12 +109,11 @@ public class SecurityController {
      * @return Refreshed JWT
      */
     @PostMapping(REFRESH_ENDPOINT)
-    public ResponseEntity refresh(HttpServletRequest request) {
+    public ResponseEntity<TokenResponse> refresh(HttpServletRequest request) {
         final String refreshTokenString = request.getHeader(TOKEN_HEADER);
         final String tokenString = jwtTokenUtil.refreshToken(refreshTokenString);
-        final String username = jwtTokenUtil.getUsernameFromToken(tokenString);
         log.info("<refresh> refreshTokenString '{}' tokenString '{}'", refreshTokenString, tokenString);
-        return ResponseEntity.ok(new AuthenticationResponse(tokenString));
+        return ResponseEntity.ok(new TokenResponse(tokenString));
     }
 
     @Data
@@ -127,7 +127,7 @@ public class SecurityController {
 
     @Data
     @AllArgsConstructor
-    public static class AuthenticationResponse implements Serializable {
+    public static class TokenResponse implements Serializable {
 
         String token;
 

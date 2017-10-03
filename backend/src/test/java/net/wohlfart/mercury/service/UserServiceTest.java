@@ -1,8 +1,8 @@
 package net.wohlfart.mercury.service;
 
 import net.wohlfart.mercury.BaseTest;
-import net.wohlfart.mercury.entity.User;
-import net.wohlfart.mercury.exception.UserNotFoundException;
+import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.security.UserNotFoundException;
 import net.wohlfart.mercury.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;

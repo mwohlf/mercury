@@ -1,6 +1,6 @@
 package net.wohlfart.mercury.repository;
 
-import net.wohlfart.mercury.entity.User;
+import net.wohlfart.mercury.model.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -75,7 +75,7 @@ public class UserRepositoryTest extends BaseRepositoryTest {
         userRepository.save(user);
         User fetchedUser = userRepository.findByName(user.getName());
         assertNotNull("User shouldn't be NULL", fetchedUser);
-        assertEquals("User should have appropriate role", user.getRole(), fetchedUser.getRole());
+        assertEquals("User should have appropriate role", user.getRoles(), fetchedUser.getRoles());
         assertEquals("User should have appropriate name", user.getName(), fetchedUser.getName());
     }
 

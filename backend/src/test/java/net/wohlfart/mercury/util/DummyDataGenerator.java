@@ -1,7 +1,7 @@
 package net.wohlfart.mercury.util;
 
-import net.wohlfart.mercury.entity.Role;
-import net.wohlfart.mercury.entity.User;
+import net.wohlfart.mercury.model.Role;
+import net.wohlfart.mercury.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
