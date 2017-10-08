@@ -1,0 +1,20 @@
+<div class="example-container mat-elevation-z8">
+
+    <md-table #table [dataSource]="userDataSource">
+
+        <ng-container mdColumnDef="uid">
+            <md-header-cell *mdHeaderCellDef> No. </md-header-cell>
+            <md-cell *mdCellDef="let element"> {{element.id}} </md-cell>
+        </ng-container>
+
+        <ng-container mdColumnDef="name">
+            <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
+            <md-cell *mdCellDef="let element"> {{element.name}} </md-cell>
+        </ng-container>
+
+        <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+        <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
+
+    </md-table>
+
+</div>

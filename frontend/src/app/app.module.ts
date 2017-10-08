@@ -4,7 +4,10 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 // Angular Material
-import {MdCardModule, MdInputModule, MdSidenavModule, MdButtonModule, MdChipsModule, MdListModule} from '@angular/material';
+import {
+    MdCardModule, MdInputModule, MdSidenavModule, MdButtonModule, MdChipsModule, MdListModule, MdTooltipModule, MdToolbarModule, MdTabsModule, MdSortModule,
+    MdPaginatorModule, MdNativeDateModule, MdTableModule
+} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 
@@ -17,9 +20,12 @@ import {MenuComponent} from "./components/app/menu/menu.component";
 import {ToolbarComponent} from "./components/app/toolbar/toolbar.component";
 import {RegisterComponent} from "./components/app/register/register.component";
 import {SettingsComponent} from "./components/app/settings/settings.component";
-import {AdminComponent} from "./components/app/admin/admin.component";
+import {AdminTableUserComponent} from "./components/app/admin/admin-table-user.component";
 
 import {Routing} from "./routing.module";
+import {CdkTableModule} from "@angular/cdk/table";
+import {AdminControllerService} from "../generated/api/adminController.service";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
     declarations: [
@@ -31,20 +37,34 @@ import {Routing} from "./routing.module";
         MenuComponent,
         ToolbarComponent,
         SettingsComponent,
-        AdminComponent,
+        AdminTableUserComponent,
     ],
     imports: [
+        MdSidenavModule,
+        MdButtonModule,
+        MdChipsModule,
+        MdListModule,
+        MdTableModule,
+        CdkTableModule,
+        MdNativeDateModule,
         MdInputModule,
+        MdPaginatorModule,
+        MdSortModule,
+        MdTabsModule,
+        MdToolbarModule,
+        MdTooltipModule,
         MdCardModule,
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
+        HttpClientModule,
         Routing,
     ],
     providers: [
         AuthService,
+        AdminControllerService,
     ],
     bootstrap: [
         AppComponent,
