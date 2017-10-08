@@ -18,6 +18,7 @@ public class SecurityConstants {
 
     // admin endpoints
     public static final String ACCOUNTS_ENDPOINT = API + "/accounts";
+    public static final String USERS_ENDPOINT = API + "/users";
 
 
     // admin endpoints

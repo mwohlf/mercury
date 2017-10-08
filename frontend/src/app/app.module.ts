@@ -24,7 +24,7 @@ import {AdminTableUserComponent} from "./components/app/admin/admin-table-user.c
 
 import {Routing} from "./routing.module";
 import {CdkTableModule} from "@angular/cdk/table";
-import {AdminControllerService} from "../generated/api/adminController.service";
+import {UserControllerService} from "../generated/api/userController.service";
 import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
@@ -64,7 +64,7 @@ import {HttpClientModule} from "@angular/common/http";
     ],
     providers: [
         AuthService,
-        AdminControllerService,
+        UserControllerService,
     ],
     bootstrap: [
         AppComponent,

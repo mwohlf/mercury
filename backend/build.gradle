@@ -11,7 +11,8 @@ buildscript {
   dependencies {
     classpath('io.spring.gradle:propdeps-plugin:0.0.9.RELEASE')
     classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    classpath('io.swagger:swagger-codegen:2.3.0-SNAPSHOT')  // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example
+    classpath('io.swagger:swagger-codegen:2.3.0-SNAPSHOT')
+    // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example
   }
 }
 
@@ -36,6 +37,7 @@ import io.swagger.codegen.config.CodegenConfigurator
 import io.swagger.codegen.DefaultGenerator
 
 
+// see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle
 // generate frontend code
 def swaggerInput = new File('../frontend/src/generated/api.json')
 if (!swaggerInput.exists()) {
@@ -51,6 +53,13 @@ task generateApi {
     config.setInputSpec(swaggerInput.toString())
     config.setOutputDir(swaggerOutputDir.path)
     config.setLang('typescript-angular')
+    config.setVerbose(true)
+    config.setAdditionalProperties([
+            'basePath' : 'http://localhost:8080'
+    ])
+    // config.setImportMappings([
+    //        'Dog': 'io.swagger.petstore.client.model.Dog'
+    // ])
     new DefaultGenerator().opts(config.toClientOptInput()).generate()
   }
 }

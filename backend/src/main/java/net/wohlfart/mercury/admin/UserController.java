@@ -12,19 +12,16 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import static net.wohlfart.mercury.SecurityConstants.AUTHENTICATE_ENDPOINT;
+import static net.wohlfart.mercury.SecurityConstants.USERS_ENDPOINT;
 
 @Slf4j
 @Controller
-public class AdminController {
-
-    @Autowired
-    private AdminService adminService;
+public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping(AUTHENTICATE_ENDPOINT)
+    @GetMapping(USERS_ENDPOINT)
     public ResponseEntity<Page<User>> findPage() throws AuthenticationException {
         Pageable pageable = new PageRequest(0, 100);
         Page<User> page = userService.findAll(pageable);
