@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {UserControllerService} from "../../../../generated/api/userController.service";
-import {UserDataSource} from "../../../models/user-data-source";
+import {UserControllerService} from "../../../generated/api/userController.service";
+import {UserDataSource} from "../../models/user-data-source";
 
 
 @Component({

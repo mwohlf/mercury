@@ -12,16 +12,17 @@ import {
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 
-import {AppComponent} from './components/app/app.component';
-import {LoginComponent} from './components/app/login/login.component';
+import {AppComponent} from './components/app.component';
+import {LoginComponent} from './components/login/login.component';
 import {AuthService} from './services/auth.service';
-import {LabelComponent} from "./components/app/label/label.component";
-import {FooterComponent} from "./components/app/footer/footer.component";
-import {SidebarComponent} from "./components/app/sidebar/sidebar.component";
-import {NavbarComponent} from "./components/app/navbar/navbar.component";
-import {RegisterComponent} from "./components/app/register/register.component";
-import {SettingsComponent} from "./components/app/settings/settings.component";
-import {AdminTableUserComponent} from "./components/app/admin/admin-table-user.component";
+import {LabelComponent} from "./components/label/label.component";
+import {FooterComponent} from "./components/footer/footer.component";
+import {SidebarComponent} from "./components/sidebar/sidebar.component";
+import {NavbarComponent} from "./components/navbar/navbar.component";
+import {RegisterComponent} from "./components/register/register.component";
+import {HeaderComponent} from "./components/header/header.component";
+import {SettingsComponent} from "./components/settings/settings.component";
+import {AdminTableUserComponent} from "./components/admin/admin-table-user.component";
 
 import {Routing} from "./routing.module";
 import {CdkTableModule} from "@angular/cdk/table";
@@ -35,6 +36,7 @@ import {HttpClientModule} from "@angular/common/http";
         RegisterComponent,
         LabelComponent,
         FooterComponent,
+        HeaderComponent,
         SidebarComponent,
         NavbarComponent,
         SettingsComponent,

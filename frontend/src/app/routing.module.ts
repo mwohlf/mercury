@@ -2,11 +2,11 @@ import {ModuleWithProviders} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {ErrorHandler} from "@angular/router/src/router";
 
-import {LabelComponent} from "./components/app/label/label.component";
-import {LoginComponent} from "./components/app/login/login.component";
-import {RegisterComponent} from "./components/app/register/register.component";
-import {SettingsComponent} from "./components/app/settings/settings.component";
-import {AdminTableUserComponent} from "./components/app/admin/admin-table-user.component";
+import {LabelComponent} from "./components/label/label.component";
+import {LoginComponent} from "./components/login/login.component";
+import {RegisterComponent} from "./components/register/register.component";
+import {SettingsComponent} from "./components/settings/settings.component";
+import {AdminTableUserComponent} from "./components/admin/admin-table-user.component";
 
 
 
