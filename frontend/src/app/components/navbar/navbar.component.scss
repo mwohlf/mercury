@@ -1,3 +1,36 @@
-.navBar {
 
+// see: https://codepen.io/Smackjax/pen/VapzvL
+
+
+.navbar {  // horizontal menu and container for the menu
+  width: 100%;
+  display: flex;
+  flex-direction: row; /* Horizontal main menu buttons */
+  justify-content: space-between;  // between logo and menu items
+  overflow: visible;
+  // see: https://www.cssmatic.com/box-shadow
+  -webkit-box-shadow: inset 0px -3px 0px 0px #ddd;
+  -moz-box-shadow: inset 0px -3px 0px 0px #ddd;
+  box-shadow: inset 0px -3px 0px 0px #ddd;
 }
+
+.main-menu {  // container for the items also item in the parent flexbox
+  display: flex;
+  flex-direction: row; /* Horizontal main menu buttons */
+}
+
+.main-menu a {  // menu item
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  padding: .75rem 2rem;
+  display: block;
+  color: #222;
+  border-bottom: 3px solid #ddd;
+}
+
+.main-menu a:hover {
+  color: #c14400;
+  border-bottom-color: #c14400;
+}
+

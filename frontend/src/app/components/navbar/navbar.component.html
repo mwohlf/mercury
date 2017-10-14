@@ -1,14 +1,16 @@
 
-<nav class="navBar">
-    <nav class="wrapper">
-        <div class="logo"></div>
-        <ul>
+<div class="navbar">
+    <a href="#">
+        <img class="logo" src="assets/images/logo.png" alt="home" height="50px" >
+    </a>
 
-            <li><a [routerLink]="['login']">Login</a></li>
-            <li><a [routerLink]="['label']">Label</a></li>
-            <li><a [routerLink]="['settings']">Settings</a></li>
-            <li><a [routerLink]="['admin']">Admin</a></li>
+    <nav class="main-menu">
 
-        </ul>
+        <a class="menu-button" [routerLink]="['login']">Login</a>
+        <a class="menu-button" [routerLink]="['label']">Label</a>
+        <a class="menu-button" [routerLink]="['settings']">Settings</a>
+        <a class="menu-button" [routerLink]="['admin']">Admin</a>
+
     </nav>
-</nav>
+
+</div>
