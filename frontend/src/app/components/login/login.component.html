@@ -1,36 +1,36 @@
 
-<div>
-    <md-card>
+<div class="page-center">
+    <mat-card>
 
-        <md-card-title>Login</md-card-title>
+        <mat-card-title>Login</mat-card-title>
 
-        <md-card-content>
+        <mat-card-content>
 
             <form [formGroup]="loginForm">
 
-                <md-input-container [ngClass]="{'error': loginForm.controls['username'].errors && !loginForm.controls['username'].pristine}"
+                <mat-input-container [ngClass]="{'error': loginForm.controls['username'].errors && !loginForm.controls['username'].pristine}"
                                     dividerColor="{{loginForm.controls['username'].errors && !loginForm.controls['username'].pristine ? 'warn' : 'primary'}}">
-                    <input type="username" mdInput formControlName="username" placeholder="Username" required>
+                    <input type="username" matInput formControlName="username" placeholder="Username" required>
                     <div *ngIf="loginForm.controls['username'].errors && !loginForm.controls['username'].pristine" class="error-msg">
                         <div [hidden]="!loginForm.controls['username'].errors.required">Email is required.</div>
                     </div>
-                </md-input-container>
+                </mat-input-container>
 
-                <md-input-container [ngClass]="{'error': loginForm.controls['password'].errors && !loginForm.controls['password'].pristine}"
+                <mat-input-container [ngClass]="{'error': loginForm.controls['password'].errors && !loginForm.controls['password'].pristine}"
                                     dividerColor="{{loginForm.controls['password'].errors && !loginForm.controls['password'].pristine ? 'warn' : 'primary'}}">
-                    <input type="password" mdInput formControlName="password" placeholder="Password" required>
+                    <input type="password" matInput formControlName="password" placeholder="Password" required>
                     <div *ngIf="loginForm.controls['password'].errors && !loginForm.controls['password'].pristine" class="error-msg">
                         <div [hidden]="!loginForm.controls['password'].errors.required">Password is required.</div>
                     </div>
-                </md-input-container>
+                </mat-input-container>
 
             </form>
 
-        </md-card-content>
+        </mat-card-content>
 
-        <md-card-actions align="end">
-            <button md-raised-button class="btn" [disabled]="loginForm.invalid" (click)="login()">Login</button>
-        </md-card-actions>
+        <mat-card-actions align="end">
+            <button mat-raised-button class="btn" [disabled]="loginForm.invalid" (click)="login()">Login</button>
+        </mat-card-actions>
 
-    </md-card>
+    </mat-card>
 </div>

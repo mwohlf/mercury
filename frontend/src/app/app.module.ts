@@ -5,10 +5,7 @@ import {HttpModule} from '@angular/http';
 import {FlexLayoutModule} from '@angular/flex-layout';
 
 // Angular Material
-import {
-    MdCardModule, MdInputModule, MdSidenavModule, MdButtonModule, MdChipsModule, MdListModule, MdTooltipModule, MdToolbarModule, MdTabsModule, MdSortModule,
-    MdPaginatorModule, MdNativeDateModule, MdTableModule
-} from '@angular/material';
+
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 
@@ -25,9 +22,15 @@ import {SettingsComponent} from "./components/settings/settings.component";
 import {AdminTableUserComponent} from "./components/admin/admin-table-user.component";
 
 import {Routing} from "./routing.module";
-import {CdkTableModule} from "@angular/cdk/table";
 import {UserControllerService} from "../generated/api/userController.service";
 import {HttpClientModule} from "@angular/common/http";
+
+import {CdkTableModule} from "@angular/cdk/table";
+import {
+    MatButtonModule, MatCardModule, MatChipsModule, MatInputModule, MatListModule, MatNativeDateModule,
+    MatPaginatorModule, MatSidenavModule, MatSortModule, MatTableModule, MatTabsModule, MatToolbarModule,
+    MatTooltipModule
+} from "@angular/material";
 
 @NgModule({
     declarations: [
@@ -52,21 +55,20 @@ import {HttpClientModule} from "@angular/common/http";
         ReactiveFormsModule,
         FlexLayoutModule,
 
-        MdSidenavModule,
-        MdButtonModule,
-        MdChipsModule,
-        MdListModule,
-        MdTableModule,
+        MatSidenavModule,
+        MatButtonModule,
+        MatChipsModule,
+        MatListModule,
+        MatTableModule,
         CdkTableModule,
-        MdNativeDateModule,
-        MdInputModule,
-        MdPaginatorModule,
-        MdSortModule,
-        MdTabsModule,
-        MdToolbarModule,
-        MdTooltipModule,
-        MdCardModule,
-
+        MatNativeDateModule,
+        MatInputModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatTabsModule,
+        MatToolbarModule,
+        MatTooltipModule,
+        MatCardModule,
     ],
     providers: [
         AuthService,

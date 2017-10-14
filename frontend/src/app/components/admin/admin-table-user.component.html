@@ -1,20 +1,20 @@
 <div class="example-container mat-elevation-z8">
 
-    <md-table #table [dataSource]="userDataSource">
+    <mat-table #table [dataSource]="userDataSource">
 
-        <ng-container mdColumnDef="uid">
-            <md-header-cell *mdHeaderCellDef> No. </md-header-cell>
-            <md-cell *mdCellDef="let element"> {{element.id}} </md-cell>
+        <ng-container matColumnDef="uid">
+            <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
         </ng-container>
 
-        <ng-container mdColumnDef="name">
-            <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-            <md-cell *mdCellDef="let element"> {{element.name}} </md-cell>
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
         </ng-container>
 
-        <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-        <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
-    </md-table>
+    </mat-table>
 
 </div>

@@ -28,7 +28,7 @@ export const errorHandler: ErrorHandler = (error: any) => {
 export const Routing: ModuleWithProviders = RouterModule.forRoot(
     APP_ROUTES,
     {
-        enableTracing: false   // <-- debugging purposes only
+        enableTracing: true   // <-- debugging purposes only
        // errorHandler: errorHandler
     }
 );
