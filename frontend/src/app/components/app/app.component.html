@@ -1,13 +1,11 @@
-
-<div class="layout-wrapper menu-layout-static menu-layout-horizontal">
-
-  <mrc-toolbar></mrc-toolbar>
-  <mrc-menu></mrc-menu>
-
-  <div class="layout-content">
-    <router-outlet></router-outlet>
+<div class="flex-root">
+  <header class="flex-header">header</header>
+  <nav class="flex-nav"><mrc-navbar></mrc-navbar></nav>
+  <div class="flex-body">
+    <section>
+      <router-outlet></router-outlet>
+    </section>
   </div>
-
-
-  <mrc-footer></mrc-footer>
+  <footer class="flex-footer"><mrc-footer></mrc-footer></footer>
 </div>
+

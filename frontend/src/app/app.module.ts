@@ -2,6 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 // Angular Material
 import {
@@ -16,8 +17,8 @@ import {LoginComponent} from './components/app/login/login.component';
 import {AuthService} from './services/auth.service';
 import {LabelComponent} from "./components/app/label/label.component";
 import {FooterComponent} from "./components/app/footer/footer.component";
-import {MenuComponent} from "./components/app/menu/menu.component";
-import {ToolbarComponent} from "./components/app/toolbar/toolbar.component";
+import {SidebarComponent} from "./components/app/sidebar/sidebar.component";
+import {NavbarComponent} from "./components/app/navbar/navbar.component";
 import {RegisterComponent} from "./components/app/register/register.component";
 import {SettingsComponent} from "./components/app/settings/settings.component";
 import {AdminTableUserComponent} from "./components/app/admin/admin-table-user.component";
@@ -34,12 +35,21 @@ import {HttpClientModule} from "@angular/common/http";
         RegisterComponent,
         LabelComponent,
         FooterComponent,
-        MenuComponent,
-        ToolbarComponent,
+        SidebarComponent,
+        NavbarComponent,
         SettingsComponent,
         AdminTableUserComponent,
     ],
     imports: [
+        HttpModule,
+        HttpClientModule,
+        Routing,
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        FlexLayoutModule,
+
         MdSidenavModule,
         MdButtonModule,
         MdChipsModule,
@@ -54,13 +64,7 @@ import {HttpClientModule} from "@angular/common/http";
         MdToolbarModule,
         MdTooltipModule,
         MdCardModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        ReactiveFormsModule,
-        HttpModule,
-        HttpClientModule,
-        Routing,
+
     ],
     providers: [
         AuthService,

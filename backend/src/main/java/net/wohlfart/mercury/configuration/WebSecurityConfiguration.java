@@ -58,7 +58,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
             .and()
                 .authorizeRequests()
                     .antMatchers(SIGNUP_ENDPOINT).permitAll() // sign in end-point allowed by anyone
@@ -70,38 +69,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers(API).authenticated() // Protected API End-points
             .and()
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class) // authentication filter
-
             ;
-                // @formatter:on
-        /*
-                    .cors()  // add a cors filter via corsConfigurationSource to the builder and returns it
-                .and()   // back to the builder
-                    .csrf().disable() // returns the csrf configurer and removes it
-                    .authorizeRequests() // returns the ExpressionInterceptUrlRegistry
-
-                    .antMatchers(HttpMethod.POST, SIGN_UP_URL, AUTHENTICATE_ENDPOINT).permitAll()  // url allowed by anyone
-                    .anyRequest().authenticated() // any other request needs an authenticated user
-                .and()  // returns the SecurityBuilder again
-                .addFilter(authenticationTokenFilter)  // authentication filter
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()));
-
-        httpSecurity
-                .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests()
-                .antMatchers(
-                        HttpMethod.GET,
-                        "/",
-  ...
-                ).permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
-
-        httpSecurity
-                .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
-        httpSecurity.headers().cacheControl();
-        */
     }
 }
