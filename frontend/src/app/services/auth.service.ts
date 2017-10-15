@@ -99,19 +99,19 @@ export class AuthService {
         return undefined;
     }
 
-    public getUsername(): string {
+    public getUsername(): string | undefined {
         if (this.token) {
             return this.token[AuthService.CLAIM_KEY_SUBJECT];
         } else {
-            return undefined;
+            return;
         }
     }
 
-    public getUserId(): number {
+    public getUserId(): number | undefined {
         if (this.token) {
             return this.token[AuthService.CLAIM_KEY_USERID];
         } else {
-            return undefined;
+            return;
         }
     }
 }

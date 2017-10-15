@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'mrc-footer',
@@ -8,9 +9,14 @@ import {Component, OnInit} from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-    constructor() {}
+    private idString: string;
+
+    constructor(private authService: AuthService) {
+
+    }
 
     ngOnInit() {
+        this.idString = " " + this.authService.getUsername() + "/" + this.authService.getUserId();
     }
 
 }
