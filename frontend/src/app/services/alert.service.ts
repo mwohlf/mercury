@@ -32,7 +32,7 @@ export class AlertService implements OnDestroy {
         return this.subject.asObservable();
     }
 
-    removeAlert(alert: Alert | undefined): void {
+    dismiss(alert: Alert | undefined): void {
         if (alert) {
             var index = this.alerts.indexOf(alert, 0);
             if (index > -1) {
@@ -56,6 +56,7 @@ export class AlertService implements OnDestroy {
         nextAlert.message = message;
         nextAlert.level = level;
         nextAlert.behavior = behavior;
+        nextAlert.alertService = this;
         this.alerts.push(nextAlert);
         this.subject.next(this.alerts);
         return nextAlert;
@@ -67,6 +68,12 @@ export class Alert {
     level: Level;
     behavior: Behavior;
     message: string;
+
+    alertService: AlertService;
+
+    dismiss() {
+        this.alertService.dismiss(this);
+    }
 }
 
 export enum Level {

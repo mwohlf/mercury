@@ -3,11 +3,11 @@ import {Alert, AlertService} from "../../services/alert.service";
 import {Subscription} from "rxjs/Subscription";
 
 @Component({
-    selector: 'mc-alert',
-    templateUrl: './alert.component.html'
+    selector: 'mc-alert-container',
+    templateUrl: './alertContainer.component.html'
 })
 
-export class AlertComponent implements OnInit, OnDestroy {
+export class AlertContainerComponent implements OnInit, OnDestroy {
 
     private alertSubscription: Subscription;
 
@@ -20,7 +20,6 @@ export class AlertComponent implements OnInit, OnDestroy {
         this.alertSubscription = this.alertService.getAlerts().subscribe((alerts: Alert[]) => {
             // TODO: we need some sort of animation here
             this.visibleAlerts = alerts;
-            console.log("updated alerts, count is " + this.visibleAlerts.length);
         });
     }
 
@@ -28,7 +27,4 @@ export class AlertComponent implements OnInit, OnDestroy {
         this.alertSubscription.unsubscribe();
     }
 
-    removeAlert(alert: Alert) {
-        this.alertService.removeAlert(alert);
-    }
 }

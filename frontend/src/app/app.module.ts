@@ -34,7 +34,7 @@ import {
 import {BASE_PATH} from "../generated/variables";
 import {SecurityControllerService} from "../generated/api/securityController.service";
 import {AlertService} from "./services/alert.service";
-import {AlertComponent} from "./components/alert/alert.component";
+import {AlertContainerComponent} from "./components/alert/alertContainer.component";
 
 @NgModule({
     declarations: [
@@ -48,7 +48,7 @@ import {AlertComponent} from "./components/alert/alert.component";
         NavbarComponent,
         SettingsComponent,
         AdminTableUserComponent,
-        AlertComponent,
+        AlertContainerComponent,
     ],
     imports: [
         HttpModule,

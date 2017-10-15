@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
     }
 
     private onError(error: any): void {
-        this.alertService.removeAlert(this.lastAlert);
+        this.alertService.dismiss(this.lastAlert);
         switch (error.status) {
             case 404:
                 this.lastAlert = this.alertService.error("User not found");
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
     }
 
     private onSuccess(success: any): void {
-        this.alertService.removeAlert(this.lastAlert);
+        this.alertService.dismiss(this.lastAlert);
         this.lastAlert = this.alertService.success("Login success");
         this.router.navigate([this.returnUrl]);
     }
