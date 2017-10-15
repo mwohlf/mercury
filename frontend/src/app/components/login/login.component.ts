@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import {AuthService} from "../../services/auth.service";
+import {AuthService, Principal} from "../../services/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Alert, AlertService} from "../../services/alert.service";
 
@@ -59,9 +59,9 @@ export class LoginComponent implements OnInit {
         }
     }
 
-    private onSuccess(success: any): void {
+    private onSuccess(principal: Principal): void {
         this.alertService.dismiss(this.lastAlert);
-        this.lastAlert = this.alertService.success("Login success");
+        this.lastAlert = this.alertService.success("Login for " + principal.userName);
         this.router.navigate([this.returnUrl]);
     }
 

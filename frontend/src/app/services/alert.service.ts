@@ -1,17 +1,14 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {NavigationStart, Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {Subject} from 'rxjs/Subject';
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class AlertService implements OnDestroy {
 
-    private subject = new Subject<Alert[]>();
-
-    private keepAfterNavigationChange = false;
+    private subject = new BehaviorSubject<Alert[]>([]);
 
     private alerts: Alert[] = [];
-
 
 
     constructor(private router: Router) {
@@ -26,7 +23,6 @@ export class AlertService implements OnDestroy {
     ngOnDestroy(): void {
         this.subject.complete();
     }
-
 
     getAlerts(): Observable<Alert[]> {
         return this.subject.asObservable();
