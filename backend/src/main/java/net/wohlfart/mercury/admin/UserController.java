@@ -25,6 +25,7 @@ public class UserController {
     public ResponseEntity<Page<User>> findPage() throws AuthenticationException {
         Pageable pageable = new PageRequest(0, 100);
         Page<User> page = userService.findAll(pageable);
+        log.info("found userpage " + page);
         return ResponseEntity.ok(page);
     }
 

@@ -21,15 +21,15 @@ const APP_ROUTES: Routes = [
 ];
 
 export const errorHandler: ErrorHandler = (error: any) => {
-    console.error("routing failed");
+    console.error("routing failed, error");
     console.error(error);
 };
 
 export const Routing: ModuleWithProviders = RouterModule.forRoot(
     APP_ROUTES,
     {
-        enableTracing: true   // <-- debugging purposes only
-       // errorHandler: errorHandler
+        enableTracing: false,   // <-- debugging purposes only
+      //  errorHandler: errorHandler
     }
 );
 

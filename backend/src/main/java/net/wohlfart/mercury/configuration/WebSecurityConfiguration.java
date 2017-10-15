@@ -52,6 +52,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // @formatter:off
         httpSecurity     // implements HttpsSecurityBuilder
+               // .cors().disable() // CORS off
                 .csrf().disable() // We don't need CSRF for JWT based authentication
                 .exceptionHandling()
                 //.authenticationEntryPoint(this.authenticationEntryPoint)

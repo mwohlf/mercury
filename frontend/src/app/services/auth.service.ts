@@ -1,159 +1,117 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
-import {
-    Http,
-    Headers,
-    RequestOptions,
-    Response
-} from '@angular/http';
-
-import { Observable } from 'rxjs/Rx';
+import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {User} from "../models/user.model";
+import {SecurityControllerService} from "../../generated/api/securityController.service";
+import {AuthenticationRequest} from "../../generated/model/authenticationRequest";
 
 /**
  * AuthService uses JSON-Web-Token authorization strategy.
  * Fetched token and user details are stored in sessionStorage.
+ *
+ * see: http://jasonwatmore.com/post/2016/09/29/angular-2-user-registration-and-login-example-tutorial#alert-service-ts
+ *
+ *
+ * sessionstore: not hared between tabs
+ *               cleared after browser or tab close
+ *
+ *  localstore; shared between tabs
+ *
  */
 @Injectable()
 export class AuthService {
 
-    private token: string;
-    private userId: number;
-    private username: string;
+    private static readonly STORE_TOKEN_KEY = "token";
 
-    public static readonly SIGNUP_URL = "/api/register";
-    public static readonly SIGNIN_URL = "/api/authenticate";
-    public static readonly REFRESH_TOKEN_URL = "/api/refresh";
+    private token: any; // decoded and parsed json values with all the auth data if available
 
     public static readonly CLAIM_KEY_USERID = "uid";
     public static readonly CLAIM_KEY_SUBJECT = "sub";
     public static readonly CLAIM_KEY_AUTHORITIES = "auth";
     public static readonly CLAIM_KEY_ISSUED_AT = "iat";
 
-    constructor(private http: Http) {
-        this.refreshUserData();
+
+    constructor(private securityControllerService: SecurityControllerService) {
+        this.init();
     }
 
-    /**
-     * Refreshes userId, username and token from sessionStorage
-     */
-    public refreshUserData(): void {
-        const user = sessionStorage.getItem('user');
-        if (user) {
-            this.saveUserDetails(JSON.parse(user));
+
+    private init() {
+        this.token = sessionStorage.getItem(AuthService.STORE_TOKEN_KEY);
+        if (!this.token) {
+            this.token = localStorage.getItem(AuthService.STORE_TOKEN_KEY);
+            if (this.token) {
+                sessionStorage.setItem(AuthService.STORE_TOKEN_KEY, JSON.stringify(this.token));
+            }
         }
+    }
+
+    public isAuthenticated(): boolean {
+        return Boolean(this.token);
     }
 
 
     // returns an observable that will return the claims json object
     public login(username: string, password: string): Observable<any> {
-
-        const requestParam = {
+        var request: AuthenticationRequest = {
             username: username,
             password: password
         };
 
-        return this.http.post(AuthService.SIGNIN_URL, requestParam, this.generateOptions())
-            .map((response: Response) => {
-                var json: any = response.json() || {};
-                const token = json.token;
-                sessionStorage.setItem('token', token);
-                const claims = this.getTokenClaims(token);
-                sessionStorage.setItem('userId', claims.uid);
-                sessionStorage.setItem('username', claims.sub);
-                return claims;
-            });
+        return this.securityControllerService.authenticateUsingPOST(request).map(
+            tokenResponse => {
+                this.token = this.parse(tokenResponse.token);
+                var tokenString = JSON.stringify(this.token);
+                sessionStorage.setItem(AuthService.STORE_TOKEN_KEY, tokenString);
+                localStorage.setItem(AuthService.STORE_TOKEN_KEY, tokenString);
+            },
+            errorResponse => {
+                console.log(errorResponse);
+            }
+        )
     }
 
-    /**
-     * Removes token and user details from sessionStorage and service's variables
-     */
     public logout(): void {
-        sessionStorage.removeItem('user');
+        sessionStorage.removeItem(AuthService.STORE_TOKEN_KEY);
         this.token = null;
-        this.username = null;
-        this.userId = null;
     }
 
-    /**
-     * Refreshes token for the user with given token
-     * @param token - which should be refreshed
-     */
-    public refreshToken(token: string): Observable<void | {}> {
-        const requestParam = { token: this.token };
+    private parse(token: string): any {
+        const base64Url = token.split('.')[1]; // second part of the token string
+        const base64 = base64Url
+            .replace('-', '+')
+            .replace('_', '/');
+        return JSON.parse(window.atob(base64));
+    }
 
+    public refreshToken(token: string): Observable<void | {}> {
+        const requestParam = {token: this.token};
+
+        /*
         return this.http.post(AuthService.REFRESH_TOKEN_URL, requestParam, this.generateOptions())
             .map((res: Response) => {
                 this.saveToken(res);
             }).catch(err => {
                 throw Error(err.json().message);
             });
+            */
+        return undefined;
     }
 
-    /**
-     * Checks if user is authorized
-     * @return true is user authorized (there is token in sessionStorage) else false
-     */
-    public isAuthorized(): boolean {
-        return Boolean(this.token);
-    }
-
-    /**
-     * @return username if exists
-     */
     public getUsername(): string {
-        return this.username;
-    }
-
-    /**
-     * @return userId if exists
-     */
-    public getUserId(): number {
-        return this.userId;
-    }
-
-    /**
-     * @return token if exists
-     */
-    public getToken(): string {
-        return this.token;
-    }
-
-    // Saves user details with token into sessionStorage as user item
-    private saveToken(response: Response): void {
-        const token = response.json() && response.json().token;
-        if (token) {
-            let claims = this.getTokenClaims(token);
-            claims.token = token;
-            sessionStorage.setItem('user', JSON.stringify(claims));
+        if (this.token) {
+            return this.token[AuthService.CLAIM_KEY_SUBJECT];
         } else {
-            throw Error(response.json());
+            return undefined;
         }
     }
 
-    // Saves user details into service properties
-    private saveUserDetails(user): void {
-        this.token = user.token || '';
-        this.username = user.sub || '';
-        this.userId = user.id || 0;
+    public getUserId(): number {
+        if (this.token) {
+            return this.token[AuthService.CLAIM_KEY_USERID];
+        } else {
+            return undefined;
+        }
     }
-
-    // Retrieves user details from token
-    private getTokenClaims(token: string): any {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace('-', '+').replace('_', '/');
-        return JSON.parse(window.atob(base64));
-    }
-
-    // Generates Headers
-    private generateOptions(): RequestOptions {
-        let headers = new Headers();
-        headers.append("Content-Type", 'application/json');
-        headers.append("Access-Control-Allow-Origin", "*");
-        headers.append("Access-Control-Allow-Headers", "Origin, Authorization, Content-Type");
-        return new RequestOptions({ headers: headers });
-    }
-
 }

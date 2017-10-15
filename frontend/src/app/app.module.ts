@@ -31,6 +31,10 @@ import {
     MatPaginatorModule, MatSidenavModule, MatSortModule, MatTableModule, MatTabsModule, MatToolbarModule,
     MatTooltipModule
 } from "@angular/material";
+import {BASE_PATH} from "../generated/variables";
+import {SecurityControllerService} from "../generated/api/securityController.service";
+import {AlertService} from "./services/alert.service";
+import {AlertComponent} from "./components/alert/alert.component";
 
 @NgModule({
     declarations: [
@@ -44,6 +48,7 @@ import {
         NavbarComponent,
         SettingsComponent,
         AdminTableUserComponent,
+        AlertComponent,
     ],
     imports: [
         HttpModule,
@@ -72,7 +77,10 @@ import {
     ],
     providers: [
         AuthService,
+        AlertService,
         UserControllerService,
+        SecurityControllerService,
+        { provide: BASE_PATH, useValue: ' ' } // use current url as basePath in all API controlers
     ],
     bootstrap: [
         AppComponent,

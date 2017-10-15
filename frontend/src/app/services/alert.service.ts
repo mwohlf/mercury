@@ -1,39 +1,83 @@
-import { Injectable } from '@angular/core';
-import { Router, NavigationStart } from '@angular/router';
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import {Injectable, OnDestroy} from '@angular/core';
+import {NavigationStart, Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {Subject} from 'rxjs/Subject';
 
 @Injectable()
-export class AlertService {
-    private subject = new Subject<any>();
+export class AlertService implements OnDestroy {
+
+    private subject = new Subject<Alert[]>();
+
     private keepAfterNavigationChange = false;
+
+    private alerts: Alert[] = [];
+
+
 
     constructor(private router: Router) {
         // clear alert message on route change
         router.events.subscribe(event => {
             if (event instanceof NavigationStart) {
-                if (this.keepAfterNavigationChange) {
-                    // only keep for a single location change
-                    this.keepAfterNavigationChange = false;
-                } else {
-                    // clear alert
-                    this.subject.next();
-                }
+                // cleanout old alerts
             }
         });
     }
 
-    success(message: string, keepAfterNavigationChange = false) {
-        this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({ type: 'success', text: message });
+    ngOnDestroy(): void {
+        this.subject.complete();
     }
 
-    error(message: string, keepAfterNavigationChange = false) {
-        this.keepAfterNavigationChange = keepAfterNavigationChange;
-        this.subject.next({ type: 'error', text: message });
-    }
 
-    getMessage(): Observable<any> {
+    getAlerts(): Observable<Alert[]> {
         return this.subject.asObservable();
     }
+
+    removeAlert(alert: Alert | undefined): void {
+        if (alert) {
+            var index = this.alerts.indexOf(alert, 0);
+            if (index > -1) {
+                this.alerts.splice(index, 1);
+            }
+            this.subject.next(this.alerts);
+        }
+    }
+
+    success(message: string): Alert {
+       return this.message(message, Level.SUCCESS);
+    }
+
+    error(message: string): Alert {
+       return this.message(message, Level.SUCCESS);
+    }
+
+
+    message(message = "oops", level = Level.INFO, behavior = Behavior.PAGE_LOCAL): Alert {
+        var nextAlert = new Alert();
+        nextAlert.message = message;
+        nextAlert.level = level;
+        nextAlert.behavior = behavior;
+        this.alerts.push(nextAlert);
+        this.subject.next(this.alerts);
+        return nextAlert;
+    }
+
+}
+
+export class Alert {
+    level: Level;
+    behavior: Behavior;
+    message: string;
+}
+
+export enum Level {
+    SUCCESS,
+    INFO,
+    WARN,
+    ERROR,
+}
+
+export enum Behavior {
+    PAGE_LOCAL,
+    STICKY,
+    TIMEOUT,
 }

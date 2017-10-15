@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {AuthService} from "../../services/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Alert, AlertService} from "../../services/alert.service";
 
 @Component({
     selector: 'app-login',
@@ -12,11 +13,14 @@ export class LoginComponent implements OnInit {
 
     loginForm: FormGroup;
 
+    lastAlert: Alert;
+
     returnUrl: string;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
-                private authService: AuthService) {
+                private authService: AuthService,
+                private alertService: AlertService) {
     }
 
     ngOnInit() {
@@ -32,20 +36,33 @@ export class LoginComponent implements OnInit {
     }
 
     public login() {
-
         this.authService.login(
             this.loginForm.controls['username'].value,
             this.loginForm.controls['password'].value)
             .subscribe(
-                data => {
-                    console.info(data);
-                    // this.messageService.add({severity:'info', summary:'Info Message', detail:'login validated'})
-                    this.router.navigate([this.returnUrl]);
+                success => {
+                    this.onSuccess(success);
                 },
                 error => {
-                    console.info(error);
-                    // this.messageService.add({severity:'error', summary:'Info Message', detail:'login invalid'})
+                    this.onError(error);
                 });
+    }
+
+    private onError(error: any): void {
+        this.alertService.removeAlert(this.lastAlert);
+        switch (error.status) {
+            case 404:
+                this.lastAlert = this.alertService.error("User not found");
+                break;
+            default:
+                this.lastAlert = this.alertService.error(JSON.stringify(error));
+        }
+    }
+
+    private onSuccess(success: any): void {
+        this.alertService.removeAlert(this.lastAlert);
+        this.lastAlert = this.alertService.success("Login success");
+        this.router.navigate([this.returnUrl]);
     }
 
 }
