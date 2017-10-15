@@ -58,9 +58,15 @@ export class AlertService implements OnDestroy {
         return nextAlert;
     }
 
+    clear() {
+        this.alerts.forEach(alert => {alert.dismiss()});
+    }
 }
 
 export class Alert {
+
+    public static readonly NULL: Alert = new Alert()
+
     level: Level;
     behavior: Behavior;
     message: string;

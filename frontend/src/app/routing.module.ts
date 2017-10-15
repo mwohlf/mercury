@@ -7,6 +7,7 @@ import {LoginComponent} from "./components/login/login.component";
 import {RegisterComponent} from "./components/register/register.component";
 import {SettingsComponent} from "./components/settings/settings.component";
 import {AdminTableUserComponent} from "./components/admin/admin-table-user.component";
+import {LogoutComponent} from "./components/logout/logout.component";
 
 
 
@@ -16,6 +17,7 @@ const APP_ROUTES: Routes = [
     { path: "register", component: RegisterComponent },
     { path: "settings", component: SettingsComponent },
     { path: "admin", component: AdminTableUserComponent },
+    { path: "logout", component: LogoutComponent },
 
     { path: '**', component: LabelComponent },
 ];

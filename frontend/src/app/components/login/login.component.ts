@@ -13,7 +13,7 @@ export class LoginComponent implements OnInit {
 
     loginForm: FormGroup;
 
-    lastAlert: Alert;
+    lastAlert: Alert = Alert.NULL;
 
     returnUrl: string;
 
@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
     }
 
     private onError(error: any): void {
-        this.alertService.dismiss(this.lastAlert);
+        this.lastAlert.dismiss();
         switch (error.status) {
             case 404:
                 this.lastAlert = this.alertService.error("User not found");
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
     }
 
     private onSuccess(principal: Principal): void {
-        this.alertService.dismiss(this.lastAlert);
+        this.lastAlert.dismiss();
         this.lastAlert = this.alertService.success("Login for " + principal.userName);
         this.router.navigate([this.returnUrl]);
     }
