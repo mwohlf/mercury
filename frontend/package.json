@@ -10,8 +10,7 @@
   },
   "scripts": {
     "start": "ng serve --proxy-config proxy.conf.json",
-    "start_old": "webpack-dev-server --port=4200 --proxy-config proxy.conf.json",
-    "start:prod": "npm run precache && ng serve --prod",
+    "start-webpack": "webpack-dev-server --port=4200 --proxy-config proxy.conf.json",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "karma start ./karma.conf.js",
     "test:prod": "karma start ./karma.conf.js --single-run",

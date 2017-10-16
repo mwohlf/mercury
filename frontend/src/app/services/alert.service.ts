@@ -74,7 +74,9 @@ export class Alert {
     alertService: AlertService;
 
     dismiss() {
-        this.alertService.dismiss(this);
+        if (this.alertService) {
+            this.alertService.dismiss(this);
+        }
     }
 }
 
