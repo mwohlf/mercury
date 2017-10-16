@@ -33,6 +33,7 @@ repositories {
   mavenCentral()
 }
 
+
 import io.swagger.codegen.config.CodegenConfigurator
 import io.swagger.codegen.DefaultGenerator
 
@@ -50,8 +51,8 @@ task generateApi {
   outputs.dir(swaggerOutputDir)
   doLast {
     def config = new CodegenConfigurator()
-    config.setInputSpec(swaggerInput.toString())
-    config.setOutputDir(swaggerOutputDir.path)
+    config.setInputSpec("file:///$projectDir/../frontend/src/generated/api.json")
+    config.setOutputDir("$projectDir/../frontend/src/generated")
     config.setLang('typescript-angular')
     config.setVerbose(true)
     config.setAdditionalProperties([
