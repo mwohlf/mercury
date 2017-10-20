@@ -98,6 +98,8 @@ public class SecurityController {
         final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
         final Authentication authentication = authenticationManager.authenticate(token);
 
+        System.out.println("authentication success: " + authentication);
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String tokenString = jwtTokenUtil.generateToken(userDetails);
         return new TokenResponse(tokenString);
