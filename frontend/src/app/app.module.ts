@@ -36,6 +36,7 @@ import {SecurityControllerService} from "../generated/api/securityController.ser
 import {AlertService} from "./services/alert.service";
 import {AlertContainerComponent} from "./components/alert/alertContainer.component";
 import {LogoutComponent} from "./components/logout/logout.component";
+import {ShowAuthedDirective} from "./shared/show-authenticated.directive";
 
 @NgModule({
     declarations: [
@@ -51,6 +52,7 @@ import {LogoutComponent} from "./components/logout/logout.component";
         AdminTableUserComponent,
         AlertContainerComponent,
         LogoutComponent,
+        ShowAuthedDirective,
     ],
     imports: [
         HttpModule,
