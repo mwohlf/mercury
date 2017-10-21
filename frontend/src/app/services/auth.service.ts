@@ -26,8 +26,8 @@ export class AuthService implements OnDestroy {
 
     private subject = new BehaviorSubject<Principal>(Principal.NULL); // start with null subject
 
+    public static readonly STORE_TOKEN_KEY = "token";
 
-    private static readonly STORE_TOKEN_KEY = "token";
 
     private token: any; // decoded and parsed json values with all the auth data if available
 
@@ -52,18 +52,18 @@ export class AuthService implements OnDestroy {
 
     private init() {
         // try sessionStorage
-        var tokenString = sessionStorage.getItem(AuthService.STORE_TOKEN_KEY);
-        if (!tokenString) {
+        var rawToken = sessionStorage.getItem(AuthService.STORE_TOKEN_KEY);
+        if (!rawToken) {
             // try localStorage
-            tokenString = localStorage.getItem(AuthService.STORE_TOKEN_KEY);
-            if (tokenString) {
+            rawToken = localStorage.getItem(AuthService.STORE_TOKEN_KEY);
+            if (rawToken) {
                 // move to sessionstore
-                sessionStorage.setItem(AuthService.STORE_TOKEN_KEY, tokenString);
+                sessionStorage.setItem(AuthService.STORE_TOKEN_KEY, rawToken);
             }
         }
         try {
-            this.updateTokenAndSubject(JSON.parse(tokenString));
-        } catch(e) {
+            this.updateTokenAndSubject(rawToken);
+        } catch (e) {
             this.updateTokenAndSubject();
         }
     }
@@ -84,11 +84,10 @@ export class AuthService implements OnDestroy {
             .map(
                 tokenResponse => {
                     console.log("tokenResponse" + tokenResponse);
-                    const nextTtoken = this.jwtParse(tokenResponse.token);
-                    var tokenString = JSON.stringify(nextTtoken);
-                    sessionStorage.setItem(AuthService.STORE_TOKEN_KEY, tokenString);
-                    localStorage.setItem(AuthService.STORE_TOKEN_KEY, tokenString);
-                    return this.updateTokenAndSubject(nextTtoken);
+                    const rawToken = tokenResponse.token;
+                    sessionStorage.setItem(AuthService.STORE_TOKEN_KEY, rawToken);
+                    localStorage.setItem(AuthService.STORE_TOKEN_KEY, rawToken);
+                    return this.updateTokenAndSubject(rawToken);
                 })
             .catch(
                 error => {
@@ -142,18 +141,20 @@ export class AuthService implements OnDestroy {
     }
 
     // call this when we have a new token value received
-    private updateTokenAndSubject(nextToken?: any): Principal {
-        this.token = nextToken;
+    private updateTokenAndSubject(rawToken?: any): Principal {
+        if (!rawToken) {
+            this.subject.next(Principal.NULL);
+            return Principal.NULL;
+        }
+        this.token = this.jwtParse(rawToken);
         if (this.token) {
             var principal = new Principal();
             principal.userId = this.getUserId();
             principal.userName = this.getUsername();
+            principal.token = rawToken;
             console.log(principal);
             this.subject.next(principal);
             return principal;
-        } else {
-            this.subject.next(Principal.NULL);
-            return Principal.NULL;
         }
     }
 
@@ -167,5 +168,6 @@ export class Principal {
 
     userId: number;
     userName: string;
+    token: any;
 }
 

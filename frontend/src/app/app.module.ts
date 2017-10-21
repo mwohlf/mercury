@@ -1,11 +1,8 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
 import {FlexLayoutModule} from '@angular/flex-layout';
-
-// Angular Material
-
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 
@@ -22,21 +19,36 @@ import {SettingsComponent} from "./components/settings/settings.component";
 import {AdminTableUserComponent} from "./components/admin/admin-table-user.component";
 
 import {Routing} from "./routing.module";
-import {UserControllerService} from "../generated/api/userController.service";
 import {HttpClientModule} from "@angular/common/http";
 
 import {CdkTableModule} from "@angular/cdk/table";
 import {
-    MatButtonModule, MatCardModule, MatChipsModule, MatInputModule, MatListModule, MatNativeDateModule,
-    MatPaginatorModule, MatSidenavModule, MatSortModule, MatTableModule, MatTabsModule, MatToolbarModule,
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatInputModule,
+    MatListModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
+    MatSidenavModule,
+    MatSortModule,
+    MatTableModule,
+    MatTabsModule,
+    MatToolbarModule,
     MatTooltipModule
 } from "@angular/material";
-import {BASE_PATH} from "../generated/variables";
-import {SecurityControllerService} from "../generated/api/securityController.service";
 import {AlertService} from "./services/alert.service";
 import {AlertContainerComponent} from "./components/alert/alertContainer.component";
 import {LogoutComponent} from "./components/logout/logout.component";
 import {ShowAuthedDirective} from "./shared/show-authenticated.directive";
+import {ApiModule} from "../generated/api.module";
+import {Configuration} from "../generated/configuration";
+import {HttpModule} from "@angular/http";
+import {AuthenticationInterceptor} from "./shared/authentication-interceptor";
+
+// Angular Material
+
+// Angular Material
 
 @NgModule({
     declarations: [
@@ -78,16 +90,30 @@ import {ShowAuthedDirective} from "./shared/show-authenticated.directive";
         MatToolbarModule,
         MatTooltipModule,
         MatCardModule,
+
+        ApiModule.forConfig(apiConfig),
+
     ],
     providers: [
         AuthService,
         AlertService,
-        UserControllerService,
-        SecurityControllerService,
-        { provide: BASE_PATH, useValue: ' ' } // use current url as basePath in all API controlers
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthenticationInterceptor,
+            multi: true,
+        },
     ],
     bootstrap: [
         AppComponent,
     ]
+
 })
-export class AppModule { }
+
+export class AppModule {}
+
+export function apiConfig() {
+    console.log("called apiconfig factory")
+    return new Configuration({
+        basePath: ' '
+    });
+}
