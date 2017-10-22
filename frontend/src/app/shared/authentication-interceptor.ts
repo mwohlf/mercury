@@ -11,15 +11,17 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        var rawToken = sessionStorage.getItem(AuthService.STORE_TOKEN_KEY);
+        var rawToken = AuthService.getRawToken();
         console.log("another request to " + request.url);
         console.log("token: " + rawToken);
 
-        request = request.clone({
-            setHeaders: {
-                Authorization: `Bearer ${rawToken}`
-            }
-        });
+        if (rawToken) {
+            request = request.clone({
+                setHeaders: {
+                    Authorization: `Bearer ${rawToken}`
+                }
+            });
+        }
 
         return next.handle(request);
     }

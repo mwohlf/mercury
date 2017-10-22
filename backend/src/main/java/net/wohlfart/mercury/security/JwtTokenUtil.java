@@ -5,10 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import net.wohlfart.mercury.SecurityConstants;
-import net.wohlfart.mercury.security.UserDetailsImpl;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -130,17 +129,18 @@ public class JwtTokenUtil implements Serializable {
     /**
      * Checks token validity
      * @param token to check
-     * @param userDetails to compare with
      * @return true if token valid else false
      */
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        UserDetailsImpl user = (UserDetailsImpl) userDetails;
+    public Boolean validateToken(String token) {
         final String username = getUsernameFromToken(token);
         if (username == null) {
             return false;
-        } else {
-            return username.equals(user.getUsername()) && !isTokenExpired(token);
         }
+        Claims claims = getClaimsFromToken(token);
+        if (new Date().after(claims.getExpiration())) {
+            return false;
+        }
+        return true;
     }
 
     private Claims getClaimsFromToken(String token) {

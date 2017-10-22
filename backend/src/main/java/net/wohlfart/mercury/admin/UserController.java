@@ -23,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(USERS_ENDPOINT)
-    @PreAuthorize("hasName('dude')")
+    @PreAuthorize("hisAuthenticated()")
     public ResponseEntity<Page<User>> findPage() throws AuthenticationException {
         Pageable pageable = new PageRequest(0, 100);
         Page<User> page = userService.findAll(pageable);

@@ -158,6 +158,10 @@ export class AuthService implements OnDestroy {
         }
     }
 
+    static getRawToken() {
+        return sessionStorage.getItem(AuthService.STORE_TOKEN_KEY);
+    }
+
 }
 
 // this is supposed to be more than the data from the token since we

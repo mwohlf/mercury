@@ -1,9 +1,18 @@
 package net.wohlfart.mercury.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
+import net.wohlfart.mercury.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -23,71 +32,60 @@ import java.io.IOException;
 public class SecurityTokenFilter extends OncePerRequestFilter {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        log.info("<doFilterInternal>");
-        filterChain.doFilter(request, response);
+    protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            setupAuthenticationBeforeRequest(servletRequest);
+            filterChain.doFilter(servletRequest, servletResponse);
+            resetAuthenticationAfterRequest();
+        } catch (ExpiredJwtException eje) {
+            log.info("Security exception for user {} - {}", eje.getClaims().getSubject(), eje.getMessage());
+            servletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            log.debug("Exception " + eje.getMessage(), eje);
+        }
     }
 
-    /*
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        if (!HttpMethod.POST.name().equals(request.getMethod())) {
-            throw new AuthenticationServiceException( "Authentication method not supported: " + request.getMethod());
+    private void setupAuthenticationBeforeRequest(HttpServletRequest servletRequest) {
+        String resolvedToken = this.resolveToken(servletRequest);
+        if (!StringUtils.hasText(resolvedToken)) {
+            log.info("<setupAuthenticationBeforeRequest> no token found");
+            return;
         }
 
-        // the request should contain the users credentials...
-        ObjectMapper objectMapper = new ObjectMapper();
-        UserForm userForm = objectMapper.readValue(toString(request.getInputStream()), UserForm.class);
-
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userForm.username, userForm.password);
-
-        setDetails(request, authRequest);
-
-        return this.getAuthenticationManager().authenticate(authRequest);
-    }
-
-    protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
-        authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            FilterChain filterChain,
-                                            Authentication authentication) throws IOException, ServletException {
-
-        String token = Jwts.builder()
-                .setSubject(((UserDetailsImpl) authentication.getPrincipal()).getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET)
-                .compact();
-
-        response.addHeader(TOKEN_HEADER, TOKEN_PREFIX + token);
-
-    }
-
-    private String toString(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = inputStream.read(buffer)) != -1) {
-            result.write(buffer, 0, length);
+        if (!jwtTokenUtil.validateToken(resolvedToken)) {
+            log.info("<setupAuthenticationBeforeRequest> token is invalid");
+            return;
         }
-        return result.toString(StandardCharsets.UTF_8.name());
+
+        String username = this.jwtTokenUtil.getUsernameFromToken(resolvedToken);
+        log.info("<doFilterInternal> found user: {}", username);
+
+        // see: https://github.com/szerhusenBC/jwt-spring-security-demo/blob/master/src/main/java/org/zerhusen/security/JwtAuthenticationTokenFilter.java
+        // TODO: we need to store the data in the token to avoid db roundtrip
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(servletRequest));
+        logger.info("authenticated user " + username + ", setting security context");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
     }
 
-
-
-    @Data
-    public static class UserForm {
-
-        String username;
-        String password;
-
+    private void resetAuthenticationAfterRequest() {
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
-    */
+
+    private String resolveToken(HttpServletRequest request) {
+        final String bearerToken = request.getHeader(SecurityConstants.TOKEN_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+            return bearerToken.substring(SecurityConstants.TOKEN_PREFIX.length(), bearerToken.length());
+        }
+        return null;
+    }
+
 }
