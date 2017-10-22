@@ -40,13 +40,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder);
     }
 
-    /*
-    @Override
-    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) {
-
-    }
-    */
-
     // see: http://www.svlada.com/jwt-token-authentication-with-spring-boot/
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -72,4 +65,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class) // authentication filter
             ;
     }
+
 }

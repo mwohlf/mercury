@@ -45,6 +45,7 @@ public class SwaggerConfig {
     }
 
     private List<ApiKey> securitySchemes() {
+        //noinspection RedundantArrayCreation
         return Arrays.asList( new ApiKey[] {
             new ApiKey("mykey", "api_key", "header")
 

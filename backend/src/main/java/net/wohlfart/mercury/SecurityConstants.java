@@ -3,6 +3,7 @@ package net.wohlfart.mercury;
 public class SecurityConstants {
 
     public static final String ROOT = "/";
+    public static final String CATCH_ALL = "/**";
     public static final String API = "/api";
 
     // jwt token constants
