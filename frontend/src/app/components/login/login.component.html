@@ -10,7 +10,7 @@
 
                 <mat-input-container [ngClass]="{'error': loginForm.controls['username'].errors && !loginForm.controls['username'].pristine}"
                                     dividerColor="{{loginForm.controls['username'].errors && !loginForm.controls['username'].pristine ? 'warn' : 'primary'}}">
-                    <input type="username" matInput formControlName="username" placeholder="Username" required>
+                    <input type="text" matInput formControlName="username" placeholder="Username" required>
                     <div *ngIf="loginForm.controls['username'].errors && !loginForm.controls['username'].pristine" class="error-msg">
                         <div [hidden]="!loginForm.controls['username'].errors.required">Email is required.</div>
                     </div>
