@@ -16,6 +16,8 @@ ext {
     swaggerVersion = '2.3.0-SNAPSHOT'
     h2Version = '1.4.193'
     springfoxVersion = '2.7.0'
+    nodeVersion = '8.8.0'
+    npmVersion = '5.5.1'
 }
 
 

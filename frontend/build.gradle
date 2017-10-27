@@ -19,8 +19,8 @@ buildscript {
 apply plugin: 'com.moowork.node'
 
 node {
-    version = '6.8.0'
-    npmVersion = '3.10.8'
+    version = "${rootProject.nodeVersion}"
+    npmVersion = "${rootProject.npmVersion}"
     download = true
     workDir = file("${project.buildDir}/node")
     nodeModulesDir = file("${project.projectDir}")
