@@ -31,6 +31,9 @@ dependencies {
 //    compile project(':backend')
 }
 
+//     "copy": "cp -r dist/* ../backend/src/main/resources/public",
+
+
 
 // download the api docs from swagger backend to generate frontend code
 // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle

@@ -14,8 +14,9 @@ buildscript {
     }
 }
 
-// version '0.0.1'
+// see: https://blog.jdriven.com/2016/10/integrate-angular-spring-boot-gradle/
 
+// apply plugin: 'base'
 apply plugin: 'com.moowork.node'
 
 node {
@@ -27,7 +28,13 @@ node {
 }
 
 task build(type: NpmTask) {
-    args = ['run', 'build']
+    args = ['run', 'build']   // compiles into dist
 }
 
 build.dependsOn(npm_install)
+
+task clean {
+    doLast {
+        delete "${project.projectDir}/dist/"
+    }
+}
