@@ -41,6 +41,7 @@ import io.swagger.codegen.DefaultGenerator
 // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle
 // generate frontend code
 def swaggerInput = new File('../frontend/src/generated/api.json')
+swaggerInput.mkdirs();
 if (!swaggerInput.exists()) {
   new URL('http://localhost:8080/v2/api-docs').withInputStream{ i -> swaggerInput.withOutputStream{ it << i }}
 }
