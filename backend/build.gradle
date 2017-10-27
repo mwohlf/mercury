@@ -17,13 +17,8 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
-apply plugin: "jacoco"
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
+
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -31,43 +26,6 @@ targetCompatibility = 1.8
 repositories {
   jcenter()
   mavenCentral()
-}
-
-
-import io.swagger.codegen.config.CodegenConfigurator
-import io.swagger.codegen.DefaultGenerator
-
-
-// see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle
-// generate frontend code
-def swaggerInput = new File('../frontend/src/generated/api.json')
-swaggerInput.mkdirs();
-if (!swaggerInput.exists()) {
-  new URL('http://localhost:8080/v2/api-docs').withInputStream{ i -> swaggerInput.withOutputStream{ it << i }}
-}
-// def swaggerInput = file(new URL('http://localhost:8080/v2/api-docs').toURI())
-def swaggerOutputDir = file('../frontend/src/generated')
-task generateApi {
-  inputs.files(swaggerInput)
-  outputs.dir(swaggerOutputDir)
-  doLast {
-    def config = new CodegenConfigurator()
-    config.setInputSpec("file:///$projectDir/../frontend/src/generated/api.json")
-    config.setOutputDir("$projectDir/../frontend/src/generated")
-    config.setLang('typescript-angular')
-    config.setVerbose(true)
-    config.setAdditionalProperties([
-            'basePath' : 'http://localhost:8080'
-    ])
-    // config.setImportMappings([
-    //        'Dog': 'io.swagger.petstore.client.model.Dog'
-    // ])
-    new DefaultGenerator().opts(config.toClientOptInput()).generate()
-  }
-}
-
-clean.doFirst {
-  delete(swaggerOutputDir)
 }
 
 configurations {
@@ -101,17 +59,3 @@ jar {
   baseName='mercury'
   version='0.0.1'
 }
-
-jacoco {
-  toolVersion = "0.7.6.201602180812"
-}
-
-jacocoTestReport {
-  reports {
-    xml.enabled = false
-    csv.enabled = false
-    html.enabled = true
-  }
-}
-
-test.finalizedBy jacocoTestReport

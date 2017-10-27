@@ -1,0 +1,62 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.7.RELEASE'
+    }
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'http://repo.spring.io/plugins-release' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+    dependencies {
+        classpath('io.spring.gradle:propdeps-plugin:0.0.9.RELEASE')
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath('io.swagger:swagger-codegen:2.3.0-SNAPSHOT')
+        // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example
+    }
+}
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':backend') // needs include in settings.gradle
+}
+
+
+// download the api docs from swagger backend to generate frontend code
+// see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle
+task downloadApiDocs {
+    def swaggerGenInput = new File('./frontend/src/resources/api.json')
+    swaggerGenInput.parentFile.mkdirs()  // mkae sure the directory exists
+    if (!swaggerGenInput.exists()) {
+        outputs.println("delete existing api doc")
+    }
+
+    // create the new source file
+    new URL('http://localhost:8080/v2/api-docs').withInputStream {
+        stream -> swaggerGenInput.withOutputStream { it << stream }
+    }
+}
+
+task generateApi {
+    inputs.files(file('./frontend/src/resources/api.json'))
+    outputs.dir(file('./frontend/src/generated'))
+    //noinspection UnnecessaryQualifiedReference
+    def config = new io.swagger.codegen.config.CodegenConfigurator()
+    config.setInputSpec("file:///$projectDir/frontend/src/resources/api.json")
+    config.setOutputDir("$projectDir/frontend/src/generated")
+    config.setLang('typescript-angular')
+    config.setVerbose(true)
+    config.setAdditionalProperties([
+            'basePath' : 'http://localhost:8080'
+    ])
+    // config.setImportMappings([
+    //        'Dog': 'io.swagger.petstore.client.model.Dog'
+    // ])
+    //noinspection UnnecessaryQualifiedReference
+    new io.swagger.codegen.DefaultGenerator().opts(config.toClientOptInput()).generate()
+}
