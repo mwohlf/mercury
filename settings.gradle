@@ -1,8 +1,8 @@
 
 
 
-include ':frontend'
-include ':backend'
+include 'frontend'
+include 'backend'
 
-//rootProject.name = 'mercury'
+rootProject.name = 'mercury'
 

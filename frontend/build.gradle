@@ -27,14 +27,43 @@ node {
     nodeModulesDir = file("${project.projectDir}")
 }
 
+task generateApi {
+    group 'API Generation'
+    description 'Create angular API from the swagger definition'
+
+    inputs.files(file("${projectDir}/src/resources/api.json"))
+    outputs.dir(file("${projectDir}/src/generated"))
+
+    doLast {
+        //noinspection UnnecessaryQualifiedReference
+        def config = new io.swagger.codegen.config.CodegenConfigurator()
+        config.setInputSpec("file:///${projectDir}/src/resources/api.json")
+        config.setOutputDir("${projectDir}/src/generated")
+        config.setLang('typescript-angular')
+        config.setVerbose(false)
+        config.setAdditionalProperties([
+                'basePath': 'http://localhost:8080'
+        ])
+        // config.setImportMappings([
+        //        'Dog': 'io.swagger.petstore.client.model.Dog'
+        // ])
+        //noinspection UnnecessaryQualifiedReference
+        new io.swagger.codegen.DefaultGenerator().opts(config.toClientOptInput()).generate()
+    }
+}
+
+task clean {
+    doLast {
+        delete "${projectDir}/src/generated"
+        delete "${projectDir}/dist/"
+    }
+}
+
 task build(type: NpmTask) {
     args = ['run', 'build']   // compiles into dist
 }
 
 build.dependsOn(npm_install)
+build.dependsOn(generateApi)
 
-task clean {
-    doLast {
-        delete "${project.projectDir}/dist/"
-    }
-}
+

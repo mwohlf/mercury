@@ -11,6 +11,8 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
+
 ext {
     springBootVersion = '1.5.7.RELEASE'
     swaggerVersion = '2.3.0-SNAPSHOT'
@@ -33,6 +35,16 @@ dependencies {
 
 //     "copy": "cp -r dist/* ../backend/src/main/resources/public",
 
+jar {
+    from('frontend/dist') {
+        //Public is a default supported Spring Boot resources directory.
+        into 'public'
+    }
+    //mainClassName: net.wohlfart.mercury.App
+}
+
+//frontend:build will be run before the processResources
+processResources.dependsOn('frontend:build')
 
 
 // download the api docs from swagger backend to generate frontend code
@@ -42,7 +54,7 @@ task downloadApiDocs {
     description 'Download the API definition from the swagger endpoint'
 
     doLast {
-        def swaggerGenInput = new File('./frontend/src/resources/api.json')
+        def swaggerGenInput = new File("${projectDir}/frontend/src/resources/api.json")
         swaggerGenInput.parentFile.mkdirs()  // mkae sure the directory exists
         if (!swaggerGenInput.exists()) {
             outputs.println("delete existing api doc")
@@ -55,26 +67,3 @@ task downloadApiDocs {
     }
 }
 
-task generateApi {
-    group 'API Generation'
-    description 'Create angular API from the swagger definition'
-
-    doLast {
-        inputs.files(file('./frontend/src/resources/api.json'))
-        outputs.dir(file('./frontend/src/generated'))
-        //noinspection UnnecessaryQualifiedReference
-        def config = new io.swagger.codegen.config.CodegenConfigurator()
-        config.setInputSpec("file:///$projectDir/frontend/src/resources/api.json")
-        config.setOutputDir("$projectDir/frontend/src/generated")
-        config.setLang('typescript-angular')
-        config.setVerbose(true)
-        config.setAdditionalProperties([
-                'basePath': 'http://localhost:8080'
-        ])
-        // config.setImportMappings([
-        //        'Dog': 'io.swagger.petstore.client.model.Dog'
-        // ])
-        //noinspection UnnecessaryQualifiedReference
-        new io.swagger.codegen.DefaultGenerator().opts(config.toClientOptInput()).generate()
-    }
-}
