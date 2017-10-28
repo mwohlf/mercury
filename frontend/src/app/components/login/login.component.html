@@ -9,7 +9,7 @@
             <form [formGroup]="loginForm">
 
                 <mat-input-container [ngClass]="{'error': loginForm.controls['username'].errors && !loginForm.controls['username'].pristine}"
-                                    dividerColor="{{loginForm.controls['username'].errors && !loginForm.controls['username'].pristine ? 'warn' : 'primary'}}">
+                                     dividerColor="{{loginForm.controls['username'].errors && !loginForm.controls['username'].pristine ? 'warn' : 'primary'}}">
                     <input type="text" matInput formControlName="username" placeholder="Username" required>
                     <div *ngIf="loginForm.controls['username'].errors && !loginForm.controls['username'].pristine" class="error-msg">
                         <div [hidden]="!loginForm.controls['username'].errors.required">Email is required.</div>
@@ -17,7 +17,7 @@
                 </mat-input-container>
 
                 <mat-input-container [ngClass]="{'error': loginForm.controls['password'].errors && !loginForm.controls['password'].pristine}"
-                                    dividerColor="{{loginForm.controls['password'].errors && !loginForm.controls['password'].pristine ? 'warn' : 'primary'}}">
+                                     dividerColor="{{loginForm.controls['password'].errors && !loginForm.controls['password'].pristine ? 'warn' : 'primary'}}">
                     <input type="password" matInput formControlName="password" placeholder="Password" required>
                     <div *ngIf="loginForm.controls['password'].errors && !loginForm.controls['password'].pristine" class="error-msg">
                         <div [hidden]="!loginForm.controls['password'].errors.required">Password is required.</div>
@@ -28,9 +28,15 @@
 
         </mat-card-content>
 
-        <mat-card-actions align="end">
-            <button mat-raised-button class="btn" [disabled]="loginForm.invalid" (click)="login()">Login</button>
+        <mat-card-actions class="bottom-bar">
+                <div>
+                    <a href="/login/google"><span class="fa fa-google fa-2x" aria-hidden="true"> </span></a>
+                    <a href="/login/facebook"><span class="fa fa-facebook fa-2x" aria-hidden="true"> </span></a>
+                    <a href="/login/github"><span class="fa fa-github fa-2x" aria-hidden="true"> </span></a>
+                </div>
+                <button mat-raised-button class="btn" [disabled]="loginForm.invalid" (click)="login()">Login</button>
         </mat-card-actions>
 
     </mat-card>
+
 </div>
