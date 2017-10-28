@@ -23,7 +23,7 @@ node {
     version = "${rootProject.nodeVersion}"
     npmVersion = "${rootProject.npmVersion}"
     download = true
-    workDir = file("${project.buildDir}/node")
+    workDir = file("${projectDir}/.gradle/node")
     nodeModulesDir = file("${project.projectDir}")
 }
 

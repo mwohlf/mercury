@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
+apply plugin: 'base'
 
 ext {
     springBootVersion = '1.5.7.RELEASE'
@@ -27,25 +27,28 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    // needs include in settings.gradle
-  //  build project(':frontend')
-//    compile project(':backend')
-}
 
-//     "copy": "cp -r dist/* ../backend/src/main/resources/public",
 
-jar {
-    from('frontend/dist') {
-        //Public is a default supported Spring Boot resources directory.
-        into 'public'
+task mergeFrontendIntoBackend {
+    dependsOn("frontend:build")
+    doLast {
+        copy {
+            from file("${projectDir}/frontend/dist")
+            into file("${projectDir}/backend/src/main/resources/public")
+        }
     }
-    //mainClassName: net.wohlfart.mercury.App
 }
 
-//frontend:build will be run before the processResources
-processResources.dependsOn('frontend:build')
+assemble.dependsOn(mergeFrontendIntoBackend)
 
+task deletePublicDir {
+    doLast {
+        // public contains the frontend build copied over by the parent project
+        delete "${projectDir}/backend/src/main/resources/public"
+    }
+}
+
+clean.dependsOn(deletePublicDir)
 
 // download the api docs from swagger backend to generate frontend code
 // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle
@@ -66,4 +69,6 @@ task downloadApiDocs {
         }
     }
 }
+
+
 

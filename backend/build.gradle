@@ -53,3 +53,12 @@ jar {
   baseName='mercury'
   version='0.0.1'
 }
+
+task deleteOutDir {
+  doLast {
+    // out is created when the server was started in IDEA
+    delete "${projectDir}/out"
+  }
+}
+
+clean.dependsOn(deleteOutDir)
