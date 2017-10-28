@@ -44,5 +44,27 @@ auth:
 security:
   basic:
     enabled: false
+  oauth2:
+    client:
+      preEstablishedRedirectUri: test
 
 
+facebook: # see: https://developers.facebook.com/apps
+  client:
+    clientId: 1368363149952141
+    clientSecret: 688aef685b7ac53a44f11cf73879f124
+    accessTokenUri: https://graph.facebook.com/oauth/access_token
+    userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    preEstablishedRedirectUri: login
+    pre-established-redirect-uri: custom
+    use-current-uri: false
+    useCurrentUri: false
+  resource:
+    userInfoUri: https://graph.facebook.com/me
+    preEstablishedRedirectUri: login
+    pre-established-redirect-uri: custom
+    use-current-uri: false
+    useCurrentUri: false

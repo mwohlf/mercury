@@ -14,12 +14,14 @@ buildscript {
 apply plugin: 'base'
 
 ext {
-    springBootVersion = '1.5.7.RELEASE'
+    springBootVersion = '1.5.8.RELEASE'
     swaggerVersion = '2.3.0-SNAPSHOT'
     h2Version = '1.4.193'
     springfoxVersion = '2.7.0'
     nodeVersion = '8.8.0'
     npmVersion = '5.5.1'
+    springSecurityOAuth2Version = '2.2.0.RELEASE'
+    jsonWebTokenVersion = '0.9.0'
 }
 
 

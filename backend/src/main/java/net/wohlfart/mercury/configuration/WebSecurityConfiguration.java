@@ -1,7 +1,10 @@
 package net.wohlfart.mercury.configuration;
 
-import net.wohlfart.mercury.security.SecurityTokenFilter;
+import net.wohlfart.mercury.security.AuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,12 +15,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
+import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import static net.wohlfart.mercury.SecurityConstants.*;
 
 
 @Configuration
+@EnableOAuth2Client // creates oauth2ClientContextFilter see: http://projects.spring.io/spring-security-oauth/docs/oauth2.html
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @ComponentScan({"net.wohlfart"})
@@ -30,7 +38,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private SecurityTokenFilter authenticationTokenFilter;
+    private AuthenticationTokenFilter authenticationTokenFilter;
+
+    @Autowired @Qualifier("facebook")
+    private OAuth2ClientAuthenticationProcessingFilter googleAuthenticationFilter;
 
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -62,7 +73,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers(API).authenticated() // Protected API End-points
             .and()
-                .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class) // authentication filter
+                .addFilterBefore(googleAuthenticationFilter, BasicAuthenticationFilter.class)
+                .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
             ;
     }
 
