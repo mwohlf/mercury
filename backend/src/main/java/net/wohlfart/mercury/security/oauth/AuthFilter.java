@@ -1,9 +1,11 @@
 package net.wohlfart.mercury.security.oauth;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
@@ -30,11 +32,19 @@ class AuthFilter extends OAuth2ClientAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String authCode = request.getParameter(CODE_KEY);
-        if (!StringUtils.isEmpty(authCode)) {
-            log.debug("<attemptAuthentication> found code: " + authCode);
-            defaultOAuth2ClientContext.getAccessTokenRequest().setAuthorizationCode(authCode);
+        if (StringUtils.isEmpty(authCode)) {
+            // no code yet, try and do the redirect exception and do another provider roundtrip
+            return super.attemptAuthentication(request, response);
         }
-        return super.attemptAuthentication(request, response);
+
+        log.debug("<attemptAuthentication> found code: " + authCode);
+        defaultOAuth2ClientContext.getAccessTokenRequest().setAuthorizationCode(authCode);
+        OAuth2Authentication authentication = (OAuth2Authentication) super.attemptAuthentication(request, response);
+        UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) authentication.getUserAuthentication();
+        log.info("<attemptAuthentication> authentication: {}", authentication);
+        log.info("<attemptAuthentication> principal: {}", principal);
+
+        return authentication;
     }
 
 }
