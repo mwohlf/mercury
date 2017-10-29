@@ -2,7 +2,6 @@ package net.wohlfart.mercury.configuration;
 
 import net.wohlfart.mercury.security.AuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,10 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.filter.CompositeFilter;
 
 import static net.wohlfart.mercury.SecurityConstants.*;
 
@@ -37,11 +36,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationTokenFilter authenticationTokenFilter;
 
-    //@Autowired @Qualifier("facebook")
-    //private OAuth2ClientAuthenticationProcessingFilter facebookAuthenticationFilter;
-
-    @Autowired @Qualifier("github")
-    private OAuth2ClientAuthenticationProcessingFilter githubAuthenticationFilter;
+    @Autowired
+    private CompositeFilter clientAuthenticationFilterImpl;
 
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -74,7 +70,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers(API).authenticated() // Protected API End-points
             .and()
               //  .addFilterBefore(facebookAuthenticationFilter, BasicAuthenticationFilter.class)
-                .addFilterBefore(githubAuthenticationFilter, BasicAuthenticationFilter.class)
+                .addFilterBefore(clientAuthenticationFilterImpl, BasicAuthenticationFilter.class)
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
             ;
     }

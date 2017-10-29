@@ -48,29 +48,50 @@ security:
 facebook: # see: https://developers.facebook.com/apps
   client:
     clientId: 1368363149952141
-    clientSecret: 688aef685b7ac53a44f11cf73879f124
+    # scope: user
     userAuthorizationUri: https://www.facebook.com/dialog/oauth
-    accessTokenUri: https://graph.facebook.com/oauth/access_token/
+    preEstablishedRedirectUri: http://localhost:8080/login/facebook  # 1st leg, callback
+    # grantType: authorization_code
+    accessTokenUri: https://graph.facebook.com/oauth/access_token
     tokenName: oauth_token
     authenticationScheme: query
     clientAuthenticationScheme: form
-    preEstablishedRedirectUri: http://localhost:8080/login/facebook
+    clientSecret: ENC(ttFedbLB+8Rx5vk8i/3cIz1sZEddYMNNe7L6epoQiS+l73xD2/+8tRHAzXOueipW)
   resource:
     userInfoUri: https://graph.facebook.com/me
+    preferTokenInfo: false
 
 github: # see: https://developers.facebook.com/apps
   client:
     clientId: 1480763144c36b2301b6
-    clientSecret: 3cff933b9748f783a9a4402b51b60ca8e482b3ff
-    userAuthorizationUri: https://github.com/login/oauth/authorize
     scope: user
-    accessTokenUri: https://github.com/login/oauth/access_token/
+    userAuthorizationUri: https://github.com/login/oauth/authorize
+    preEstablishedRedirectUri: http://localhost:8080/login/github  # 1st leg, callback
+    grantType: authorization_code
+    accessTokenUri: https://github.com/login/oauth/access_token
     tokenName: oauth_token
     authenticationScheme: query
     clientAuthenticationScheme: form
-    preEstablishedRedirectUri: http://localhost:8080/login/github
+    clientSecret: ENC(rAXAh2ILLtKLOf9nIDKo2+IWF6kaG/wlZnKXISEZiLwD/B3pCb4v5nuyJj5wWwQx1ddN128gl80=)
   resource:
     userInfoUri: https://graph.facebook.com/me
+    preferTokenInfo: false
+
+google: # see: https://developers.google.com/identity/protocols/OAuth2WebServer
+  client:
+    clientId: 621410141562-7cd91fomoa6ru43kni29i2nhsjt8upkl.apps.googleusercontent.com
+    scope: profile
+    userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+    preEstablishedRedirectUri: http://localhost:8080/login/google     # 1st leg, callback
+    grantType: authorization_code
+    accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    clientSecret: ENC(sLS/iU+0kvRRk+bhDtGUDKiSyPVm/Xnylij6JzJ6/DL5rztZvOf50Q==)
+  resource:
+    userInfoUri: https://www.googleapis.com/userinfo/v2/me
+    preferTokenInfo: false
 
 logging:
     level:
