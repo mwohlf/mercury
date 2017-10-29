@@ -121,5 +121,5 @@ google: # see: https://developers.google.com/identity/protocols/OAuth2WebServer
     preferTokenInfo: false
 
 logging:
-    level:
-        org.springframework: DEBUG
+  level:
+    org.springframework: INFO
