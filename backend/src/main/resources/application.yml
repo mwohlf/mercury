@@ -44,27 +44,34 @@ auth:
 security:
   basic:
     enabled: false
-  oauth2:
-    client:
-      preEstablishedRedirectUri: test
-
 
 facebook: # see: https://developers.facebook.com/apps
   client:
     clientId: 1368363149952141
     clientSecret: 688aef685b7ac53a44f11cf73879f124
-    accessTokenUri: https://graph.facebook.com/oauth/access_token
     userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    accessTokenUri: https://graph.facebook.com/oauth/access_token/
     tokenName: oauth_token
     authenticationScheme: query
     clientAuthenticationScheme: form
-    preEstablishedRedirectUri: login
-    pre-established-redirect-uri: custom
-    use-current-uri: false
-    useCurrentUri: false
+    preEstablishedRedirectUri: http://localhost:8080/login/facebook
   resource:
     userInfoUri: https://graph.facebook.com/me
-    preEstablishedRedirectUri: login
-    pre-established-redirect-uri: custom
-    use-current-uri: false
-    useCurrentUri: false
+
+github: # see: https://developers.facebook.com/apps
+  client:
+    clientId: 1480763144c36b2301b6
+    clientSecret: 3cff933b9748f783a9a4402b51b60ca8e482b3ff
+    userAuthorizationUri: https://github.com/login/oauth/authorize
+    scope: user
+    accessTokenUri: https://github.com/login/oauth/access_token/
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    preEstablishedRedirectUri: http://localhost:8080/login/github
+  resource:
+    userInfoUri: https://graph.facebook.com/me
+
+logging:
+    level:
+        org.springframework: DEBUG

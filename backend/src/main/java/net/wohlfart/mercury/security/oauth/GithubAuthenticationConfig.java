@@ -14,12 +14,12 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 
 @Slf4j
 @Configuration
-public class FacebookAuthenticationConfig {
+public class GithubAuthenticationConfig {
 
-    public static final String URL = "/login/facebook";
+    public static final String URL = "/login/github";
 
-    //@Bean
-    //@Qualifier("facebook")
+    @Bean
+    @Qualifier("github")
     public OAuth2ClientAuthenticationProcessingFilter authenticationFilter() {
         OAuth2ClientAuthenticationProcessingFilter result = new OAuthAuthenticationFilter(URL);
         OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(client());
@@ -31,13 +31,13 @@ public class FacebookAuthenticationConfig {
     }
 
     @Bean
-    @ConfigurationProperties("facebook.client")
+    @ConfigurationProperties("github.client")
     public AuthorizationCodeResourceDetails client() {
         return new AuthorizationCodeResourceDetails();
     }
 
     @Bean
-    @ConfigurationProperties("facebook.resource")
+    @ConfigurationProperties("github.resource")
     public ResourceServerProperties resource() {
         return new ResourceServerProperties();
     }
