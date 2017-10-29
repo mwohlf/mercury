@@ -48,10 +48,22 @@ security:
 facebook: # see: https://developers.facebook.com/apps
   client:
     clientId: 1368363149952141
-    # scope: user
+    # Redirecting to 'https://www.facebook.com/dialog/oauth
+    #    ?client_id=1368363149952141
+    #    &redirect_uri=http://localhost:8080/login/facebook
+    #    &response_type=code
+    #    &state=POvBmD'
     userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    # callback:  /login/facebook
+    #   ?code=juggwYjSrfaxXxijz1rUK9NyjzSK_17yQ9uVJDWcgx
+    #   &state=POvBmD
     preEstablishedRedirectUri: http://localhost:8080/login/facebook  # 1st leg, callback
-    # grantType: authorization_code
+    # Encoding and sending form: {
+    #    grant_type=[authorization_code],
+    #    code=[-gsdgsdgsdg-mnFWIYnAs875OrMt1nIjma8lRRC-syUreEgCxhV-EAHRSH3-KIQmTBW1W0E60MRI-ijuggwYjSrfaxXxijz1rUK9NyjzSK_17yQ9uVJDWcgx],
+    #    redirect_uri=[http://localhost:8080/login/facebook],
+    #    client_id=[1368363149952141],
+    #    client_secret=[dfgsergsergseg]}
     accessTokenUri: https://graph.facebook.com/oauth/access_token
     tokenName: oauth_token
     authenticationScheme: query
@@ -64,7 +76,7 @@ facebook: # see: https://developers.facebook.com/apps
 github: # see: https://developers.facebook.com/apps
   client:
     clientId: 1480763144c36b2301b6
-    scope: user
+    scope: read:user
     userAuthorizationUri: https://github.com/login/oauth/authorize
     preEstablishedRedirectUri: http://localhost:8080/login/github  # 1st leg, callback
     grantType: authorization_code
@@ -74,16 +86,31 @@ github: # see: https://developers.facebook.com/apps
     clientAuthenticationScheme: form
     clientSecret: ENC(rAXAh2ILLtKLOf9nIDKo2+IWF6kaG/wlZnKXISEZiLwD/B3pCb4v5nuyJj5wWwQx1ddN128gl80=)
   resource:
-    userInfoUri: https://graph.facebook.com/me
+    userInfoUri: https://api.github.com/user
     preferTokenInfo: false
 
 google: # see: https://developers.google.com/identity/protocols/OAuth2WebServer
   client:
     clientId: 621410141562-7cd91fomoa6ru43kni29i2nhsjt8upkl.apps.googleusercontent.com
     scope: profile
+    # Redirecting to 'https://accounts.google.com/o/oauth2/v2/auth
+    #    ?client_id=...
+    #    &redirect_uri=http://localhost:8080/login/google
+    #    &response_type=code
+    #    &scope=profile
+    #    &state=xyz'
     userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
-    preEstablishedRedirectUri: http://localhost:8080/login/google     # 1st leg, callback
+    # 1st leg, callback with code to /login/google
+    #   ?state=xyz
+    #   &code=4/sgergseerg-Pcqc3We4leMv5aYOOWVoKHYD4
+    preEstablishedRedirectUri: http://localhost:8080/login/google
     grantType: authorization_code
+    # 2nd leg Encoding and sending form: {
+    #   grant_type=[authorization_code],
+    #   code=[4/sgergseerg-Pcqc3We4leMv5aYOOWVoKHYD4],
+    #   redirect_uri=[http://localhost:8080/login/google],
+    #   client_id=[621410141562-7cd91fomoa6ru43kni29i2nhsjt8upkl.apps.googleusercontent.com],
+    #   client_secret=[sfaw-youwish-n]}
     accessTokenUri: https://www.googleapis.com/oauth2/v4/token
     tokenName: oauth_token
     authenticationScheme: query
