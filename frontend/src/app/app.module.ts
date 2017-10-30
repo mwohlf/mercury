@@ -91,7 +91,7 @@ import {AuthenticationInterceptor} from "./shared/authentication-interceptor";
         MatTooltipModule,
         MatCardModule,
 
-        ApiModule.forConfig(apiConfig),
+        ApiModule.forRoot(apiConfig),
 
     ],
     providers: [
