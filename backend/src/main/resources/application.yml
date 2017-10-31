@@ -48,6 +48,10 @@ security:
 facebook: # see: https://developers.facebook.com/apps
   client:
     clientId: 1368363149952141
+    scope:
+      - email
+      - public_profile
+    grantType: code
     # Redirecting to 'https://www.facebook.com/dialog/oauth
     #    ?client_id=1368363149952141
     #    &redirect_uri=http://localhost:8080/login/facebook
@@ -57,7 +61,7 @@ facebook: # see: https://developers.facebook.com/apps
     # callback:  /login/facebook
     #   ?code=juggwYjSrfaxXxijz1rUK9NyjzSK_17yQ9uVJDWcgx
     #   &state=POvBmD
-    preEstablishedRedirectUri: http://localhost:8080/login/facebook  # 1st leg, callback
+    preEstablishedRedirectUri: http://localhost:8080/oauth/facebook  # 1st leg, callback
     # Encoding and sending form: {
     #    grant_type=[authorization_code],
     #    code=[-gsdgsdgsdg-mnFWIYnAs875OrMt1nIjma8lRRC-syUreEgCxhV-EAHRSH3-KIQmTBW1W0E60MRI-ijuggwYjSrfaxXxijz1rUK9NyjzSK_17yQ9uVJDWcgx],
@@ -76,9 +80,10 @@ facebook: # see: https://developers.facebook.com/apps
 github: # see: https://developers.facebook.com/apps
   client:
     clientId: 1480763144c36b2301b6
-    scope: read:user
+    scope:
+      - read:user
     userAuthorizationUri: https://github.com/login/oauth/authorize
-    preEstablishedRedirectUri: http://localhost:8080/login/github  # 1st leg, callback
+    preEstablishedRedirectUri: http://localhost:8080/oauth/github  # 1st leg, callback
     grantType: authorization_code
     accessTokenUri: https://github.com/login/oauth/access_token
     tokenName: oauth_token
@@ -92,7 +97,10 @@ github: # see: https://developers.facebook.com/apps
 google: # see: https://developers.google.com/identity/protocols/OAuth2WebServer
   client:
     clientId: 621410141562-7cd91fomoa6ru43kni29i2nhsjt8upkl.apps.googleusercontent.com
-    scope: profile
+    scope:
+      - profile
+      - email
+      - openid
     # Redirecting to 'https://accounts.google.com/o/oauth2/v2/auth
     #    ?client_id=...
     #    &redirect_uri=http://localhost:8080/login/google
@@ -103,8 +111,8 @@ google: # see: https://developers.google.com/identity/protocols/OAuth2WebServer
     # 1st leg, callback with code to /login/google
     #   ?state=xyz
     #   &code=4/sgergseerg-Pcqc3We4leMv5aYOOWVoKHYD4
-    preEstablishedRedirectUri: http://localhost:8080/login/google
-    grantType: authorization_code
+    preEstablishedRedirectUri: http://localhost:8080/oauth/google
+    grantType: code  # authorization_code
     # 2nd leg Encoding and sending form: {
     #   grant_type=[authorization_code],
     #   code=[4/sgergseerg-Pcqc3We4leMv5aYOOWVoKHYD4],

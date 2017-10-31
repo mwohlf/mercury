@@ -13,6 +13,7 @@ public class SecurityConstants {
     public static final String TOKEN_HEADER = "Authorization";
 
     // auth endpoints
+    public static final String OAUTH_ENDPOINT = "/oauth"; // not part of the api
     public static final String AUTHENTICATE_ENDPOINT = API + "/authenticate";
     public static final String SIGNUP_ENDPOINT = API + "/signup";
     public static final String REFRESH_ENDPOINT = API + "/refresh";

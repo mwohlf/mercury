@@ -52,6 +52,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     private void setupAuthenticationBeforeRequest(HttpServletRequest servletRequest) {
         String resolvedToken = this.resolveToken(servletRequest);
+
         if (!StringUtils.hasText(resolvedToken)) {
             log.info("<setupAuthenticationBeforeRequest> no token found");
             return;

@@ -69,8 +69,8 @@ public class UserService {
      * @param user to add or update
      * @return Added or updated user
      */
-    public User save(User user) {
-        if(!userRepository.exists(user.getId())) {
+    public User save(User user) {  // TODO split into save and update
+        if (!userRepository.exists(user.getId())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         return userRepository.save(user);

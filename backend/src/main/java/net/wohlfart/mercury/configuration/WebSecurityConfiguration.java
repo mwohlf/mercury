@@ -37,9 +37,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private AuthenticationTokenFilter authenticationTokenFilter;
 
     @Autowired
-    private CompositeFilter clientAuthenticationFilterImpl;
-
-    @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
                 //.authenticationProvider()
@@ -70,7 +67,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers(API).authenticated() // Protected API End-points
             .and()
               //  .addFilterBefore(facebookAuthenticationFilter, BasicAuthenticationFilter.class)
-                .addFilterBefore(clientAuthenticationFilterImpl, BasicAuthenticationFilter.class)
+              //  .addFilterBefore(clientAuthenticationFilterImpl, BasicAuthenticationFilter.class)
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
             ;
     }

@@ -1,5 +1,6 @@
 package net.wohlfart.mercury.security.oauth;
 
+import lombok.Data;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -11,14 +12,15 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
  *   - client: properties to implement the 3 legged OAuth dance
  *   - resource: uri to retrieve user data
  */
+@Data
 @ConfigurationProperties
 public class OAuthProviderConfig {
 
     @NestedConfigurationProperty
-    AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
+    public AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
 
     @NestedConfigurationProperty
-    ResourceServerProperties resource = new ResourceServerProperties();
+    public ResourceServerProperties resource = new ResourceServerProperties();
 
 
     @SuppressWarnings("WeakerAccess") // public for config
