@@ -14,8 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.filter.CompositeFilter;
 
 import static net.wohlfart.mercury.SecurityConstants.*;
 
@@ -49,26 +47,26 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // @formatter:off
         httpSecurity     // implements HttpsSecurityBuilder
-               // .cors().disable() // CORS off
                 .csrf().disable() // We don't need CSRF for JWT based authentication
-                .exceptionHandling()
-                //.authenticationEntryPoint(this.authenticationEntryPoint)
-            .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()  // returns the SecurityBuilder
                 .authorizeRequests()
                     .antMatchers(SIGNUP_ENDPOINT).permitAll() // sign in end-point allowed by anyone
                     .antMatchers(AUTHENTICATE_ENDPOINT).permitAll() // login end-point allowed by anyone
                     .antMatchers(REFRESH_ENDPOINT).permitAll() // token refresh end-point allowed by anyone
                     .antMatchers(H2_CONSOLE_URL).permitAll() // H2 Console Dash-board allowed by anyone
-            .and()
+                    .antMatchers(ROOT, HOME, ASSETS).permitAll()
+            .and()  // returns the SecurityBuilder
                 .authorizeRequests()
                     .antMatchers(API).authenticated() // Protected API End-points
+            .and()
+                .authorizeRequests()
+                    .antMatchers(CATCH_ALL).denyAll()
             .and()
               //  .addFilterBefore(facebookAuthenticationFilter, BasicAuthenticationFilter.class)
               //  .addFilterBefore(clientAuthenticationFilterImpl, BasicAuthenticationFilter.class)
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+
             ;
     }
 

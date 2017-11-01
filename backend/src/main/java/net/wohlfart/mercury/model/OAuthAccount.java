@@ -33,7 +33,7 @@ public class OAuthAccount implements Serializable {
     private Long id;
 
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name="USER_ID", nullable=false)
     private User owner;
 

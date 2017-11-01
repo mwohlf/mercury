@@ -4,7 +4,9 @@ public class SecurityConstants {
 
     public static final String ROOT = "/";
     public static final String CATCH_ALL = "/**";
-    public static final String API = "/api";
+    public static final String API = "/api/**";
+    public static final String ASSETS = "/assets/**";
+    public static final String HOME = "/index.htnl";
 
     // jwt token constants
     public static final String SECRET = "SecretKeyToGenJWTs";
@@ -29,4 +31,5 @@ public class SecurityConstants {
 
     public static final String FIELDNAME_USERNAME = "username";
     public static final String FIELDNAME_PASSWORD = "password";
+
 }
