@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OAuthAccountRepository extends JpaRepository<OAuthAccount, Long> {
 
+    OAuthAccount findByProviderNameAndProviderUid(String provider, String uid);
+
 
 }

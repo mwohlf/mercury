@@ -1,6 +1,7 @@
 package net.wohlfart.mercury.repository;
 
 import net.wohlfart.mercury.App;
+import net.wohlfart.mercury.model.OAuthAccount;
 import net.wohlfart.mercury.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -77,6 +79,21 @@ public class UserRepositoryTest {
     @Test(timeout=5000)
     public void saveTest() {
         User user = User.builder().email("test@test.de").name("test100").build();
+        userRepository.save(user);
+        User fetchedUser = userRepository.findByName(user.getName());
+        assertNotNull("User shouldn't be NULL", fetchedUser);
+        assertEquals("User should have appropriate role", user.getRoles(), fetchedUser.getRoles());
+        assertEquals("User should have appropriate name", user.getName(), fetchedUser.getName());
+    }
+
+    @Test(timeout=5000)
+    public void saveWithAccountTest() {
+        User user = User.builder().email("testacc@test.de").name("test100acc").build();
+        OAuthAccount account = OAuthAccount.builder().providerName("facebook").providerUid("fid").build();
+
+        user.setOauthAccounts(new HashSet<>());
+        user.addOAuthAccount(account);
+
         userRepository.save(user);
         User fetchedUser = userRepository.findByName(user.getName());
         assertNotNull("User shouldn't be NULL", fetchedUser);

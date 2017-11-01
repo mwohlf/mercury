@@ -86,7 +86,7 @@ public class OAuthController {
             String accessToken = (String) tokenResponse.getBody().get("access_token");
             ResponseEntity<HashMap> userResponse = new UserDataRetriever(config, accessToken).request();
             log.info("<authenticate> userResponse: {}", userResponse.getBody());
-            User user = accountFactory.create(provider, tokenResponse.getBody(), userResponse.getBody());
+            User user = accountFactory.findOrCreate(provider, tokenResponse.getBody(), userResponse.getBody());
             UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
             return ResponseEntity.ok(jwtTokenUtil.generateToken(userDetails));
         }

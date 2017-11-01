@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +16,7 @@ import java.util.Set;
 @Audited
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id", "providerName", "providerUid"})
 @Entity(name = "oauthAccount")
 @Table(name = "OAUTH_ACCOUNT", schema = "MC")
 public class OAuthAccount implements Serializable {
@@ -31,8 +32,10 @@ public class OAuthAccount implements Serializable {
     @GeneratedValue(generator = "sequenceGenerator")
     private Long id;
 
+
+    @NotNull
     @Column(name = "USER_ID")
-    private User owner;
+    private User user;
 
     @Column(name = "PROVIDER_NAME")
     private String providerName;
@@ -47,4 +50,5 @@ public class OAuthAccount implements Serializable {
         this.token.add(token);
         token.setOauthAccount(this);
     }
+
 }

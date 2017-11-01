@@ -36,7 +36,7 @@ public class UserService {
      * @throws UserNotFoundException if user with given id does not exists
      */
     public User findById(Long id) {
-        if(userRepository.exists(id)) {
+        if (userRepository.exists(id)) {
             return userRepository.findOne(id);
         } else {
             throw new UserNotFoundException(null);

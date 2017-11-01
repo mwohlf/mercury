@@ -38,19 +38,19 @@ public class OAuthAccountRepositoryTest {
     private OAuthAccountRepository oauthAccountRepository;
 
     @Test(timeout=5000)
-    public void saveOauthTest() {
+    public void crateOauthTest() {
         User user = User.builder().email("oauthtest1@test.de").name("oauthtest1").build();
-        OAuthAccount oauthAccount = OAuthAccount.builder().owner(user).providerName("google").providerUid("one").build();
+        OAuthAccount oauthAccount = OAuthAccount.builder().user(user).providerName("google").providerUid("one").build();
         oauthAccountRepository.save(oauthAccount);
     }
 
     @Test(timeout=5000)
-    public void saveOauthTokenTest() {
+    public void crateOauthTokenTest() {
         User user = User.builder().email("oauthtest2@test.de").name("oauthtest2").build();
         OAuthToken token1 = OAuthToken.builder().key("key1").value("value1").build();
         OAuthToken token2 = OAuthToken.builder().key("key2").value("value2").build();
         OAuthAccount oauthAccount = OAuthAccount.builder().providerName("google").providerUid("one").token(new HashSet<>()).build();
-        oauthAccount.setOwner(user);
+        oauthAccount.setUser(user);
         oauthAccount.addToken(token1);
         oauthAccount.addToken(token2);
         oauthAccountRepository.save(oauthAccount);

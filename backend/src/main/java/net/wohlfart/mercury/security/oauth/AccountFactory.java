@@ -1,16 +1,16 @@
 package net.wohlfart.mercury.security.oauth;
 
 
+import net.wohlfart.mercury.model.OAuthAccount;
 import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.service.OAuthAccountService;
 import net.wohlfart.mercury.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 
 /**
@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 @Component
 public class AccountFactory {
 
-    private static final String[] USER_ID_KEYS = {
+    private static final String[] USER_UID_KEYS = {
             "id", // github, facebook, google
     };
     private static final String[] USER_FULL_NAME_KEYS = {
@@ -38,18 +38,35 @@ public class AccountFactory {
     @Autowired
     UserService userService;
 
-    public User create(String provider, HashMap tokenValues, HashMap userValues) {
+    @Autowired
+    OAuthAccountService oauthAccountService;
+
+    public User findOrCreate(String provider, HashMap tokenValues, HashMap userValues) {
+        String uid = this.findFirst(USER_UID_KEYS, userValues).get();
+        OAuthAccount oauthAccount = oauthAccountService.findByProviderUid(provider, uid);
+        if (oauthAccount != null) {
+            return oauthAccount.getUser();
+        }
+
+        oauthAccount = OAuthAccount.builder().providerName(provider).providerUid(uid).build();
         String name = provider + ":" + this.findFirst(LOGIN_OR_ID_KEY, userValues).get();
         String email = this.findFirst(USER_EMAIL_KEYS, userValues).orElse(this.findFirst(LOGIN_OR_ID_KEY, userValues).get() + "@" + provider);
         User user = User.builder().name(name).email(email).build();
+        user = userService.save(user);
+
+        // todo: add account
+        // user.setOauthAccounts(new HashSet<>());
+        // user.addOAuthAccount(oauthAccount);
+        // oauthAccountService.create(oauthAccount);
+
         // TODO: add token
-        return userService.save(user);
+        return user;
     }
 
     private Optional<String> findFirst(String[] keys, HashMap values) {
         for (String key : keys) {
             if (values.containsKey(key) && values.get(key) != null) {
-                return Optional.of((String) values.get(key));
+                return Optional.of(values.get(key).toString());
             }
         }
         return Optional.empty();
