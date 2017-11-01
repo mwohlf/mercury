@@ -1,30 +1,26 @@
 package net.wohlfart.mercury.security.oauth;
 
 import lombok.extern.slf4j.Slf4j;
+import net.wohlfart.mercury.model.OAuthAccount;
+import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.repository.UserRepository;
+import net.wohlfart.mercury.security.JwtTokenUtil;
+import net.wohlfart.mercury.security.UserDetailsImpl;
+import net.wohlfart.mercury.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseExtractor;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
@@ -43,6 +39,15 @@ public class OAuthController {
     private static final String GOOGLE_PROVIDER = "google";
 
     private static final HashMap<String, OAuthProviderConfig> providerConfigs = new HashMap<>();
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     @PostConstruct
     public void setupProviders() {
@@ -64,19 +69,34 @@ public class OAuthController {
         String state = request.getParameter(STATE_KEY);
         if (StringUtils.isEmpty(state)) {
             state = "AAA";
-            return new UserAuthorizationRedirectBuilder(config).state(state).build();
+            return new AuthRedirectBuilder(config).state(state).build();
         }
 
         final String code = request.getParameter(CODE_KEY);
         if (!StringUtils.isEmpty(code)) {
-            HashMap response = new AccessTokenRetriever(config, code).request();
-            log.info("<authenticate> {}", response);
-            // return retrieveAccessToken(config, code);
+            ResponseEntity<HashMap> tokenResponse =  new AccessTokenRetriever(config, code).request();
+            log.info("<authenticate> {}", tokenResponse);
+            log.info("<authenticate> body: {}", tokenResponse.getBody());
+            String accessToken = (String) tokenResponse.getBody().get("access_token");
+            ResponseEntity<HashMap> userResponse = new UserDataRetriever(config, accessToken).request();
+            log.info("<authenticate> userResponse: {}", userResponse.getBody());
+            UserDetailsImpl userDetails = createUserAccount(provider, tokenResponse.getBody(), userResponse.getBody());
+            return ResponseEntity.ok(jwtTokenUtil.generateToken(userDetails));
         }
 
-
         return ResponseEntity.ok("todo");
+    }
 
+    private UserDetailsImpl createUserAccount(String provider, HashMap tokenValues, HashMap userValues) {
+        // create a useraccount and login the user
+        String name = (String) "--" + userValues.get("id");
+        String email = (String) "test@test.de"; // + userValues.get("email");
+        User user = User.builder().name(name).email(email).build();
+
+        user = userRepository.saveAndFlush(user);
+        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
+
+        return userDetails;
     }
 
 

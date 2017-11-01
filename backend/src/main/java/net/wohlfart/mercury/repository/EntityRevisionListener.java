@@ -8,4 +8,5 @@ public class EntityRevisionListener implements RevisionListener {
     public void newRevision(Object o) {
         System.out.println("New revision is created: " + o);
     }
+
 }

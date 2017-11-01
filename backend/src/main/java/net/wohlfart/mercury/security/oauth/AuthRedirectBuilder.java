@@ -12,12 +12,12 @@ import java.net.URISyntaxException;
 
 
 @Slf4j
-public class UserAuthorizationRedirectBuilder {
+public class AuthRedirectBuilder {
 
     private final OAuthProviderConfig config;
     private String state;
 
-    public UserAuthorizationRedirectBuilder(OAuthProviderConfig config) {
+    public AuthRedirectBuilder(OAuthProviderConfig config) {
         this.config = config;
     }
 
@@ -63,7 +63,7 @@ public class UserAuthorizationRedirectBuilder {
         }
     }
 
-    public UserAuthorizationRedirectBuilder state(String state) {
+    public AuthRedirectBuilder state(String state) {
         this.state = state;
         return this;
     }

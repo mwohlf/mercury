@@ -1,0 +1,9 @@
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (1, 'test1@test.de', 'test1', 'test1');
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (2, 'test2@test.de', 'test2', 'test2');
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (3, 'test3@test.de', 'test3', 'test3');
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (4, 'test4@test.de', 'test4', 'test4');
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (5, 'test5@test.de', 'test5', 'test5');
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (6, 'test6@test.de', 'test6', 'test6');
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (7, 'test7@test.de', 'test7', 'test7');
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (8, 'test8@test.de', 'test8', 'test8');
+insert into MC.USER (ID, EMAIL, NAME, PASSWORD) values (9, 'test9@test.de', 'test9', 'test9');

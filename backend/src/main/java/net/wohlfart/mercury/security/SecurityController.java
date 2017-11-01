@@ -94,7 +94,7 @@ public class SecurityController {
         return ResponseEntity.ok(createTokenResponse(userDetails));
     }
 
-    private TokenResponse createTokenResponse(UserDetailsImpl userDetails) {
+    public TokenResponse createTokenResponse(UserDetailsImpl userDetails) {
         final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
         final Authentication authentication = authenticationManager.authenticate(token);
 

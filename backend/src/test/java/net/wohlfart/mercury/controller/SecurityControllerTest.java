@@ -1,34 +1,18 @@
 package net.wohlfart.mercury.controller;
 
-import net.wohlfart.mercury.model.User;
 import net.wohlfart.mercury.security.JwtTokenUtil;
-import net.wohlfart.mercury.security.UserDetailsImpl;
 import net.wohlfart.mercury.security.SecurityController;
 import net.wohlfart.mercury.service.UserService;
-import net.wohlfart.mercury.util.DummyDataGenerator;
-import net.wohlfart.mercury.util.JsonMapper;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.Collections;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class SecurityControllerTest {
 

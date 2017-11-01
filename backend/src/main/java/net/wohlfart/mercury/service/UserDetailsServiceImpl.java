@@ -21,12 +21,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    /**
-     * Finds UserDetails by given username
-     * @param username which is used to search user
-     * @return UserDetails
-     * @throws UsernameNotFoundException if user with given name does not exists
-     */
+
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id);
+        if (user == null) {
+            throw new UsernameNotFoundException("iid: " + id);
+        }
+        final Set<GrantedAuthority> authorities = new HashSet<>();
+        return new UserDetailsImpl(user.getId(), user.getName(), user.getPassword(), authorities);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByName(username);

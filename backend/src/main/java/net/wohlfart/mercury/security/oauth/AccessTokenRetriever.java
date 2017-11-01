@@ -29,7 +29,7 @@ public class AccessTokenRetriever {
      *    client_id=[1368363149952141],
      *    client_secret=[dfgsergsergseg]}
      */
-    public HashMap request() {
+    public ResponseEntity<HashMap> request() {
         AuthorizationCodeResourceDetails client = this.config.getClient();
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("client_id", client.getClientId());
@@ -44,8 +44,7 @@ public class AccessTokenRetriever {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<HashMap> result = restTemplate.postForEntity(client.getAccessTokenUri(), request, HashMap.class);
-        return result.getBody();
+        return restTemplate.postForEntity(client.getAccessTokenUri(), request, HashMap.class);
     }
 
 }

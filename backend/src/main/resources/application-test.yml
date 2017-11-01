@@ -1,0 +1,133 @@
+
+
+# see: http://memorynotfound.com/spring-boot-spring-data-jpa-hibernate-h2-web-console/
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:~/test;AUTO_SERVER=TRUE
+    username: sa
+    password: sa
+  jpa:
+    database: H2
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties.hibernate.dialect: org.hibernate.dialect.H2Dialect
+
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: true
+
+
+# database setup config
+liquibase:
+  change-log: classpath:/db/changelog/db.changelog-master.xml
+
+
+# JWT Auth
+auth:
+  secret: some-random-secret
+  expires: 604800
+  header: Authorization
+
+security:
+  basic:
+    enabled: false
+
+facebook: # see: https://developers.facebook.com/apps
+  client:
+    clientId: 1368363149952141
+    scope:
+      - email
+      - public_profile
+    grantType: code
+    # Redirecting to 'https://www.facebook.com/dialog/oauth
+    #    ?client_id=1368363149952141
+    #    &redirect_uri=http://localhost:8080/login/facebook
+    #    &response_type=code
+    #    &state=POvBmD'
+    userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    # callback:  /login/facebook
+    #   ?code=juggwYjSrfaxXxijz1rUK9NyjzSK_17yQ9uVJDWcgx
+    #   &state=POvBmD
+    preEstablishedRedirectUri: http://localhost:8080/oauth/facebook  # 1st leg, callback
+    # Encoding and sending form: {
+    #    grant_type=[authorization_code],
+    #    code=[-gsdgsdgsdg-mnFWIYnAs875OrMt1nIjma8lRRC-syUreEgCxhV-EAHRSH3-KIQmTBW1W0E60MRI-ijuggwYjSrfaxXxijz1rUK9NyjzSK_17yQ9uVJDWcgx],
+    #    redirect_uri=[http://localhost:8080/login/facebook],
+    #    client_id=[1368363149952141],
+    #    client_secret=[dfgsergsergseg]}
+    accessTokenUri: https://graph.facebook.com/oauth/access_token
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    clientSecret: ENC(ttFedbLB+8Rx5vk8i/3cIz1sZEddYMNNe7L6epoQiS+l73xD2/+8tRHAzXOueipW)
+  resource:
+    userInfoUri: https://graph.facebook.com/me
+    preferTokenInfo: false
+
+github: # see: https://developers.facebook.com/apps
+  client:
+    clientId: 1480763144c36b2301b6
+    scope:
+      - read:user
+    userAuthorizationUri: https://github.com/login/oauth/authorize
+    preEstablishedRedirectUri: http://localhost:8080/oauth/github  # 1st leg, callback
+    grantType: authorization_code
+    accessTokenUri: https://github.com/login/oauth/access_token
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    clientSecret: ENC(rAXAh2ILLtKLOf9nIDKo2+IWF6kaG/wlZnKXISEZiLwD/B3pCb4v5nuyJj5wWwQx1ddN128gl80=)
+  resource:
+    userInfoUri: https://api.github.com/user
+    preferTokenInfo: false
+
+google: # see: https://developers.google.com/identity/protocols/OAuth2WebServer
+  client:
+    clientId: 621410141562-7cd91fomoa6ru43kni29i2nhsjt8upkl.apps.googleusercontent.com
+    scope:
+      - profile
+      - email
+      - openid
+    # Redirecting to 'https://accounts.google.com/o/oauth2/v2/auth
+    #    ?client_id=...
+    #    &redirect_uri=http://localhost:8080/login/google
+    #    &response_type=code
+    #    &scope=profile
+    #    &state=xyz'
+    userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+    # 1st leg, callback with code to /login/google
+    #   ?state=xyz
+    #   &code=4/sgergseerg-Pcqc3We4leMv5aYOOWVoKHYD4
+    preEstablishedRedirectUri: http://localhost:8080/oauth/google
+    grantType: code  # authorization_code
+    # 2nd leg Encoding and sending form: {
+    #   grant_type=[authorization_code],
+    #   code=[4/sgergseerg-Pcqc3We4leMv5aYOOWVoKHYD4],
+    #   redirect_uri=[http://localhost:8080/login/google],
+    #   client_id=[621410141562-7cd91fomoa6ru43kni29i2nhsjt8upkl.apps.googleusercontent.com],
+    #   client_secret=[sfaw-youwish-n]}
+    accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    clientSecret: ENC(sLS/iU+0kvRRk+bhDtGUDKiSyPVm/Xnylij6JzJ6/DL5rztZvOf50Q==)
+  resource:
+    userInfoUri: https://www.googleapis.com/userinfo/v2/me
+    preferTokenInfo: false
+
+logging:
+  level:
+    org.springframework: INFO

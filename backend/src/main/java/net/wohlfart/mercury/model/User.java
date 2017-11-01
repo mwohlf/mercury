@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Email;
 
@@ -23,18 +24,25 @@ import java.util.Set;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GenericGenerator(name = "sequenceGenerator",
+            strategy = "org.hibernate.id.enhanced.TableGenerator",
+            parameters = {
+                @org.hibernate.annotations.Parameter( name = "segment_value", value = "USER"),
+                @org.hibernate.annotations.Parameter( name = "initial_value", value = "10"),
+                @org.hibernate.annotations.Parameter( name = "table_name", value = "SEQUENCES")
+    })
+    @GeneratedValue(generator = "sequenceGenerator")
     private Long id;
 
     @NotNull
     @Column(nullable = false, unique = true)
     private String name;
 
-    @NotNull
+    @Column(name="PASSWORD")
     private String password;
 
     @Email
-    @Column(nullable = false, unique = true)
+    @Column(name="EMAIL", nullable = false, unique = true)
     private String email;
 
     @ManyToMany
@@ -43,5 +51,7 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "USER_ID")
     )
     private Set<Role> roles = new HashSet<>();
+
+
 
 }

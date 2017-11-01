@@ -12,6 +12,5 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("test")
 public abstract class BaseTest {
 
-    protected final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 }

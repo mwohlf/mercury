@@ -12,5 +12,7 @@
   <include file="db/changelog/050-permission.sql"/>
   <include file="db/changelog/060-permissionrole.sql"/>
   <include file="db/changelog/070-revision.sql"/>
+  <include file="db/changelog/080-oauth-account.sql"/>
+  <include file="db/changelog/090-oauth-token.sql"/>
 
 </databaseChangeLog>
