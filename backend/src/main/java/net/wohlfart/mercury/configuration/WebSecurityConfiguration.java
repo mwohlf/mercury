@@ -55,17 +55,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers(AUTHENTICATE_ENDPOINT).permitAll() // login end-point allowed by anyone
                     .antMatchers(REFRESH_ENDPOINT).permitAll() // token refresh end-point allowed by anyone
                     .antMatchers(H2_CONSOLE_URL).permitAll() // H2 Console Dash-board allowed by anyone
-                    .antMatchers(ROOT, HOME, ASSETS).permitAll()
+                    // static resources, images, js, ...
+                    .antMatchers(ROOT, HOME, ASSETS, JS_RESOURCES, FONTAWESOME).permitAll()
+                    // SSO endpoint redirect target
+                    .antMatchers(OAUTH_ENDPOINT + "/**").permitAll()
             .and()  // returns the SecurityBuilder
                 .authorizeRequests()
-                    .antMatchers(API).authenticated() // Protected API End-points
+                    .antMatchers(API + "/**").permitAll() //  API endpoints are protected on the method level
             .and()
                 .authorizeRequests()
-                    .antMatchers(CATCH_ALL).denyAll()
+                    .antMatchers(CATCH_ALL).denyAll()  // the default behavior is to deny access
             .and()
               //  .addFilterBefore(facebookAuthenticationFilter, BasicAuthenticationFilter.class)
               //  .addFilterBefore(clientAuthenticationFilterImpl, BasicAuthenticationFilter.class)
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+
 
             ;
     }

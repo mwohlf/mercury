@@ -112,7 +112,6 @@ import {AuthenticationInterceptor} from "./shared/authentication-interceptor";
 export class AppModule {}
 
 export function apiConfig() {
-    console.log("called apiconfig factory")
     return new Configuration({
         basePath: ' '
     });

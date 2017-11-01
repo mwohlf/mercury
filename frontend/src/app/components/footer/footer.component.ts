@@ -17,9 +17,6 @@ export class FooterComponent implements OnDestroy {
     constructor(private authService: AuthService) {
         this.subscription = authService.getPrincipal().subscribe(
             principal => {
-                console.log("principal");
-                console.log(principal);
-                console.log("principal is NULL: " + (Principal.NULL == principal));
                 if (principal) {
                     this.userId = principal.userId;
                     this.userName = principal.userName;

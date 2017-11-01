@@ -2,11 +2,16 @@ package net.wohlfart.mercury;
 
 public class SecurityConstants {
 
-    public static final String ROOT = "/";
     public static final String CATCH_ALL = "/**";
-    public static final String API = "/api/**";
+
+    // resourecs
+    public static final String ROOT = "/";
+    public static final String API = "/api";
     public static final String ASSETS = "/assets/**";
-    public static final String HOME = "/index.htnl";
+    public static final String HOME = "/index.html";
+    public static final String JS_RESOURCES = "/*.js";  // TODO: try to move the js resources into a subdir
+    public static final String FONTAWESOME = "/fontawesome-*";
+
 
     // jwt token constants
     public static final String SECRET = "SecretKeyToGenJWTs";
