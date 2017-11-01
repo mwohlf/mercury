@@ -69,7 +69,7 @@ public class OAuthController {
         String stateId = request.getParameter(STATE_KEY);
         if (StringUtils.isEmpty(stateId)) {
             stateId = STATE_MANAGER.createState().getKey();
-            return new AuthRedirectBuilder(config).state(stateId).build();
+            return new AuthRedirectBuilder(config).state(stateId).build();   // redirect to provider
         }
 
         if (!STATE_MANAGER.hasState(stateId)) {
@@ -80,7 +80,7 @@ public class OAuthController {
 
         final String code = request.getParameter(CODE_KEY);
         if (!StringUtils.isEmpty(code)) {
-            ResponseEntity<HashMap> tokenResponse =  new AccessTokenRetriever(config, code).request();
+            ResponseEntity<HashMap> tokenResponse =  new AccessTokenRetriever(config, code).request();  // request provider
             log.info("<authenticate> {}", tokenResponse);
             log.info("<authenticate> body: {}", tokenResponse.getBody());
             String accessToken = (String) tokenResponse.getBody().get("access_token");
@@ -91,6 +91,7 @@ public class OAuthController {
             return ResponseEntity.ok(jwtTokenUtil.generateToken(userDetails));
         }
 
+        // todo: server the index.html page here and include the jwt token
         return ResponseEntity.ok("todo");
     }
 
