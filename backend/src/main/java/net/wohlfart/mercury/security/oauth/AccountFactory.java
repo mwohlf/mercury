@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Optional;
 
 
@@ -45,7 +44,7 @@ public class AccountFactory {
         String uid = this.findFirst(USER_UID_KEYS, userValues).get();
         OAuthAccount oauthAccount = oauthAccountService.findByProviderUid(provider, uid);
         if (oauthAccount != null) {
-            return oauthAccount.getUser();
+            return oauthAccount.getOwner();
         }
 
         oauthAccount = OAuthAccount.builder().providerName(provider).providerUid(uid).build();

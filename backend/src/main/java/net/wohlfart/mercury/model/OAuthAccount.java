@@ -33,9 +33,9 @@ public class OAuthAccount implements Serializable {
     private Long id;
 
 
-    @NotNull
-    @Column(name = "USER_ID")
-    private User user;
+    @ManyToOne
+    @JoinColumn(name="USER_ID", nullable=false)
+    private User owner;
 
     @Column(name = "PROVIDER_NAME")
     private String providerName;

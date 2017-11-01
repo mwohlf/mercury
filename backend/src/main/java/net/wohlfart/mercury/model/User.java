@@ -52,12 +52,12 @@ public class User implements Serializable {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST})
     private Set<OAuthAccount> oauthAccounts = new HashSet<>();
 
     public void addOAuthAccount(OAuthAccount account) {
         oauthAccounts.add(account);
-        account.setUser(this);
+        account.setOwner(this);
     }
 
 }
