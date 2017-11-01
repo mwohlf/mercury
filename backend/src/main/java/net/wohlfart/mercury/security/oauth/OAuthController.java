@@ -10,15 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.context.support.ServletContextResource;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
@@ -58,7 +66,7 @@ public class OAuthController {
 
     @GetMapping(OAUTH_ENDPOINT + "/{provider}")
     public ResponseEntity authenticate(@PathVariable("provider") String provider,
-                                       HttpServletRequest request) throws AuthenticationException, URISyntaxException {
+                                       HttpServletRequest request) throws AuthenticationException, URISyntaxException, IOException {
         log.info("<authenticate> provider '{}'", provider);
 
         final OAuthProviderConfig config = PROVIDER_CONFIG.get(provider);
@@ -77,7 +85,24 @@ public class OAuthController {
             return ResponseEntity.ok("unknown state '" + stateId + "' for provider '" + provider + "'");
         }
 
+        final DefaultResourceLoader loader = new DefaultResourceLoader();
+        log.info(" classpath:META-INF: " + loader.getResource("classpath:META-INF").exists());
+        log.info(" classpath:META-INF/resources: " + loader.getResource("classpath:META-INF/resources").exists());
+        log.info(" classpath:BOOT-INF: " + loader.getResource("classpath:BOOT-INF").exists());
+        log.info(" classpath:public: " + loader.getResource("classpath:public/index.html").exists());
+        log.info(" classpath:encrypt.txt: " + loader.getResource("classpath:encrypt.txt").exists());
 
+
+        Resource indexFile = loader.getResource("classpath:public/index.html");
+/*
+        final ServletContextResource indexFile = new ServletContextResource(
+                request.getServletContext(),
+                "/resources/public/index.html"); //public/index.html
+        log.info("exists: " + indexFile.exists());
+        log.info("parent: " + indexFile.getPathWithinContext());
+        log.info("url: " + indexFile.getURL());
+        ;
+*/
         final String code = request.getParameter(CODE_KEY);
         if (!StringUtils.isEmpty(code)) {
             ResponseEntity<HashMap> tokenResponse =  new AccessTokenRetriever(config, code).request();  // request provider
@@ -88,11 +113,21 @@ public class OAuthController {
             log.info("<authenticate> userResponse: {}", userResponse.getBody());
             User user = accountFactory.findOrCreate(provider, tokenResponse.getBody(), userResponse.getBody());
             UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
-            return ResponseEntity.ok(jwtTokenUtil.generateToken(userDetails));
-        }
 
-        // todo: server the index.html page here and include the jwt token
-        return ResponseEntity.ok("todo");
+            String token = jwtTokenUtil.generateToken(userDetails);
+            // TODO: include the jwt token
+            return ResponseEntity
+                    .ok()
+                    .contentLength(indexFile.contentLength())
+                    .contentType(MediaType.TEXT_HTML)
+                    .body(new InputStreamResource(indexFile.getInputStream()));
+        } else {
+            return ResponseEntity
+                    .ok()
+                    .contentLength(indexFile.contentLength())
+                    .contentType(MediaType.TEXT_HTML)
+                    .body(new InputStreamResource(indexFile.getInputStream()));
+        }
     }
 
     @Bean
