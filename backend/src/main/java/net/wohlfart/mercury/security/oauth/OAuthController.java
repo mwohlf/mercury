@@ -1,7 +1,6 @@
 package net.wohlfart.mercury.security.oauth;
 
 import lombok.extern.slf4j.Slf4j;
-import net.wohlfart.mercury.model.OAuthAccount;
 import net.wohlfart.mercury.model.User;
 import net.wohlfart.mercury.repository.UserRepository;
 import net.wohlfart.mercury.security.JwtTokenUtil;
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +36,12 @@ public class OAuthController {
     private static final String FACEBOOK_PROVIDER = "facebook";
     private static final String GOOGLE_PROVIDER = "google";
 
-    private static final HashMap<String, OAuthProviderConfig> providerConfigs = new HashMap<>();
+    private static final HashMap<String, OAuthProviderConfig> PROVIDER_CONFIG = new HashMap<>();
+
+    private static final StateManager STATE_MANAGER = new StateManager();
 
     @Autowired
-    UserRepository userRepository;
+    AccountFactory accountFactory;
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;
@@ -51,9 +51,9 @@ public class OAuthController {
 
     @PostConstruct
     public void setupProviders() {
-        providerConfigs.put(GITHUB_PROVIDER, github());
-        providerConfigs.put(FACEBOOK_PROVIDER, facebook());
-        providerConfigs.put(GOOGLE_PROVIDER, google());
+        PROVIDER_CONFIG.put(GITHUB_PROVIDER, github());
+        PROVIDER_CONFIG.put(FACEBOOK_PROVIDER, facebook());
+        PROVIDER_CONFIG.put(GOOGLE_PROVIDER, google());
     }
 
     @GetMapping(OAUTH_ENDPOINT + "/{provider}")
@@ -61,16 +61,22 @@ public class OAuthController {
                                        HttpServletRequest request) throws AuthenticationException, URISyntaxException {
         log.info("<authenticate> provider '{}'", provider);
 
-        final OAuthProviderConfig config = providerConfigs.get(provider);
+        final OAuthProviderConfig config = PROVIDER_CONFIG.get(provider);
         if (config == null) {
             return ResponseEntity.ok("unknown provider " + provider);
         }
 
-        String state = request.getParameter(STATE_KEY);
-        if (StringUtils.isEmpty(state)) {
-            state = "AAA";
-            return new AuthRedirectBuilder(config).state(state).build();
+        String stateId = request.getParameter(STATE_KEY);
+        if (StringUtils.isEmpty(stateId)) {
+            stateId = STATE_MANAGER.createState().getKey();
+            return new AuthRedirectBuilder(config).state(stateId).build();
         }
+
+        if (!STATE_MANAGER.hasState(stateId)) {
+            // TODO: maybe store the ip in the state and check here
+            return ResponseEntity.ok("unknown state '" + stateId + "' for provider '" + provider + "'");
+        }
+
 
         final String code = request.getParameter(CODE_KEY);
         if (!StringUtils.isEmpty(code)) {
@@ -80,25 +86,13 @@ public class OAuthController {
             String accessToken = (String) tokenResponse.getBody().get("access_token");
             ResponseEntity<HashMap> userResponse = new UserDataRetriever(config, accessToken).request();
             log.info("<authenticate> userResponse: {}", userResponse.getBody());
-            UserDetailsImpl userDetails = createUserAccount(provider, tokenResponse.getBody(), userResponse.getBody());
+            User user = accountFactory.create(provider, tokenResponse.getBody(), userResponse.getBody());
+            UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
             return ResponseEntity.ok(jwtTokenUtil.generateToken(userDetails));
         }
 
         return ResponseEntity.ok("todo");
     }
-
-    private UserDetailsImpl createUserAccount(String provider, HashMap tokenValues, HashMap userValues) {
-        // create a useraccount and login the user
-        String name = (String) "--" + userValues.get("id");
-        String email = (String) "test@test.de"; // + userValues.get("email");
-        User user = User.builder().name(name).email(email).build();
-
-        user = userRepository.saveAndFlush(user);
-        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
-
-        return userDetails;
-    }
-
 
     @Bean
     @ConfigurationProperties(prefix="github", ignoreUnknownFields = false)

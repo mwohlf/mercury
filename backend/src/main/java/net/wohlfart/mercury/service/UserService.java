@@ -64,17 +64,37 @@ public class UserService {
     }
 
     /**
-     * Adds or updates user.
+     * Adds user.
      * If user with following id already exists it will be updated elsewhere added as the new one.
-     * @param user to add or update
-     * @return Added or updated user
+     * @param user to add
+     * @return Added user
      */
-    public User save(User user) {  // TODO split into save and update
-        if (!userRepository.exists(user.getId())) {
+    public User save(User user) {
+        if (user.getId() != null) {
+            throw new IllegalArgumentException("userid must be null for save, was " + user.getId());
+        }
+        if (user.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         return userRepository.save(user);
     }
+
+    /**
+     * Update user.
+     * If user with following id already exists it will be updated elsewhere added as the new one.
+     * @param user to update
+     * @return Updated user
+     */
+    public User update(User user) {
+        if (user.getId() == null) {
+            throw new IllegalArgumentException("userid must be not be null for save, username was " + user.getName());
+        }
+        if (user.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        return userRepository.save(user);
+    }
+
 
     /**
      * Deletes user by given id

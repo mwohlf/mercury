@@ -21,6 +21,11 @@ public class AuthRedirectBuilder {
         this.config = config;
     }
 
+    public AuthRedirectBuilder state(String state) {
+        this.state = state;
+        return this;
+    }
+
     /*
      * user consent
      *
@@ -63,8 +68,4 @@ public class AuthRedirectBuilder {
         }
     }
 
-    public AuthRedirectBuilder state(String state) {
-        this.state = state;
-        return this;
-    }
 }

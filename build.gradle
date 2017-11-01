@@ -16,7 +16,7 @@ apply plugin: 'base'
 ext {
     springBootVersion = '1.5.8.RELEASE'
     swaggerVersion = '2.3.0-SNAPSHOT'
-    h2Version = '1.4.194'
+    h2Version = '1.4.196'
     springfoxVersion = '2.7.0'
     nodeVersion = '8.8.0'
     npmVersion = '5.5.1'
