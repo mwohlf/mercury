@@ -1,5 +1,6 @@
 package net.wohlfart.mercury.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
@@ -33,6 +34,7 @@ public class OAuthAccount implements Serializable {
     private Long id;
 
 
+    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name="USER_ID", nullable=false)
     private User owner;

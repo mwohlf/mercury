@@ -52,22 +52,8 @@ facebook: # see: https://developers.facebook.com/apps
       - email
       - public_profile
     grantType: code
-    # Redirecting to 'https://www.facebook.com/dialog/oauth
-    #    ?client_id=1368363149952141
-    #    &redirect_uri=http://localhost:8080/login/facebook
-    #    &response_type=code
-    #    &state=POvBmD'
     userAuthorizationUri: https://www.facebook.com/dialog/oauth
-    # callback:  /login/facebook
-    #   ?code=juggwYjSrfaxXxijz1rUK9NyjzSK_17yQ9uVJDWcgx
-    #   &state=POvBmD
     preEstablishedRedirectUri: http://localhost:8080/oauth/facebook  # 1st leg, callback
-    # Encoding and sending form: {
-    #    grant_type=[authorization_code],
-    #    code=[-gsdgsdgsdg-mnFWIYnAs875OrMt1nIjma8lRRC-syUreEgCxhV-EAHRSH3-KIQmTBW1W0E60MRI-ijuggwYjSrfaxXxijz1rUK9NyjzSK_17yQ9uVJDWcgx],
-    #    redirect_uri=[http://localhost:8080/login/facebook],
-    #    client_id=[1368363149952141],
-    #    client_secret=[dfgsergsergseg]}
     accessTokenUri: https://graph.facebook.com/oauth/access_token
     tokenName: oauth_token
     authenticationScheme: query
@@ -101,24 +87,9 @@ google: # see: https://developers.google.com/identity/protocols/OAuth2WebServer
       - profile
       - email
       - openid
-    # Redirecting to 'https://accounts.google.com/o/oauth2/v2/auth
-    #    ?client_id=...
-    #    &redirect_uri=http://localhost:8080/login/google
-    #    &response_type=code
-    #    &scope=profile
-    #    &state=xyz'
     userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
-    # 1st leg, callback with code to /login/google
-    #   ?state=xyz
-    #   &code=4/sgergseerg-Pcqc3We4leMv5aYOOWVoKHYD4
     preEstablishedRedirectUri: http://localhost:8080/oauth/google
     grantType: code  # authorization_code
-    # 2nd leg Encoding and sending form: {
-    #   grant_type=[authorization_code],
-    #   code=[4/sgergseerg-Pcqc3We4leMv5aYOOWVoKHYD4],
-    #   redirect_uri=[http://localhost:8080/login/google],
-    #   client_id=[621410141562-7cd91fomoa6ru43kni29i2nhsjt8upkl.apps.googleusercontent.com],
-    #   client_secret=[sfaw-youwish-n]}
     accessTokenUri: https://www.googleapis.com/oauth2/v4/token
     tokenName: oauth_token
     authenticationScheme: query

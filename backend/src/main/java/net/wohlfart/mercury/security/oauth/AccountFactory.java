@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 
 
@@ -51,12 +52,10 @@ public class AccountFactory {
         String name = provider + ":" + this.findFirst(LOGIN_OR_ID_KEY, userValues).get();
         String email = this.findFirst(USER_EMAIL_KEYS, userValues).orElse(this.findFirst(LOGIN_OR_ID_KEY, userValues).get() + "@" + provider);
         User user = User.builder().name(name).email(email).build();
-        user = userService.save(user);
 
-        // todo: add account
-        // user.setOauthAccounts(new HashSet<>());
-        // user.addOAuthAccount(oauthAccount);
-        // oauthAccountService.create(oauthAccount);
+        user.setOauthAccounts(new HashSet<>());
+        user.addOAuthAccount(oauthAccount);
+        oauthAccountService.create(oauthAccount);
 
         // TODO: add token
         return user;

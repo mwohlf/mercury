@@ -1,5 +1,8 @@
 package net.wohlfart.mercury.security.oauth;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import net.wohlfart.mercury.model.User;
 import net.wohlfart.mercury.repository.UserRepository;
@@ -27,6 +30,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
@@ -86,23 +90,9 @@ public class OAuthController {
         }
 
         final DefaultResourceLoader loader = new DefaultResourceLoader();
-        log.info(" classpath:META-INF: " + loader.getResource("classpath:META-INF").exists());
-        log.info(" classpath:META-INF/resources: " + loader.getResource("classpath:META-INF/resources").exists());
-        log.info(" classpath:BOOT-INF: " + loader.getResource("classpath:BOOT-INF").exists());
-        log.info(" classpath:public: " + loader.getResource("classpath:public/index.html").exists());
-        log.info(" classpath:encrypt.txt: " + loader.getResource("classpath:encrypt.txt").exists());
-
-
         Resource indexFile = loader.getResource("classpath:public/index.html");
-/*
-        final ServletContextResource indexFile = new ServletContextResource(
-                request.getServletContext(),
-                "/resources/public/index.html"); //public/index.html
-        log.info("exists: " + indexFile.exists());
-        log.info("parent: " + indexFile.getPathWithinContext());
-        log.info("url: " + indexFile.getURL());
-        ;
-*/
+        String responseContent = CharStreams.toString(new InputStreamReader(indexFile.getInputStream(), Charsets.UTF_8));
+
         final String code = request.getParameter(CODE_KEY);
         if (!StringUtils.isEmpty(code)) {
             ResponseEntity<HashMap> tokenResponse =  new AccessTokenRetriever(config, code).request();  // request provider
@@ -115,18 +105,23 @@ public class OAuthController {
             UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
 
             String token = jwtTokenUtil.generateToken(userDetails);
+            responseContent = responseContent.replaceFirst("</head>", "\n"
+                    + "  <script>\n"
+                    + "   localStorage.setItem('token', '" + token + "');\n"
+                    + "  </script>\n"
+                    + "</head>\n");
             // TODO: include the jwt token
             return ResponseEntity
                     .ok()
-                    .contentLength(indexFile.contentLength())
+                    .contentLength(responseContent.length())
                     .contentType(MediaType.TEXT_HTML)
-                    .body(new InputStreamResource(indexFile.getInputStream()));
+                    .body(responseContent);
         } else {
             return ResponseEntity
                     .ok()
-                    .contentLength(indexFile.contentLength())
+                    .contentLength(responseContent.length())
                     .contentType(MediaType.TEXT_HTML)
-                    .body(new InputStreamResource(indexFile.getInputStream()));
+                    .body(responseContent);
         }
     }
 
