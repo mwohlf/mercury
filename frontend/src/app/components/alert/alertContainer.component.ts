@@ -14,15 +14,15 @@ import {Subscription} from "rxjs/Subscription";
             transition('* => *', [
 
                 query(':leave',
-                    animate('1s ease-in', keyframes([
-                        style({opacity: 1, transform: 'translateY(0)',     offset: 0}),
-                        style({opacity: 1, transform: 'translateY(300px)', offset: 1.0}),
+                    animate('0.5s ease-in-out', keyframes([
+                        style({transform: 'translateX(0)', offset: 0.0}),
+                        style({transform: 'translateX(calc(100vw))', offset: 1.0}),
                     ])), {optional: true}),
 
                 query(':enter',
-                    animate('1s ease-in', keyframes([
-                        style({opacity: 1, transform: 'translateY(300px)', offset: 0}),
-                        style({opacity: 1, transform: 'translateY(0)',     offset: 1.0}),
+                    animate('0.5s ease-in-out', keyframes([
+                        style({transform: 'translateY(calc(100vh))', offset: 0.0}),
+                        style({transform: 'translateY(0)',     offset: 1.0}),
                     ])), {optional: true})
             ])
         ])
