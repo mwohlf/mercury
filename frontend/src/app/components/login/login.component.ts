@@ -13,8 +13,6 @@ export class LoginComponent implements OnInit {
 
     loginForm: FormGroup;
 
-    lastAlert: Alert = Alert.NULL;
-
     returnUrl: string;
 
     constructor(private route: ActivatedRoute,
@@ -40,29 +38,13 @@ export class LoginComponent implements OnInit {
             this.loginForm.controls['username'].value,
             this.loginForm.controls['password'].value)
             .subscribe(
-                success => {
-                    this.onSuccess(success);
+                principal => {
+                    this.alertService.success("Login for " + principal.userName).timeout(5).show();
+                    this.router.navigate([this.returnUrl]);
                 },
                 error => {
-                    this.onError(error);
+                    this.alertService.handleError(error);
                 });
-    }
-
-    private onError(error: any): void {
-        this.lastAlert.dismiss();
-        switch (error.status) {
-            case 404:
-                this.lastAlert = this.alertService.error("User not found");
-                break;
-            default:
-                this.lastAlert = this.alertService.error(JSON.stringify(error));
-        }
-    }
-
-    private onSuccess(principal: Principal): void {
-        this.lastAlert.dismiss();
-        this.lastAlert = this.alertService.success("Login for " + principal.userName);
-        this.router.navigate([this.returnUrl]);
     }
 
 }

@@ -1,5 +1,15 @@
 
-<div *ngFor="let alert of visibleAlerts">
-    {{alert.message}}
-    <a class="close" (click)="alert.dismiss()">[X]</a>
-</div>
+<ol [@alertAnimation]="visibleAlerts.length" class="alertContainer">
+    <li *ngFor="let alert of visibleAlerts"
+        [ngClass]="{'success':   alert.level === AlertLevel.SUCCESS,
+                    'info':      alert.level === AlertLevel.INFO,
+                    'warn':      alert.level === AlertLevel.WARN,
+                    'error':     alert.level === AlertLevel.ERROR }">
+        <a *ngIf="alert.isCloseable" class="close" (click)="alert.dispose()" >
+            <i class="fa fa-window-close" aria-hidden="true"></i>
+        </a>
+        <div class="content">
+            {{alert.message}}
+        </div>
+    </li>
+</ol>

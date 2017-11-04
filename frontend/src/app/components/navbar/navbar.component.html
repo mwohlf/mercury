@@ -6,11 +6,11 @@
 
     <nav class="main-menu">
 
-        <a class="menu-button" *showAuthed="true" [routerLink]="['logout']">Logout</a>
-        <a class="menu-button" *showAuthed="false" [routerLink]="['login']">Login</a>
-        <a class="menu-button" [routerLink]="['label']">Label</a>
-        <a class="menu-button" [routerLink]="['settings']">Settings</a>
-        <a class="menu-button" [routerLink]="['admin']">Admin</a>
+        <a class="menu-button" routerLinkActive="activeLink" *showAuthed="true" [routerLink]="['logout']">Logout</a>
+        <a class="menu-button" routerLinkActive="activeLink" *showAuthed="false" [routerLink]="['login']">Login</a>
+        <a class="menu-button" routerLinkActive="activeLink" [routerLink]="['label']">Label</a>
+        <a class="menu-button" routerLinkActive="activeLink" [routerLink]="['settings']">Settings</a>
+        <a class="menu-button" routerLinkActive="activeLink" [routerLink]="['admin']">Admin</a>
 
     </nav>
 

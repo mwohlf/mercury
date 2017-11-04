@@ -1,0 +1,46 @@
+
+ol.alertContainer {
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  top: 3rem;
+  right: 2rem;
+  z-index: 100;
+  width: 40%;
+  min-width: 20rem;
+}
+
+ol.alertContainer li {
+  // position: relative;
+  list-style-type: none;
+  margin-top: 0.5rem;
+  border: grey 1px;
+  border-radius: 5px;
+  padding: 0.6rem;
+  background-color: lightgrey;
+}
+
+ol.alertContainer li.success {
+  background-color: lightgreen;
+}
+
+ol.alertContainer li.info {
+  background-color: lightgrey;
+}
+
+ol.alertContainer li.warn {
+  background-color: lightblue;
+}
+
+ol.alertContainer li.error {
+  background-color: indianred;
+}
+
+ol.alertContainer li .close {
+  color: grey;
+  float: right;
+}
+
+ol.alertContainer li .content {
+  display: inline;
+}

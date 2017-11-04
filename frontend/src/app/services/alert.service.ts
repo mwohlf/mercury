@@ -2,6 +2,7 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {NavigationStart, Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Subscription} from "rxjs/Subscription";
 
 @Injectable()
 export class AlertService implements OnDestroy {
@@ -28,7 +29,7 @@ export class AlertService implements OnDestroy {
         return this.subject.asObservable();
     }
 
-    dismiss(alert: Alert | undefined): void {
+    dispose(alert: Alert | undefined): Alert {
         if (alert) {
             var index = this.alerts.indexOf(alert, 0);
             if (index > -1) {
@@ -36,59 +37,110 @@ export class AlertService implements OnDestroy {
             }
             this.subject.next(this.alerts);
         }
+        return alert;
     }
 
     success(message: string): Alert {
-       return this.message(message, Level.SUCCESS);
+        return this.message(message, AlertLevel.SUCCESS);
     }
 
     error(message: string): Alert {
-       return this.message(message, Level.SUCCESS);
+        return this.message(message, AlertLevel.ERROR);
     }
 
-
-    message(message = "oops", level = Level.INFO, behavior = Behavior.PAGE_LOCAL): Alert {
-        var nextAlert = new Alert();
-        nextAlert.message = message;
-        nextAlert.level = level;
-        nextAlert.behavior = behavior;
-        nextAlert.alertService = this;
-        this.alerts.push(nextAlert);
+    show(alert: Alert): Alert {
+        this.alerts.push(alert);
         this.subject.next(this.alerts);
-        return nextAlert;
+        return alert;
+    }
+
+    message(message = "oops", level = AlertLevel.INFO): Alert {
+        return new Alert(this, this.router, message, level);
     }
 
     clear() {
-        this.alerts.forEach(alert => {alert.dismiss()});
+        this.alerts.forEach(alert => {alert.dispose()});
     }
+
+    public handleError(error: any): void {
+            switch (error.status) {
+        case 404:
+            this.error("User not found").show();
+            break;
+        default:
+            this.error(JSON.stringify(error)).show();
+        }
+    }
+
 }
 
 export class Alert {
 
-    public static readonly NULL: Alert = new Alert()
+    private subscription: Subscription;
 
-    level: Level;
-    behavior: Behavior;
-    message: string;
+    public isCloseable = false;
 
-    alertService: AlertService;
+    constructor(
+        private alertService: AlertService,
+        private router: Router,
+        public message: string,
+        public level: AlertLevel) {
+    }
 
-    dismiss() {
+    timeout(timeout: number): Alert {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+        }
+        this.subscription = Observable.timer(timeout * 1000)
+            .subscribe(evemt => {
+                this.dispose();
+            }
+        );
+        return this;
+    }
+
+    closeable(): Alert {
+        this.isCloseable = true;
+        return this;
+    }
+
+    // dispose on page changes
+    transient(): Alert {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+        }
+        this. router.events
+            .filter(event => event instanceof NavigationStart)
+            .subscribe((event: NavigationStart) => {
+                this.dispose();
+            });
+        return this;
+    }
+
+    show(): Alert {
         if (this.alertService) {
-            this.alertService.dismiss(this);
+            this.alertService.show(this);
+        }
+        return this;
+    }
+
+    dispose(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+        }
+        if (this.alertService) {
+            this.alertService.dispose(this);
         }
     }
+
 }
 
-export enum Level {
+export enum AlertLevel {
     SUCCESS,
     INFO,
     WARN,
     ERROR,
-}
-
-export enum Behavior {
-    PAGE_LOCAL,
-    STICKY,
-    TIMEOUT,
 }
