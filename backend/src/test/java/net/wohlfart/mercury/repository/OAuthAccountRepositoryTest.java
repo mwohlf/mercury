@@ -20,6 +20,7 @@ import java.util.HashSet;
 
 @SqlGroup({
     @Sql(executionPhase = ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
+        "classpath:data/hsql/clear.sql",
         "classpath:data/hsql/init-oauth-account.sql"
     }),
     @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:data/hsql/clear.sql")

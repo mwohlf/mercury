@@ -44,6 +44,14 @@ export class AlertService implements OnDestroy {
         return this.message(message, AlertLevel.SUCCESS);
     }
 
+    info(message: string): Alert {
+        return this.message(message, AlertLevel.INFO);
+    }
+
+    warn(message: string): Alert {
+        return this.message(message, AlertLevel.WARN);
+    }
+
     error(message: string): Alert {
         return this.message(message, AlertLevel.ERROR);
     }
@@ -80,6 +88,8 @@ export class Alert {
 
     public isCloseable = false;
 
+    public hasDetails: string;
+
     constructor(
         private alertService: AlertService,
         private router: Router,
@@ -111,11 +121,16 @@ export class Alert {
             this.subscription.unsubscribe();
             this.subscription = null;
         }
-        this. router.events
+        this.subscription = this.router.events
             .filter(event => event instanceof NavigationStart)
             .subscribe((event: NavigationStart) => {
                 this.dispose();
             });
+        return this;
+    }
+
+    details(hasDetails: string): Alert {
+        this.hasDetails = hasDetails;
         return this;
     }
 

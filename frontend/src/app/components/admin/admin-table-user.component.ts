@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {UserControllerService} from "../../../generated/api/userController.service";
 import {UserDataSource} from "../../models/user-data-source";
 
 
@@ -10,12 +9,9 @@ import {UserDataSource} from "../../models/user-data-source";
 
 export class AdminTableUserComponent {
 
-    userDataSource: UserDataSource;
-
     displayedColumns = ['uid', 'name'];
 
-    constructor(private adminControllerService: UserControllerService) {
-        this.userDataSource = new UserDataSource(adminControllerService);
+    constructor(public userDataSource: UserDataSource) {
     }
 
 }

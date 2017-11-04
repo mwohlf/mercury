@@ -7,6 +7,7 @@
 
   <include file="db/changelog/010-schema.sql"/>
   <include file="db/changelog/020-user.sql"/>
+  <include file="db/changelog/022-insert-testuser.sql"/>
   <include file="db/changelog/030-role.sql"/>
   <include file="db/changelog/040-membership.sql"/>
   <include file="db/changelog/050-permission.sql"/>

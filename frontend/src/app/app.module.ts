@@ -45,6 +45,7 @@ import {ApiModule} from "../generated/api.module";
 import {Configuration} from "../generated/configuration";
 import {HttpModule} from "@angular/http";
 import {AuthenticationInterceptor} from "./shared/authentication-interceptor";
+import {UserDataSource} from "./models/user-data-source";
 
 // Angular Material
 
@@ -97,6 +98,7 @@ import {AuthenticationInterceptor} from "./shared/authentication-interceptor";
     providers: [
         AuthService,
         AlertService,
+        UserDataSource,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthenticationInterceptor,

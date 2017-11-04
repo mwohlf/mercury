@@ -22,7 +22,8 @@ import static org.junit.Assert.*;
 
 @SqlGroup({
     @Sql(executionPhase = ExecutionPhase.BEFORE_TEST_METHOD, scripts = {
-        "classpath:data/hsql/init-user.sql"
+            "classpath:data/hsql/clear.sql",
+            "classpath:data/hsql/init-user.sql"
     }),
     @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:data/hsql/clear.sql")
 })
