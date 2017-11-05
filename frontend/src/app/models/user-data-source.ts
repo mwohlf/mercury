@@ -4,9 +4,13 @@ import {Observable} from "rxjs/Observable";
 import {CollectionViewer, DataSource} from "@angular/cdk/collections";
 import {AlertService} from "../services/alert.service";
 import {Injectable} from "@angular/core";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class UserDataSource extends DataSource<User> {
+
+    private subject = new BehaviorSubject<User[]>([]); // start with null subject
+
 
     // Observable<User[]> content: = Observable.create();
 
@@ -17,18 +21,26 @@ export class UserDataSource extends DataSource<User> {
         super();
     }
 
+    // see: https://github.com/angular/material2/issues/5917
     /** Connect function called by the table to retrieve one stream containing the data to render. */
     connect(collectionViewer: CollectionViewer): Observable<User[]> {
-        return this.adminControllerService.findPageUsingGET()
-            .map(response => response.content)
-            .catch(error => {
-                this.alertService.handleError(error);
-                return Observable.throw(error);
-            });
+        return this.subject.asObservable();
     }
 
     disconnect(collectionViewer: CollectionViewer) {
 
+    }
+
+    public refresh(): void {
+        this.adminControllerService.findPageUsingGET().subscribe(
+            result => {
+                this.subject.next(result.content);
+            },
+            error => {
+                this.alertService.handleError(error);
+                this.subject.next([]);
+            }
+        );
     }
 
 }

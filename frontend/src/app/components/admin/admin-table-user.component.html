@@ -1,20 +1,47 @@
-<div class="example-container mat-elevation-z8">
+<div class="page-center">
+    <mat-card>
 
-    <mat-table #table [dataSource]="userDataSource">
+        <!-- https://material.angular.io/guide/cdk-table -->
+        <mat-card-title>Login</mat-card-title>
 
-        <ng-container matColumnDef="uid">
-            <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
-        </ng-container>
+        <mat-card-content>
 
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
-        </ng-container>
+            <mat-table #table [dataSource]="userDataSource">
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                <!-- available columns-->
+                <ng-container matColumnDef="uid">
+                    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+                </ng-container>
 
-    </mat-table>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                </ng-container>
 
+                <ng-container matColumnDef="email">
+                    <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.email}} </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>  </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.id}}
+                            <a (click)="onEdit(element)"><i class="fa fa-pencil fa-fw"></i></a>
+                            <a (click)="onDelete(element)"><i class="fa fa-trash-o fa-fw"></i></a>
+                            <a (click)="onDisable(element)"><i class="fa fa-lock fa-fw"></i></a>
+                            <a (click)="onEnable(element)"><i class="fa fa-unlock fa-fw"></i></a>
+                    </mat-cell>
+                </ng-container>
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <!-- visible columns and their order -->
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </mat-table>
+
+        </mat-card-content>
+
+    </mat-card>
 </div>

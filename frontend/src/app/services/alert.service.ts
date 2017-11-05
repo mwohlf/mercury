@@ -73,10 +73,10 @@ export class AlertService implements OnDestroy {
     public handleError(error: any): void {
             switch (error.status) {
         case 404:
-            this.error("User not found").show();
+            this.error("User not found").timeout(5).show();
             break;
         default:
-            this.error(JSON.stringify(error)).show();
+            this.error(JSON.stringify(error)).timeout(5).show();
         }
     }
 
