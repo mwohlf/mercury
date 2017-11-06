@@ -40,7 +40,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
             status = HttpStatus.UNAUTHORIZED;
             message = "user not found";
         }
-        log.info(details);
+        // log.info(details);
         return new ResponseEntity<>(new AlertMessage(status.value(), message, details), headers, status);
     }
 

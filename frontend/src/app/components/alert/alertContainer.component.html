@@ -8,8 +8,16 @@
         <a *ngIf="alert.isCloseable" class="close" (click)="alert.dispose()" >
             <i class="fa fa-window-close" aria-hidden="true"></i>
         </a>
-        <div class="content">
+        <p *ngIf="alert.code" class="content">
+            {{alert.code}}
+        </p>
+        <p class="content">
             {{alert.message}}
-        </div>
+        </p>
+        <p *ngIf="alert.details" class="content">
+            <a (click)="doShowDetails(alert.details)">
+                details...
+            </a>
+        </p>
     </li>
 </ol>

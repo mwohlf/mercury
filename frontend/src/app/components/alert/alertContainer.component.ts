@@ -42,7 +42,6 @@ export class AlertContainerComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.alertSubscription = this.alertService.getAlerts().subscribe((alerts: Alert[]) => {
-            // TODO: we need some sort of animation here
             this.visibleAlerts = alerts;
         });
     }
@@ -51,4 +50,7 @@ export class AlertContainerComponent implements OnInit, OnDestroy {
         this.alertSubscription.unsubscribe();
     }
 
+    doShowDetails(details: String) {
+        console.log(details);
+    }
 }

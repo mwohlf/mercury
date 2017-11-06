@@ -55,14 +55,14 @@ public class SecurityController {
      */
     @PostMapping(AUTHENTICATE_ENDPOINT)
     public ResponseEntity<TokenResponse> authenticate(@RequestBody AuthenticationRequest login) throws AuthenticationException {
-        log.info("<authenticate> login '{}'", login);
 
         final UserDetailsImpl userDetails;
 
         try {
             userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(login.username);
+            log.info("<authenticate> success '{}'", login.username);
         } catch (UsernameNotFoundException | NoResultException ex) {
-            log.error(ex.getMessage());
+            log.info("<authenticate> failed {}/{}", login.username, login.password);
             throw new UserNotFoundException(ex);
         }
 
@@ -97,8 +97,6 @@ public class SecurityController {
     public TokenResponse createTokenResponse(UserDetailsImpl userDetails) {
         final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
         final Authentication authentication = authenticationManager.authenticate(token);
-
-        System.out.println("authentication success: " + authentication);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String tokenString = jwtTokenUtil.generateToken(userDetails);
