@@ -37,7 +37,7 @@ export class UserDataSource extends DataSource<User> {
                 this.subject.next(result.content);
             },
             error => {
-                this.alertService.handleError(error);
+                this.alertService.handleError(error.error);
                 this.subject.next([]);
             }
         );

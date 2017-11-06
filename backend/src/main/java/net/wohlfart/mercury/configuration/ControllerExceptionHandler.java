@@ -1,6 +1,7 @@
 package net.wohlfart.mercury.configuration;
 
 import lombok.extern.slf4j.Slf4j;
+import net.wohlfart.mercury.model.AlertMessage;
 import net.wohlfart.mercury.security.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.util.WebUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -17,31 +19,29 @@ import java.nio.charset.Charset;
 
 @Slf4j
 @ControllerAdvice
-public class ControlerExceptionHandler extends ResponseEntityExceptionHandler {
+public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-
-
-    ControlerExceptionHandler() {
-
-    }
 
     @ExceptionHandler(value = {
             RuntimeException.class,
     })
-    protected ResponseEntity<Object> processException(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<AlertMessage> processException(RuntimeException ex, WebRequest request) {
         log.info("<processException> " + ex);
         HttpStatus status = HttpStatus.BAD_REQUEST;
         HttpHeaders headers = new HttpHeaders();
+        String message = "bad request";
         String details = createRequestDetails(ex, request);
 
         if (ex instanceof AccessDeniedException) {
             status = HttpStatus.UNAUTHORIZED;
+            message = "access denied";
         } else if (ex instanceof UserNotFoundException) {
             status = HttpStatus.UNAUTHORIZED;
+            message = "user not found";
         }
         log.info(details);
-        return handleExceptionInternal(ex, details, headers, status, request);
+        return new ResponseEntity<>(new AlertMessage(status.value(), message, details), headers, status);
     }
 
     // should we do json here?
@@ -69,6 +69,5 @@ public class ControlerExceptionHandler extends ResponseEntityExceptionHandler {
         printWriter.flush();
         return new String(content.toByteArray(), Charset.forName("UTF-8"));
     }
-
 
 }

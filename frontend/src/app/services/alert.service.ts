@@ -13,12 +13,6 @@ export class AlertService implements OnDestroy {
 
 
     constructor(private router: Router) {
-        // clear alert message on route change
-        router.events.subscribe(event => {
-            if (event instanceof NavigationStart) {
-                // cleanout old alerts
-            }
-        });
     }
 
     ngOnDestroy(): void {
@@ -63,7 +57,10 @@ export class AlertService implements OnDestroy {
     }
 
     message(message = "oops", level = AlertLevel.INFO): Alert {
-        return new Alert(this, this.router, message, level);
+        return new Alert(this, this.router,
+            0,
+            message,
+            level);
     }
 
     clear() {
@@ -71,13 +68,15 @@ export class AlertService implements OnDestroy {
     }
 
     public handleError(error: any): void {
-            switch (error.status) {
-        case 404:
-            this.error("User not found").timeout(5).show();
-            break;
-        default:
-            this.error(JSON.stringify(error)).timeout(5).show();
-        }
+
+        const code: number = error['code'];
+        const message: string = error['message'];
+        const details: string = error['details'];
+
+        new Alert(this, this.router, code, message, AlertLevel.ERROR)
+            .withDetails(details)
+            .timeout(6).show();
+
     }
 
 }
@@ -88,14 +87,16 @@ export class Alert {
 
     public isCloseable = false;
 
-    public hasDetails: string;
+    public details: string;
 
     constructor(
         private alertService: AlertService,
         private router: Router,
-        public message: string,
-        public level: AlertLevel) {
-    }
+
+        public code: number,       // response code
+        public message: string,    // short error message
+        public level: AlertLevel   // severity
+    ) {}
 
     timeout(timeout: number): Alert {
         if (this.subscription) {
@@ -129,8 +130,8 @@ export class Alert {
         return this;
     }
 
-    details(hasDetails: string): Alert {
-        this.hasDetails = hasDetails;
+    withDetails(details: string): Alert {
+        this.details = details;
         return this;
     }
 

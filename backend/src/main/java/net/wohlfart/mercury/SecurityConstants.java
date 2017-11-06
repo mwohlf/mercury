@@ -3,6 +3,7 @@ package net.wohlfart.mercury;
 public class SecurityConstants {
 
     public static final String CATCH_ALL = "/**";
+    public static final String API_DOCS = "/v2/api-docs";
 
     // resourecs
     public static final String ROOT = "/";

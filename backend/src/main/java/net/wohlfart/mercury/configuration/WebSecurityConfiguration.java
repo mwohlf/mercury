@@ -56,6 +56,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers(AUTHENTICATE_ENDPOINT).permitAll() // login end-point allowed by anyone
                     .antMatchers(REFRESH_ENDPOINT).permitAll() // token refresh end-point allowed by anyone
                     .antMatchers(H2_CONSOLE_URL).permitAll() // H2 Console Dash-board allowed by anyone
+                    .antMatchers(API_DOCS).permitAll() // swagger api docs for code generation
                     // static resources, images, js, ...
                     .antMatchers(ROOT, HOME, ASSETS, JS_RESOURCES, FONTAWESOME).permitAll()
                     // SSO endpoint redirect target

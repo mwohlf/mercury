@@ -43,4 +43,7 @@ ol.alertContainer li .close {
 
 ol.alertContainer li .content {
   display: inline;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
