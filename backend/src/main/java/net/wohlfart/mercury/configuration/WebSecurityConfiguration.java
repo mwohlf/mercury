@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 
 import static net.wohlfart.mercury.SecurityConstants.*;
 
@@ -53,7 +52,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()  // returns the SecurityBuilder
                 .authorizeRequests()
                     .antMatchers(SIGNUP_ENDPOINT).permitAll() // sign in end-point allowed by anyone
-                    .antMatchers(AUTHENTICATE_ENDPOINT).permitAll() // login end-point allowed by anyone
+                    .antMatchers(LOGIN_ENDPOINT).permitAll() // login end-point allowed by anyone
                     .antMatchers(REFRESH_ENDPOINT).permitAll() // token refresh end-point allowed by anyone
                     .antMatchers(H2_CONSOLE_URL).permitAll() // H2 Console Dash-board allowed by anyone
                     .antMatchers(API_DOCS).permitAll() // swagger api docs for code generation

@@ -24,4 +24,5 @@ public class OAuthAccountService {
     public OAuthAccount save(OAuthAccount oauthAccount) {
         return oauthAccountRepository.save(oauthAccount);
     }
+
 }

@@ -4,9 +4,9 @@ import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {SecurityControllerService} from "../../generated/api/securityController.service";
-import {AuthenticationRequest} from "../../generated/model/authenticationRequest";
-import {Subject} from "rxjs/Subject";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {LoginRequest} from "../../generated/model/loginRequest";
+import {PrincipalResponse} from "../../generated/model/principalResponse";
 
 /**
  * AuthService uses JSON-Web-Token authorization strategy.
@@ -24,154 +24,84 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 @Injectable()
 export class AuthService implements OnDestroy {
 
-    private subject = new BehaviorSubject<Principal>(Principal.NULL); // start with null subject
+    public static readonly NULL_PRINCIPAL: PrincipalResponse = {};
 
-    public static readonly STORE_TOKEN_KEY = "token";
-
-
-    private token: any; // decoded and parsed json values with all the auth data if available
-
-    public static readonly CLAIM_KEY_USERID = "uid";
-    public static readonly CLAIM_KEY_SUBJECT = "sub";
-    public static readonly CLAIM_KEY_AUTHORITIES = "auth";
-    public static readonly CLAIM_KEY_ISSUED_AT = "iat";
+    private subject = new BehaviorSubject<PrincipalResponse>(AuthService.NULL_PRINCIPAL); // start with null subject
 
 
     constructor(private securityControllerService: SecurityControllerService) {
         this.init();
     }
 
+    private init() {
+        return this.securityControllerService.loginUsingGET().subscribe(
+            principal => {
+                this.subject.next(principal);
+            },
+            error => {
+                // no cookie or token, no big deal, we just didn"t login so far
+                this.subject.next(AuthService.NULL_PRINCIPAL);
+            }
+        );
+    }
+
     ngOnDestroy(): void {
+        // cleanup subscriptions
         this.subject.complete();
     }
 
-    getPrincipal(): Observable<Principal> {
+    getPrincipal(): Observable<PrincipalResponse> {
         return this.subject.asObservable();
     }
 
-
-    private init() {
-        // try sessionStorage
-        var rawToken = sessionStorage.getItem(AuthService.STORE_TOKEN_KEY);
-        if (!rawToken) {
-            // try localStorage
-            rawToken = localStorage.getItem(AuthService.STORE_TOKEN_KEY);
-            if (rawToken) {
-                // move to sessionstore
-                sessionStorage.setItem(AuthService.STORE_TOKEN_KEY, rawToken);
-            }
-        }
-        try {
-            this.updateTokenAndSubject(rawToken);
-        } catch (e) {
-            this.updateTokenAndSubject();
-        }
-    }
-
     public isAuthenticated(): boolean {
-        return Boolean(this.token);
+        return Boolean(this.subject.value !== AuthService.NULL_PRINCIPAL);
     }
-
 
     // returns an observable that will return the claims json object
-    public login(username: string, password: string): Observable<Principal> {
-        var request: AuthenticationRequest = {
+    public login(username: string, password: string): Observable<PrincipalResponse> {
+        var request: LoginRequest = {
             username: username,
             password: password
         };
 
-        return this.securityControllerService.authenticateUsingPOST(request)
+        console.log("<login> in auth.service");
+        return this.securityControllerService.loginUsingPOST(request)
             .map(
-                tokenResponse => {
-                    console.log("tokenResponse" + tokenResponse);
-                    const rawToken = tokenResponse.token;
-                    sessionStorage.setItem(AuthService.STORE_TOKEN_KEY, rawToken);
-                    localStorage.setItem(AuthService.STORE_TOKEN_KEY, rawToken);
-                    return this.updateTokenAndSubject(rawToken);
+                principalResponse => {
+                    console.log("principalResponse" + principalResponse);
+                    this.subject.next(principalResponse);
+                    return principalResponse;
                 })
             .catch(
                 error => {
-                    this.updateTokenAndSubject();
                     return Observable.throw(error);
                 });
     }
 
     public logout(): void {
-        sessionStorage.removeItem(AuthService.STORE_TOKEN_KEY);
-        localStorage.removeItem(AuthService.STORE_TOKEN_KEY);
-        this.updateTokenAndSubject();
-    }
-
-    private jwtParse(token: string): any {
-        const base64Url = token.split('.')[1]; // second part of the token string
-        const base64 = base64Url
-            .replace('-', '+')
-            .replace('_', '/');
-        return JSON.parse(window.atob(base64));
-    }
-
-    public refreshToken(token: string): Observable<void | {}> {
-        const requestParam = {token: this.token};
-
-        /*
-        return this.http.post(AuthService.REFRESH_TOKEN_URL, requestParam, this.generateOptions())
-            .map((res: Response) => {
-                this.saveToken(res);
-            }).catch(err => {
-                throw Error(err.json().message);
-            });
-            */
-        return undefined;
+        this.securityControllerService.logoutUsingGET().subscribe(
+            principal => {
+                this.subject.next(AuthService.NULL_PRINCIPAL);
+            }
+        )
     }
 
     public getUsername(): string | undefined {
-        if (this.token) {
-            return this.token[AuthService.CLAIM_KEY_SUBJECT];
+        if (this.isAuthenticated()) {
+            return this.subject.value.username;
         } else {
             return null;
         }
     }
 
     public getUserId(): number | undefined {
-        if (this.token) {
-            return this.token[AuthService.CLAIM_KEY_USERID];
+        if (this.isAuthenticated()) {
+            return this.subject.value.userId;
         } else {
             return null;
         }
     }
 
-    // call this when we have a new token value received
-    private updateTokenAndSubject(rawToken?: any): Principal {
-        if (!rawToken) {
-            this.subject.next(Principal.NULL);
-            return Principal.NULL;
-        }
-        this.token = this.jwtParse(rawToken);
-        if (this.token) {
-            var principal = new Principal();
-            principal.userId = this.getUserId();
-            principal.userName = this.getUsername();
-            principal.token = rawToken;
-            console.log(principal);
-            this.subject.next(principal);
-            return principal;
-        }
-    }
-
-    static getRawToken() {
-        return sessionStorage.getItem(AuthService.STORE_TOKEN_KEY);
-    }
-
-}
-
-// this is supposed to be more than the data from the token since we
-// might need a second request to gather email, privileges etc.
-export class Principal {
-
-    public static readonly NULL = new Principal();
-
-    userId: number;
-    userName: string;
-    token: any;
 }
 

@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import {AuthService, Principal} from "../../services/auth.service";
+import {Component, OnInit} from '@angular/core';
+import {AuthService} from "../../services/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Alert, AlertService} from "../../services/alert.service";
+import {AlertService} from "../../services/alert.service";
 
 @Component({
     templateUrl: './logout.component.html',

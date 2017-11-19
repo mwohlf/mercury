@@ -68,15 +68,16 @@ export class AlertService implements OnDestroy {
     }
 
     public handleError(error: any): void {
-
-        const code: number = error['code'];
-        const message: string = error['message'];
-        const details: string = error['details'];
-
-        new Alert(this, this.router, code, message, AlertLevel.ERROR)
-            .withDetails(details)
-            .timeout(6).show();
-
+        try {
+            const code: number = error['code'];
+            const message: string = error['message'];
+            const details: string = error['details'];
+            new Alert(this, this.router, code, message, AlertLevel.ERROR)
+                .withDetails(details)
+                .timeout(6).show();
+        } catch (ex) {
+            console.error("<handleError> " + error + " ex: " + ex);
+        }
     }
 
 }
@@ -105,9 +106,9 @@ export class Alert {
         }
         this.subscription = Observable.timer(timeout * 1000)
             .subscribe(evemt => {
-                this.dispose();
-            }
-        );
+                    this.dispose();
+                }
+            );
         return this;
     }
 

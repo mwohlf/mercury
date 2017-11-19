@@ -3,6 +3,7 @@ package net.wohlfart.mercury.configuration;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.Authentication;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiKey;
@@ -12,7 +13,7 @@ import springfox.documentation.swagger.web.ApiKeyVehicle;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.ArrayList;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,13 +42,17 @@ public class SwaggerConfig {
                 .securitySchemes(securitySchemes())
                 .produces(Sets.newHashSet(APPLICATION_JSON_VALUE))
                 .consumes(Sets.newHashSet(APPLICATION_JSON_VALUE))
+                .ignoredParameterTypes(
+                        Principal.class,
+                        Authentication.class
+                )
                 ;
     }
 
     private List<ApiKey> securitySchemes() {
         //noinspection RedundantArrayCreation
         return Arrays.asList( new ApiKey[] {
-            new ApiKey("mykey", "api_key", "header")
+           // new ApiKey("mykey", "api_key", "header")
 
         });
     }

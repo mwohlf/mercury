@@ -1,34 +1,29 @@
-package net.wohlfart.mercury.security.oauth;
+package net.wohlfart.mercury.controller;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
 import lombok.extern.slf4j.Slf4j;
 import net.wohlfart.mercury.model.User;
-import net.wohlfart.mercury.repository.UserRepository;
 import net.wohlfart.mercury.security.JwtTokenUtil;
 import net.wohlfart.mercury.security.UserDetailsImpl;
+import net.wohlfart.mercury.security.oauth.*;
 import net.wohlfart.mercury.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.context.support.ServletContextResource;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
@@ -104,21 +99,17 @@ public class OAuthController {
             User user = accountFactory.findOrCreate(provider, tokenResponse.getBody(), userResponse.getBody());
             UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
 
-            String token = jwtTokenUtil.generateToken(userDetails);
-            responseContent = responseContent.replaceFirst("</head>", "\n"
-                    + "  <script>\n"
-                    + "   localStorage.setItem('token', '" + token + "');\n"
-                    + "  </script>\n"
-                    + "</head>\n");
-            // TODO: include the jwt token
+            String jwtToken = jwtTokenUtil.generateToken(userDetails);
             return ResponseEntity
                     .ok()
+                    .headers(jwtTokenUtil.cookies(jwtToken))
                     .contentLength(responseContent.length())
                     .contentType(MediaType.TEXT_HTML)
                     .body(responseContent);
         } else {
             return ResponseEntity
                     .ok()
+                    .headers(jwtTokenUtil.cookies(""))
                     .contentLength(responseContent.length())
                     .contentType(MediaType.TEXT_HTML)
                     .body(responseContent);

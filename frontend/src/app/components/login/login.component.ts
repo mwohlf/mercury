@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import {AuthService, Principal} from "../../services/auth.service";
+import {AuthService} from "../../services/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Alert, AlertService} from "../../services/alert.service";
+import {AlertService} from "../../services/alert.service";
 
 @Component({
     selector: 'app-login',
@@ -34,17 +34,22 @@ export class LoginComponent implements OnInit {
     }
 
     public login() {
+        console.log("<login> in login.component");
         this.authService.login(
             this.loginForm.controls['username'].value,
             this.loginForm.controls['password'].value)
             .subscribe(
                 principal => {
-                    this.alertService.success("Login for " + principal.userName).timeout(5).show();
-                    this.router.navigate([this.returnUrl]);
+                    this.alertService.success("Login for " + principal.username).timeout(5).show();
+                    this.navigate(this.returnUrl);
                 },
                 error => {
                     this.alertService.handleError(error.error);
                 });
+    }
+
+    public navigate(url: string) {
+        this.router.navigate([url]);
     }
 
 }

@@ -5,8 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import net.wohlfart.mercury.SecurityConstants;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -171,6 +173,28 @@ public class JwtTokenUtil implements Serializable {
                 .setExpiration(generateExpirationDate())
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
+    }
+
+    public HttpHeaders cookies(UserDetailsImpl userDetails) {
+        return cookies(generateToken(userDetails));
+    }
+
+    public HttpHeaders cookies(String tokenString) {
+        HttpHeaders headers = new HttpHeaders();
+
+        if (StringUtils.isEmpty(tokenString)) {
+            headers.add("Set-Cookie", ""
+                    + SecurityConstants.COOKIE_NAME + "=" + ""
+                    + "; path=" + "/"
+                    + "; expires=0"
+            );
+        } else {
+            headers.add("Set-Cookie", ""
+                    + SecurityConstants.COOKIE_NAME + "=" + tokenString
+                    + "; path=" + "/"
+            );
+        }
+        return headers;
     }
 
 }

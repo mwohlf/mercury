@@ -2,6 +2,8 @@ package net.wohlfart.mercury;
 
 public class SecurityConstants {
 
+    public static final String COOKIE_NAME = "x-auth-token";
+
     public static final String CATCH_ALL = "/**";
     public static final String API_DOCS = "/v2/api-docs";
 
@@ -22,7 +24,8 @@ public class SecurityConstants {
 
     // auth endpoints
     public static final String OAUTH_ENDPOINT = "/oauth"; // not part of the api
-    public static final String AUTHENTICATE_ENDPOINT = API + "/authenticate";
+    public static final String LOGIN_ENDPOINT = API + "/login";
+    public static final String LOGOUT_ENDPOINT = API + "/logout";
     public static final String SIGNUP_ENDPOINT = API + "/signup";
     public static final String REFRESH_ENDPOINT = API + "/refresh";
 

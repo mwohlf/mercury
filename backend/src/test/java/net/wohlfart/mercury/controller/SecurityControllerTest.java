@@ -1,7 +1,6 @@
 package net.wohlfart.mercury.controller;
 
 import net.wohlfart.mercury.security.JwtTokenUtil;
-import net.wohlfart.mercury.security.SecurityController;
 import net.wohlfart.mercury.service.UserService;
 import org.junit.Before;
 import org.mockito.InjectMocks;
