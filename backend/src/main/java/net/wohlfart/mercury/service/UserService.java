@@ -60,7 +60,7 @@ public class UserService {
      * @throws UserNotFoundException if user with given name does not exists
      */
     public User findByName(String name) {
-        return userRepository.findByName(name);
+        return userRepository.findByUsername(name);
     }
 
     /**
@@ -87,7 +87,7 @@ public class UserService {
      */
     public User update(User user) {
         if (user.getId() == null) {
-            throw new IllegalArgumentException("userid must be not be null for save, username was " + user.getName());
+            throw new IllegalArgumentException("userid must be not be null for save, username was " + user.getUsername());
         }
         if (user.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));

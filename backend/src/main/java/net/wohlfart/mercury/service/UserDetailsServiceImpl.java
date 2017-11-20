@@ -28,17 +28,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("iid: " + id);
         }
         final Set<GrantedAuthority> authorities = new HashSet<>();
-        return new UserDetailsImpl(user.getId(), user.getName(), user.getPassword(), authorities);
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByName(username);
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
         final Set<GrantedAuthority> authorities = new HashSet<>();
-        return new UserDetailsImpl(user.getId(), user.getName(), user.getPassword(), authorities);
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
     }
 
 }

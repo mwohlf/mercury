@@ -8,9 +8,10 @@
 
         <a class="menu-button" routerLinkActive="activeLink" *showAuthed="true" [routerLink]="['logout']">Logout</a>
         <a class="menu-button" routerLinkActive="activeLink" *showAuthed="false" [routerLink]="['login']">Login</a>
-        <a class="menu-button" routerLinkActive="activeLink" [routerLink]="['label']">Label</a>
-        <a class="menu-button" routerLinkActive="activeLink" [routerLink]="['settings']">Settings</a>
-        <a class="menu-button" routerLinkActive="activeLink" [routerLink]="['admin']">Admin</a>
+        <a class="menu-button" routerLinkActive="activeLink" *showAuthed="false" [routerLink]="['register']">Register</a>
+        <a class="menu-button" routerLinkActive="activeLink" *showAuthed="true" [routerLink]="['label']">Label</a>
+        <a class="menu-button" routerLinkActive="activeLink" *showAuthed="true" [routerLink]="['settings']">Settings</a>
+        <a class="menu-button" routerLinkActive="activeLink" *showAuthed="true" [routerLink]="['admin']">Admin</a>
 
     </nav>
 

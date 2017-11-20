@@ -124,7 +124,7 @@ public class SecurityController {
 
         final UserDetailsImpl userDetails;
 
-        final User user = User.builder().name(register.username).password(register.password).build();
+        final User user = User.builder().username(register.username).password(register.password).build();
         userService.save(user);
 
         try {

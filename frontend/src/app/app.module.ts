@@ -18,7 +18,7 @@ import {HeaderComponent} from "./components/header/header.component";
 import {SettingsComponent} from "./components/settings/settings.component";
 import {AdminTableUserComponent} from "./components/admin/admin-table-user.component";
 
-import {Routing} from "./routing.module";
+import {Routing} from "./routing";
 import {HttpClientModule} from "@angular/common/http";
 
 import {CdkTableModule} from "@angular/cdk/table";

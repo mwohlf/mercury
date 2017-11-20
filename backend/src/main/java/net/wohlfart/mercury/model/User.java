@@ -34,15 +34,14 @@ public class User implements Serializable {
     @GeneratedValue(generator = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(unique = true)
+    private String username;
 
     @Column(name="PASSWORD")
     private String password;
 
     @Email
-    @Column(name="EMAIL", nullable = false, unique = true)
+    @Column(name="EMAIL")
     private String email;
 
     @ManyToMany

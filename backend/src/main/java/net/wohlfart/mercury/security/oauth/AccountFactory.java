@@ -51,7 +51,7 @@ public class AccountFactory {
         oauthAccount = OAuthAccount.builder().providerName(provider).providerUid(uid).build();
         String name = provider + ":" + this.findFirst(LOGIN_OR_ID_KEY, userValues).get();
         String email = this.findFirst(USER_EMAIL_KEYS, userValues).orElse(this.findFirst(LOGIN_OR_ID_KEY, userValues).get() + "@" + provider);
-        User user = User.builder().name(name).email(email).build();
+        User user = User.builder().username(name).email(email).build();
 
         user.setOauthAccounts(new HashSet<>());
         user.addOAuthAccount(oauthAccount);

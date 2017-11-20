@@ -42,20 +42,20 @@ public class JwtUserDetailsServiceTest extends BaseTest {
     @Test(timeout = 3000)
     public void loadUserByUsernameTest() {
         User user = User.builder().email("some@email.com").build();
-        when(userRepository.findByName(anyString())).thenReturn(user);
+        when(userRepository.findByUsername(anyString())).thenReturn(user);
         UserDetails fetchedUserDetails = jwtUserDetailsService.loadUserByUsername("random name");
 
-        verify(userRepository, times(1)).findByName(anyString());
+        verify(userRepository, times(1)).findByUsername(anyString());
         assertNotNull("Fetched user details shouldn't be NULL", fetchedUserDetails);
-        assertEquals("Should return appropriate username", user.getName(), fetchedUserDetails.getUsername());
+        assertEquals("Should return appropriate username", user.getUsername(), fetchedUserDetails.getUsername());
         assertEquals("Should return appropriate password", user.getPassword(), fetchedUserDetails.getPassword());
     }
 
     @Test(timeout = 3000, expected = UsernameNotFoundException.class)
     public void loadUserWhichNotExistsTest() {
-        when(userRepository.findByName(anyString())).thenThrow(UsernameNotFoundException.class);
+        when(userRepository.findByUsername(anyString())).thenThrow(UsernameNotFoundException.class);
         jwtUserDetailsService.loadUserByUsername("random name");
-        verify(userRepository, times(1)).findByName(anyString());
+        verify(userRepository, times(1)).findByUsername(anyString());
         verifyNoMoreInteractions();
     }
 
