@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.function.BiConsumer;
 
 
 /*
@@ -34,7 +36,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    UserDetailsService userDetailsService;
+    UserDetailsService userDetailsService; // UserDetailsServiceImpl
 
     @Override
     protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -42,10 +44,16 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
             setupAuthenticationBeforeRequest(servletRequest);
             filterChain.doFilter(servletRequest, servletResponse);
             resetAuthenticationAfterRequest();
-        } catch (ExpiredJwtException eje) {
-            log.info("Security exception for user {} - {}", eje.getClaims().getSubject(), eje.getMessage());
+        } catch (UsernameNotFoundException ex) {
+            log.info("removing cookie for unknown user", ex);
+            jwtTokenUtil.cookies("").toSingleValueMap().forEach(servletResponse::setHeader);
             servletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            log.debug("Exception " + eje.getMessage(), eje);
+            servletResponse.sendRedirect(SecurityConstants.HOME);
+        } catch (ExpiredJwtException ex) {
+            log.info("Security exception for user {} - {}", ex.getClaims().getSubject(), ex.getMessage());
+            servletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            log.debug("Exception " + ex.getMessage(), ex);
+            servletResponse.sendRedirect(SecurityConstants.HOME);
         }
     }
 
@@ -63,7 +71,12 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         String username = this.jwtTokenUtil.getUsernameFromToken(resolvedToken);
-        log.info("<doFilterInternal> found user: {}", username);
+        if (!StringUtils.hasText(username)) {
+            log.info("<setupAuthenticationBeforeRequest> no username found");
+            return;
+        }
+
+        log.info("<doFilterInternal> found user: '{}'", username);
 
         // see: https://github.com/szerhusenBC/jwt-spring-security-demo/blob/master/src/main/java/org/zerhusen/security/JwtAuthenticationTokenFilter.java
         // TODO: we need to store the data in the token to avoid db roundtrip
