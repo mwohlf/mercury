@@ -4,6 +4,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
+    // for the "gradle bootRun" task:
     classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE")
   }
 }

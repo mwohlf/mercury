@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 
 
 // reading common libs and versions
-apply from: "gradle/dependencies.gradle"
+apply from: "${projectDir}/gradle/dependencies.gradle"
 
 // just the basics,
 // see: http://mrhaki.blogspot.de/2010/10/gradle-goodness-base-plugin-usage.html
