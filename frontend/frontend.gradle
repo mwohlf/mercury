@@ -52,6 +52,7 @@ task generateApi {
 
 
 task MrProper {
+    dependsOn clean
     doLast {
         delete "${projectDir}/src/generated"
         delete "${projectDir}/dist"
@@ -72,12 +73,11 @@ yarnRunBuild.dependsOn(yarn_install)
 
 
 task webjar(type: Jar, dependsOn: "jar") {
+    dependsOn yarnRunBuild
     from(fileTree("dist")) {
         into "META-INF/resources"
     }
 }
-
-webjar.dependsOn(yarnRunBuild)
 
 
 build.dependsOn(webjar)
@@ -90,7 +90,7 @@ publishing {
             groupId 'net.wohlfart.mercury'
             artifactId 'frontend'
             version '0.0.1-SNAPSHOT'
-
+            // the content of the webjar:
             artifact webjar
         }
     }

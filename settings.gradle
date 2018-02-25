@@ -2,8 +2,8 @@
 rootProject.name = 'mercury'
 
 // submodules
-include 'backend'
 include 'frontend'
+include 'backend'
 
 // check for proper modules configs
 rootProject.children.each {project ->
