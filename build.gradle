@@ -2,13 +2,13 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
 
-// reading common libs and versions
-apply from: "${projectDir}/gradle/dependencies.gradle"
-
 // just the basics,
 // see: http://mrhaki.blogspot.de/2010/10/gradle-goodness-base-plugin-usage.html
 // we use assemble, clean steps
 apply plugin: 'base'
+
+// reading common libs and versions
+apply from: "${projectDir}/gradle/dependencies.gradle"
 
 ext {
     // file fetched from the swagger endpoint
@@ -16,6 +16,8 @@ ext {
     apiDefinitionSource = "http://localhost:8080/v2/api-docs"
 }
 
+// make sure frontend is deployed before we run the backend
+//project('backend').task('compileJava').mustRunAfter('frontend:publishToMavenLocal')
 
 // download the api docs from swagger backend to generate frontend code
 // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle
@@ -39,6 +41,3 @@ task downloadApiDocs {
         swaggerGenInput.write(new JsonBuilder(json).toPrettyString())
     }
 }
-
-
-

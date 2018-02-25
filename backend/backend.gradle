@@ -23,8 +23,9 @@ repositories {
 }
 
 dependencies {
-  // the frontend
+  // the frontend webjar
   compile('net.wohlfart.mercury:frontend:0.0.1-SNAPSHOT')
+
   // spring components
   compile libraries.starter_web
   compile libraries.starter_data_jpa
@@ -52,6 +53,9 @@ dependencies {
 
   compile libraries.h2
 }
+
+// make sure the frontend is compiled and in mavenLocal
+compileJava.dependsOn(':frontend:publishToMavenLocal')
 
 jar {
   baseName='mercury'

@@ -71,17 +71,12 @@ yarnRunBuild.dependsOn(generateApi)
 yarnRunBuild.dependsOn(yarn_install)
 
 
-
 task webjar(type: Jar, dependsOn: "jar") {
     dependsOn yarnRunBuild
     from(fileTree("dist")) {
         into "META-INF/resources"
     }
 }
-
-
-build.dependsOn(webjar)
-
 
 publishing {
     publications {
