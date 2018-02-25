@@ -1,0 +1,98 @@
+import io.swagger.codegen.DefaultGenerator
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+    dependencies {
+        // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example
+        classpath("io.swagger:swagger-codegen:2.3.0-SNAPSHOT")
+    }
+}
+
+plugins {
+    id "com.moowork.node" version "1.2.0"
+}
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+
+node {
+    version = "${versions.node}"
+    npmVersion = "${versions.npm}"
+    yarnVersion = "${versions.yarn}"
+    download = true
+    workDir = file("${projectDir}/.gradle/node")
+    nodeModulesDir = file("${project.projectDir}")
+}
+
+task generateApi {
+    group 'API Generation'
+    description "Create angular API from the swagger definition in ${rootProject.ext.apiDefinitionPath}"
+
+    inputs.files(file("${rootProject.ext.apiDefinitionPath}"))
+    outputs.dir(file("${projectDir}/src/generated"))
+
+    doLast {
+        //noinspection UnnecessaryQualifiedReference
+        def config = new io.swagger.codegen.config.CodegenConfigurator()
+        config.setInputSpec("file:///${rootProject.ext.apiDefinitionPath}")
+        config.setOutputDir("${projectDir}/src/generated")
+        config.setLang('typescript-angular')
+        config.setVerbose(false)
+        config.setAdditionalProperties([
+                'basePath': 'http://localhost:8080'
+        ])
+        new DefaultGenerator().opts(config.toClientOptInput()).generate()
+    }
+}
+
+
+task MrProper {
+    doLast {
+        delete "${projectDir}/src/generated"
+        delete "${projectDir}/dist"
+        delete "${projectDir}/.gradle"
+    }
+}
+
+MrProper.dependsOn(clean)
+
+
+task yarnRunBuild(type: YarnTask) {
+    args = ['run', 'build']   // compiles into dist
+}
+
+yarnRunBuild.dependsOn(generateApi)
+yarnRunBuild.dependsOn(yarn_install)
+
+
+
+task webjar(type: Jar, dependsOn: "jar") {
+    from(fileTree("dist")) {
+        into "META-INF/resources"
+    }
+}
+
+webjar.dependsOn(yarnRunBuild)
+
+
+build.dependsOn(webjar)
+
+
+publishing {
+    publications {
+        // publish the frontend project as webjar to maven local
+        WebJar(MavenPublication) {
+            groupId 'net.wohlfart.mercury'
+            artifactId 'frontend'
+            version '0.0.1-SNAPSHOT'
+
+            artifact webjar
+        }
+    }
+}
+

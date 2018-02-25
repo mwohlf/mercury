@@ -34,7 +34,7 @@ public class User implements Serializable {
     @GeneratedValue(generator = "sequenceGenerator")
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, name="USERNAME")
     private String username;
 
     @Column(name="PASSWORD")

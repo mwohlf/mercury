@@ -1,57 +1,21 @@
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 
-buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    }
-    dependencies {
-        // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example
-        classpath("io.swagger:swagger-codegen:2.3.0-SNAPSHOT")
-    }
-}
 
+// reading common libs and versions
+apply from: "gradle/dependencies.gradle"
+
+// just the basics,
+// see: http://mrhaki.blogspot.de/2010/10/gradle-goodness-base-plugin-usage.html
+// we use assemble, clean steps
 apply plugin: 'base'
 
 ext {
-    springBootVersion = '1.5.8.RELEASE'
-    swaggerVersion = '2.3.0-SNAPSHOT'
-    h2Version = '1.4.196'
-    springfoxVersion = '2.7.0'
-    nodeVersion = '8.8.0'
-    npmVersion = '5.5.1'
-    springSecurityOAuth2Version = '2.2.0.RELEASE'
-    jsonWebTokenVersion = '0.9.0'
-    springCloudSecurityVersion = '1.2.1.RELEASE'
+    // file fetched from the swagger endpoint
+    apiDefinitionPath = "${projectDir}/etc/resources/api.json"
+    apiDefinitionSource = "http://localhost:8080/v2/api-docs"
 }
 
-
-repositories {
-    mavenCentral()
-}
-
-
-
-task mergeFrontendIntoBackend {
-    dependsOn("frontend:build")
-    doLast {
-        copy {
-            from file("${projectDir}/frontend/dist")
-            into file("${projectDir}/backend/src/main/resources/public")
-        }
-    }
-}
-
-assemble.dependsOn(mergeFrontendIntoBackend)
-
-task deletePublicDir {
-    doLast {
-        // public contains the frontend build copied over by the parent project
-        delete "${projectDir}/backend/src/main/resources/public"
-    }
-}
-
-clean.dependsOn(deletePublicDir)
 
 // download the api docs from swagger backend to generate frontend code
 // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle
@@ -60,16 +24,19 @@ task downloadApiDocs {
     description 'Download the API definition from the swagger endpoint'
 
     doLast {
-        def swaggerGenInput = new File("${projectDir}/frontend/src/resources/api.json")
-        swaggerGenInput.parentFile.mkdirs()  // mkae sure the directory exists
+        def swaggerGenInput = new File("${project.ext.apiDefinitionPath}")
+        swaggerGenInput.parentFile.mkdirs()  // make sure the directory exists
         if (!swaggerGenInput.exists()) {
-            outputs.println("delete existing api doc")
+            outputs.println("deleted existing api doc because we download a newer version now")
         }
 
         // create the new source file
-        new URL('http://localhost:8080/v2/api-docs').withInputStream {
+        new URL("${project.ext.apiDefinitionSource}").withInputStream {
             stream -> swaggerGenInput.withOutputStream { it << stream }
         }
+        // pretty print the content
+        def json = new JsonSlurper().parseText(swaggerGenInput.text)
+        swaggerGenInput.write(new JsonBuilder(json).toPrettyString())
     }
 }
 

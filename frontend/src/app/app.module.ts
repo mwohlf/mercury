@@ -47,10 +47,6 @@ import {HttpModule} from "@angular/http";
 import {AuthenticationInterceptor} from "./shared/authentication-interceptor";
 import {UserDataSource} from "./models/user-data-source";
 
-// Angular Material
-
-// Angular Material
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -76,7 +72,6 @@ import {UserDataSource} from "./models/user-data-source";
         FormsModule,
         ReactiveFormsModule,
         FlexLayoutModule,
-
         MatSidenavModule,
         MatButtonModule,
         MatChipsModule,
@@ -91,9 +86,7 @@ import {UserDataSource} from "./models/user-data-source";
         MatToolbarModule,
         MatTooltipModule,
         MatCardModule,
-
         ApiModule.forRoot(apiConfig),
-
     ],
     providers: [
         AuthService,

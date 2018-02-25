@@ -25,7 +25,9 @@ import static org.junit.Assert.*;
             "classpath:data/hsql/clear.sql",
             "classpath:data/hsql/init-user.sql"
     }),
-    @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:data/hsql/clear.sql")
+    @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = {
+            "classpath:data/hsql/clear.sql"
+    })
 })
 @Transactional
 @DataJpaTest
@@ -51,8 +53,8 @@ public class UserRepositoryTest {
     }
 
     @Test(timeout = 5000)
-    public void findByNameTest() {
-        User fetchedUser = userRepository.findByName("test2");
+    public void findByUsernameTest() {
+        User fetchedUser = userRepository.findByUsername("test2");
         assertNotNull("User shouldn't be NULL", fetchedUser);
         assertEquals("Should return appropriate user", 2L, fetchedUser.getId().longValue());
     }
@@ -79,42 +81,42 @@ public class UserRepositoryTest {
 
     @Test(timeout=5000)
     public void saveTest() {
-        User user = User.builder().email("test@test.de").name("test100").build();
+        User user = User.builder().email("test@test.de").username("test100").build();
         userRepository.save(user);
-        User fetchedUser = userRepository.findByName(user.getName());
+        User fetchedUser = userRepository.findByUsername(user.getUsername());
         assertNotNull("User shouldn't be NULL", fetchedUser);
         assertEquals("User should have appropriate role", user.getRoles(), fetchedUser.getRoles());
-        assertEquals("User should have appropriate name", user.getName(), fetchedUser.getName());
+        assertEquals("User should have appropriate name", user.getUsername(), fetchedUser.getUsername());
     }
 
     @Test(timeout=5000)
     public void saveWithAccountTest() {
-        User user = User.builder().email("testacc@test.de").name("test100acc").build();
+        User user = User.builder().email("testacc@test.de").username("test100acc").build();
         OAuthAccount account = OAuthAccount.builder().providerName("facebook").providerUid("fid").build();
 
         user.setOauthAccounts(new HashSet<>());
         user.addOAuthAccount(account);
 
         userRepository.save(user);
-        User fetchedUser = userRepository.findByName(user.getName());
+        User fetchedUser = userRepository.findByUsername(user.getUsername());
         assertNotNull("User shouldn't be NULL", fetchedUser);
         assertEquals("User should have appropriate role", user.getRoles(), fetchedUser.getRoles());
-        assertEquals("User should have appropriate name", user.getName(), fetchedUser.getName());
+        assertEquals("User should have appropriate name", user.getUsername(), fetchedUser.getUsername());
     }
 
     @Test(timeout=5000)
     public void changeUsernameTest() {
         String newName = "another random name";
         User user = userRepository.findOne(5L);
-        String oldName = user.getName();
-        user.setName(newName);
+        String oldName = user.getUsername();
+        user.setUsername(newName);
         userRepository.saveAndFlush(user);
         User changedUser = userRepository.findOne(5L);
 
         assertNotNull("Changed user shouldn't be NULL", changedUser);
         assertEquals("Should return appropriate user", user, changedUser);
-        assertEquals("Should return user with appropriate name", user.getName(), changedUser.getName());
-        assertNotEquals("Should return user with appropriate name", user.getName(), oldName);
+        assertEquals("Should return user with appropriate name", user.getUsername(), changedUser.getUsername());
+        assertNotEquals("Should return user with appropriate name", user.getUsername(), oldName);
     }
 
     @Test(timeout=5000)

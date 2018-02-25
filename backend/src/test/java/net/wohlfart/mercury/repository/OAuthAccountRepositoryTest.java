@@ -37,14 +37,14 @@ public class OAuthAccountRepositoryTest {
 
     @Test(timeout=5000)
     public void createOauthTest() {
-        User user = User.builder().email("oauthtest1@test.de").name("oauthtest1").build();
+        User user = User.builder().email("oauthtest1@test.de").username("oauthtest1").build();
         OAuthAccount oauthAccount = OAuthAccount.builder().owner(user).providerName("google").providerUid("one").build();
         oauthAccountRepository.save(oauthAccount);
     }
 
     @Test(timeout=5000)
     public void createOauthTokenTest() {
-        User user = User.builder().email("oauthtest2@test.de").name("oauthtest2").build();
+        User user = User.builder().email("oauthtest2@test.de").username("oauthtest2").build();
         OAuthToken token1 = OAuthToken.builder().key("key1").value("value1").build();
         OAuthToken token2 = OAuthToken.builder().key("key2").value("value2").build();
         OAuthAccount oauthAccount = OAuthAccount.builder().providerName("google").providerUid("one").token(new HashSet<>()).build();

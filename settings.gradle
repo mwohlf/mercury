@@ -1,8 +1,17 @@
 
-
-
-include 'frontend'
-include 'backend'
-
 rootProject.name = 'mercury'
 
+// submodules
+include 'backend'
+include 'frontend'
+
+// check for proper modules configs
+rootProject.children.each {project ->
+
+    project.projectDir = new File(settingsDir, project.name)
+    assert project.projectDir.isDirectory(), "directory missing for sub project '" + project + "'"
+
+    project.buildFileName = "${project.name}.gradle"
+    assert project.buildFile.isFile(), "config file not found for sub project " + project + "'"
+
+}
