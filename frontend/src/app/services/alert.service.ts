@@ -1,8 +1,8 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {NavigationStart, Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Subscription} from "rxjs/Subscription";
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Subscription} from 'rxjs/Subscription';
 
 @Injectable()
 export class AlertService implements OnDestroy {

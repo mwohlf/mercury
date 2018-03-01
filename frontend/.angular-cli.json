@@ -1,52 +1,52 @@
 {
-  "project": {
-    "name": "mercury"
-  },
-  "apps": [
-    {
-      "root": "src",
-      "outDir": "dist",
-      "assets": [
-        "assets",
-        "favicon.png"
-      ],
-      "index": "index.html",
-      "main": "main.ts",
-      "test": "test.ts",
-      "tsconfig": "tsconfig.json",
-      "testTsconfig": "tsconfig.json",
-      "prefix": "mercury",
-      "styles": [
-        "styles.scss"
-      ],
-      "scripts": [
-      ],
-      "environmentSource": "environments/environment.ts",
-      "environments": {
-        "dev": "environments/environment.ts",
-        "prod": "environments/environment.prod.ts"
-      }
-    }
-  ],
-  "e2e": {
-    "protractor": {
-      "config": "./protractor.conf.js"
-    }
-  },
-  "test": {
-    "karma": {
-      "config": "./karma.conf.js"
-    }
-  },
-  "defaults": {
-    "styleExt": "scss",
-    "class": {
-      "spec": false
+    "project": {
+        "name": "mercury"
     },
-    "component": {
-      "spec": true,
-      "inlineStyle": false,
-      "inlineTemplate": false
+    "apps": [
+        {
+            "root": "src",
+            "outDir": "dist",
+            "assets": [
+                "assets",
+                "favicon.png"
+            ],
+            "index": "index.html",
+            "main": "main.ts",
+            "test": "test.ts",
+            "tsconfig": "tsconfig.json",
+            "testTsconfig": "tsconfig.json",
+            "prefix": "mercury",
+            "styles": [
+                "styles.scss"
+            ],
+            "scripts": [
+            ],
+            "environmentSource": "environments/environment.ts",
+            "environments": {
+                "dev": "environments/environment.ts",
+                "prod": "environments/environment.prod.ts"
+            }
+        }
+    ],
+    "e2e": {
+        "protractor": {
+            "config": "./protractor.conf.js"
+        }
+    },
+    "test": {
+        "karma": {
+            "config": "./karma.conf.js"
+        }
+    },
+    "defaults": {
+        "styleExt": "scss",
+        "class": {
+            "spec": false
+        },
+        "component": {
+            "spec": true,
+            "inlineStyle": false,
+            "inlineTemplate": false
+        }
     }
-  }
 }

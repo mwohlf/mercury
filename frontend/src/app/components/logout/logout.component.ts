@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "../../services/auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AlertService} from "../../services/alert.service";
+import {AuthService} from '../../services/auth.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AlertService} from '../../services/alert.service';
 
 @Component({
     templateUrl: './logout.component.html',

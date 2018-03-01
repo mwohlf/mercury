@@ -1,12 +1,12 @@
 {
-  "name": "mercury application",
-  "short_name": "mercury",
-  "theme_color": "#212121",
-  "background_color": "#212121",
-  "display": "standalone",
-  "description": "simple webapp using angular and spring boot",
-  "scope": "/",
-  "start_url": "/",
-  "icons": [],
-  "splash_pages": null
+    "name": "mercury application",
+    "short_name": "mercury",
+    "theme_color": "#212121",
+    "background_color": "#212121",
+    "display": "standalone",
+    "description": "simple webapp using angular and spring boot",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [],
+    "splash_pages": null
 }

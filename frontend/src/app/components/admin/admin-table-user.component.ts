@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {UserDataSource} from "../../models/user-data-source";
-import {User} from "../../../generated/model/user";
+import {UserDataSource} from '../../models/user-data-source';
+import {User} from '../../../generated/model/user';
 
 
 @Component({

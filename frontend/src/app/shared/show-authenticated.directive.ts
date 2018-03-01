@@ -1,6 +1,6 @@
 import {Directive, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef} from '@angular/core';
 import {AuthService} from '../services/auth.service';
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from 'rxjs/Subscription';
 
 @Directive({ selector: '[showAuthed]' })
 export class ShowAuthedDirective implements OnInit, OnDestroy {

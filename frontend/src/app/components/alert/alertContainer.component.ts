@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Alert, AlertLevel, AlertService} from "../../services/alert.service";
-import { trigger,style,transition,animate,keyframes,query,stagger } from '@angular/animations';
-import {Subscription} from "rxjs/Subscription";
+import {Alert, AlertLevel, AlertService} from '../../services/alert.service';
+import {animate, keyframes, query, style, transition, trigger} from '@angular/animations';
+import {Subscription} from 'rxjs/Subscription';
 
 
 @Component({

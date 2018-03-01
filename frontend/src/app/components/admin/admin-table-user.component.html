@@ -27,10 +27,10 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef>  </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{element.id}}
-                            <a (click)="onEdit(element)"><i class="fa fa-pencil fa-fw"></i></a>
-                            <a (click)="onDelete(element)"><i class="fa fa-trash-o fa-fw"></i></a>
-                            <a (click)="onDisable(element)"><i class="fa fa-lock fa-fw"></i></a>
-                            <a (click)="onEnable(element)"><i class="fa fa-unlock fa-fw"></i></a>
+                        <a (click)="onEdit(element)"><i class="fa fa-pencil fa-fw"></i></a>
+                        <a (click)="onDelete(element)"><i class="fa fa-trash-o fa-fw"></i></a>
+                        <a (click)="onDisable(element)"><i class="fa fa-lock fa-fw"></i></a>
+                        <a (click)="onEnable(element)"><i class="fa fa-unlock fa-fw"></i></a>
                     </mat-cell>
                 </ng-container>
 

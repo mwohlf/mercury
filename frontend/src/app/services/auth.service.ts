@@ -3,10 +3,10 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {SecurityControllerService} from "../../generated/api/securityController.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {LoginRequest} from "../../generated/model/loginRequest";
-import {PrincipalResponse} from "../../generated/model/principalResponse";
+import {SecurityControllerService} from '../../generated/api/securityController.service';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {LoginRequest} from '../../generated/model/loginRequest';
+import {PrincipalResponse} from '../../generated/model/principalResponse';
 
 /**
  * AuthService uses JSON-Web-Token authorization strategy.

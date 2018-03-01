@@ -1,6 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
-import {AuthService} from "../../services/auth.service";
-import {Subscription} from "rxjs/Subscription";
+import {AuthService} from '../../services/auth.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
     selector: 'mrc-footer',

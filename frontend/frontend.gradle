@@ -44,7 +44,7 @@ task generateApi {
         config.setLang('typescript-angular')
         config.setVerbose(false)
         config.setAdditionalProperties([
-                'basePath': 'http://localhost:8080'
+            'basePath': 'http://localhost:8080'
         ])
         new DefaultGenerator().opts(config.toClientOptInput()).generate()
     }

@@ -1,10 +1,10 @@
-import {User} from "../../generated/model/user";
-import {UserControllerService} from "../../generated/api/userController.service";
-import {Observable} from "rxjs/Observable";
-import {CollectionViewer, DataSource} from "@angular/cdk/collections";
-import {AlertService} from "../services/alert.service";
-import {Injectable} from "@angular/core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {User} from '../../generated/model/user';
+import {UserControllerService} from '../../generated/api/userController.service';
+import {Observable} from 'rxjs/Observable';
+import {CollectionViewer, DataSource} from '@angular/cdk/collections';
+import {AlertService} from '../services/alert.service';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class UserDataSource extends DataSource<User> {
