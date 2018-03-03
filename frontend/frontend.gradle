@@ -57,6 +57,7 @@ task MrProper {
         delete "${projectDir}/src/generated"
         delete "${projectDir}/dist"
         delete "${projectDir}/.gradle"
+        delete "${projectDir}/node_modules"
     }
 }
 
