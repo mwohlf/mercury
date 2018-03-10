@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static net.wohlfart.mercury.SecurityConstants.OAUTH_ENDPOINT;
@@ -43,7 +44,7 @@ public class OAuthController {
     private static final String FACEBOOK_PROVIDER = "facebook";
     private static final String GOOGLE_PROVIDER = "google";
 
-    private static final HashMap<String, OAuthProviderConfig> PROVIDER_CONFIG = new HashMap<>();
+    private static final HashMap<String, OAuthProviderConfig> PROVIDER_CONFIGS = new HashMap<>();
 
     private static final StateManager STATE_MANAGER = new StateManager();
 
@@ -58,78 +59,82 @@ public class OAuthController {
 
     @PostConstruct
     public void setupProviders() {
-        PROVIDER_CONFIG.put(GITHUB_PROVIDER, github());
-        PROVIDER_CONFIG.put(FACEBOOK_PROVIDER, facebook());
-        PROVIDER_CONFIG.put(GOOGLE_PROVIDER, google());
+        PROVIDER_CONFIGS.put(GITHUB_PROVIDER, github());
+        PROVIDER_CONFIGS.put(FACEBOOK_PROVIDER, facebook());
+        PROVIDER_CONFIGS.put(GOOGLE_PROVIDER, google());
     }
 
     @GetMapping(OAUTH_ENDPOINT + "/{provider}")
     public ResponseEntity authenticate(@PathVariable("provider") String provider,
                                        HttpServletRequest request) throws AuthenticationException, URISyntaxException, IOException {
-        log.info("<authenticate> provider '{}'", provider);
+        log.info("<authenticate> provider '{}' detected", provider);
 
-        final OAuthProviderConfig config = PROVIDER_CONFIG.get(provider);
-        if (config == null) {
-            return ResponseEntity.ok("unknown provider " + provider);
+        final OAuthProviderConfig authProvider = PROVIDER_CONFIGS.get(provider);
+        if (authProvider == null) {
+            return ResponseEntity.ok("unknown provider '" + provider + "'"
+                + " available providers are " + Arrays.toString(PROVIDER_CONFIGS.keySet().toArray()));
         }
 
         String stateId = request.getParameter(STATE_KEY);
         if (StringUtils.isEmpty(stateId)) {
             stateId = STATE_MANAGER.createState().getKey();
-            return new AuthRedirectBuilder(config).state(stateId).build();   // redirect to provider
+            return authProvider.redirectForAuthentication(stateId);
         }
 
+        // returning from provider
+        // TODO: remove the state
         if (!STATE_MANAGER.hasState(stateId)) {
-            // TODO: maybe store the ip in the state and check here
-            return ResponseEntity.ok("unknown state '" + stateId + "' for provider '" + provider + "'");
+            // TODO: store the ip and or nonce (in the state) and check here
+            // this happens when reusing or replaying the url from the redirect
+            return ResponseEntity.ok("unknown state '" + stateId + "' for authProvider '" + authProvider + "'");
         }
 
         final DefaultResourceLoader loader = new DefaultResourceLoader();
-        Resource indexFile = loader.getResource("classpath:public/index.html");
-        String responseContent = CharStreams.toString(new InputStreamReader(indexFile.getInputStream(), Charsets.UTF_8));
+        final Resource indexFile = loader.getResource("classpath:public/index.html");
+        final String startPage = CharStreams.toString(new InputStreamReader(indexFile.getInputStream(), Charsets.UTF_8));
 
+        // request is the codeToken redirect
         final String code = request.getParameter(CODE_KEY);
         if (!StringUtils.isEmpty(code)) {
-            ResponseEntity<HashMap> tokenResponse =  new AccessTokenRetriever(config, code).request();  // request provider
-            log.info("<authenticate> {}", tokenResponse);
-            log.info("<authenticate> body: {}", tokenResponse.getBody());
-            String accessToken = (String) tokenResponse.getBody().get("access_token");
-            ResponseEntity<HashMap> userResponse = new UserDataRetriever(config, accessToken).request();
+            final String accessToken = authProvider.requestAccessToken(code);
+
+            ResponseEntity<HashMap> userResponse = new UserDataRetriever(authProvider, accessToken).request();
             log.info("<authenticate> userResponse: {}", userResponse.getBody());
-            User user = accountFactory.findOrCreate(provider, tokenResponse.getBody(), userResponse.getBody());
+            User user = accountFactory.findOrCreate(provider, userResponse.getBody());
             UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
 
             String jwtToken = jwtTokenUtil.generateToken(userDetails);
             return ResponseEntity
                     .ok()
                     .headers(jwtTokenUtil.cookies(jwtToken))
-                    .contentLength(responseContent.length())
+                    .contentLength(startPage.length())
                     .contentType(MediaType.TEXT_HTML)
-                    .body(responseContent);
+                    .body(startPage);
         } else {
+            log.error("no code key found in redirect");
             return ResponseEntity
                     .ok()
                     .headers(jwtTokenUtil.cookies(""))
-                    .contentLength(responseContent.length())
+                    .contentLength(startPage.length())
                     .contentType(MediaType.TEXT_HTML)
-                    .body(responseContent);
+                    .body(startPage);
         }
     }
 
     @Bean
-    @ConfigurationProperties(prefix="github", ignoreUnknownFields = false)
+    @ConfigurationProperties(prefix=GITHUB_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig github() {
         return new OAuthProviderConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix="facebook", ignoreUnknownFields = false)
+    @ConfigurationProperties(prefix=FACEBOOK_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig facebook() {
         return new OAuthProviderConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix="google", ignoreUnknownFields = false)
+    @ConfigurationProperties(prefix=GOOGLE_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig google() {
         return new OAuthProviderConfig();
     }

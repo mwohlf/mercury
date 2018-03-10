@@ -41,7 +41,7 @@ public class AccountFactory {
     @Autowired
     OAuthAccountService oauthAccountService;
 
-    public User findOrCreate(String provider, HashMap tokenValues, HashMap userValues) {
+    public User findOrCreate(String provider, HashMap userValues) {
         String uid = this.findFirst(USER_UID_KEYS, userValues).get();
         OAuthAccount oauthAccount = oauthAccountService.findByProviderUid(provider, uid);
         if (oauthAccount != null) {
@@ -76,7 +76,6 @@ tokenValues = {HashMap@12011}  size = 3
  0 = {HashMap$Node@12164} "access_token" -> "..."
  1 = {HashMap$Node@12165} "scope" -> "read:user"
  2 = {HashMap$Node@12166} "token_type" -> "bearer"
-
 userValues = {HashMap@12012}  size = 37
  0 = {HashMap$Node@12058} "gists_url" -> "https://api.github.com/users/mwohlf/gists{/gist_id}"
  1 = {HashMap$Node@12059} "repos_url" -> "https://api.github.com/users/mwohlf/repos"

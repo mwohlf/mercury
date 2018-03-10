@@ -1,13 +1,13 @@
 # mercury
 springboot and angular playground
 
-# run backend
+#### run backend
 gradle clean build bootRun
 
-# cleanup
+#### cleanup
 gradle MrProper
 
-# package updates
+#### package updates
 yarn install
 yarn upgrade-interactive
 
@@ -27,10 +27,6 @@ npm install @angular/{animations,common,compiler,core,forms,http,platform-browse
 npm install --save core-js@latest rxjs@latest zone.js@latest
 npm install --save-dev @angular/{compiler-cli,cli,language-service}@latest
 
+#### links
 
-..
-
-download
-
-update modules:
-npm i --save
+https://github.com/ngrx/platform

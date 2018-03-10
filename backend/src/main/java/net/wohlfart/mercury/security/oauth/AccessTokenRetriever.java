@@ -44,6 +44,7 @@ public class AccessTokenRetriever {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, headers);
 
         RestTemplate restTemplate = new RestTemplate();
+        // TODO: update for springboot2
         return restTemplate.postForEntity(client.getAccessTokenUri(), request, HashMap.class);
     }
 

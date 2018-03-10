@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class StateManager {
 
-    // TODO: keys are easy to guess, might need to change taht
+    // TODO: keys are easy to guess, might need to change that
     AtomicInteger nextState = new AtomicInteger(1);
 
     private final LoadingCache<String, State> cache = CacheBuilder.newBuilder()

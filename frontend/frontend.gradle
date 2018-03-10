@@ -19,7 +19,6 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-
 node {
     version = "${versions.node}"
     npmVersion = "${versions.npm}"
@@ -27,6 +26,12 @@ node {
     download = true
     workDir = file("${projectDir}/.gradle/node")
     nodeModulesDir = file("${project.projectDir}")
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    mavenLocal()
 }
 
 task generateApi {
