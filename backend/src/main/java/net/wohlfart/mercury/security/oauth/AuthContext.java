@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @EqualsAndHashCode
 public class AuthContext {
@@ -48,26 +49,31 @@ public class AuthContext {
                 throw new IllegalArgumentException(
                     "multiple values for field '" + fieldName + "' value are '" + Arrays.toString(parameters) + "'");
             }
-            container.put(fieldName, parameters[1]);
+            container.put(fieldName, parameters[0]);
         });
         currentProviderNode.set(CODE_RESPONSE, container);
         return this;
     }
 
-    public AuthContext collectAccessTokenParameters(Map<String, String> accessTokenParameters) {
+    public AuthContext collectAccessTokenParameters(Map<String, Object> accessTokenParameters) {
         ObjectNode container = mapper.createObjectNode();
-        accessTokenParameters.forEach(container::put);
+        accessTokenParameters.forEach(new BiConsumer<String, Object>() {
+            @Override
+            public void accept(String key, Object value) {
+                container.put(key, String.valueOf(value));
+            }
+        });
         currentProviderNode.set(ACCESS_TOKEN_RESPONSE, container);
         return this;
     }
 
 
     public String getCode() {
-        return getFromCurrentProvider(CODE_RESPONSE + "." + "code");
+        return getFromCurrentProvider("/" + CODE_RESPONSE + "/" + "code");
     }
 
     public String getAccessToken() {
-        return getFromCurrentProvider(ACCESS_TOKEN_RESPONSE + "." + "access_token");
+        return getFromCurrentProvider("/" + ACCESS_TOKEN_RESPONSE + "/" + "access_token");
     }
 
 }

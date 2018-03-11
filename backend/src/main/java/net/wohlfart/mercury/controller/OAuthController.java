@@ -136,7 +136,7 @@ public class OAuthController {
         return new AuthRedirectBuilder(config.getClient()).state(stateId).build();   // redirect to provider
     }
 
-    private HashMap<String, String> requestAccessToken(OAuthProviderConfig config, AuthContext authContext) {
+    private HashMap requestAccessToken(OAuthProviderConfig config, AuthContext authContext) {
         assert authContext.getCode() != null : "code must not be null";
         final ResponseEntity<HashMap> accessTokenResponse =  new AccessTokenRetriever(config.getClient()).code(authContext.getCode()).request();
         log.info("<requestAccessToken> {}", accessTokenResponse);

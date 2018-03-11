@@ -27,7 +27,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
             RuntimeException.class,
     })
     protected ResponseEntity<AlertMessage> processException(RuntimeException ex, WebRequest request) {
-        log.info("<processException> " + ex);
+        log.error("<processException> ", ex);
         HttpStatus status = HttpStatus.BAD_REQUEST;
         HttpHeaders headers = new HttpHeaders();
         String message = "bad request";
