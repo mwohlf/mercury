@@ -14,11 +14,11 @@ import java.net.URISyntaxException;
 @Slf4j
 public class AuthRedirectBuilder {
 
-    private final OAuthProviderConfig config;
+    private final AuthorizationCodeResourceDetails client;
     private String state;
 
-    public AuthRedirectBuilder(OAuthProviderConfig config) {
-        this.config = config;
+    public AuthRedirectBuilder(AuthorizationCodeResourceDetails client) {
+        this.client = client;
     }
 
     public AuthRedirectBuilder state(String state) {
@@ -37,7 +37,6 @@ public class AuthRedirectBuilder {
      */
     public ResponseEntity build() {
         try {
-            AuthorizationCodeResourceDetails client = config.getClient();
             UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.newInstance()
                     .uri(new URI(client.getUserAuthorizationUri()))
                     // required, client id known by the provider

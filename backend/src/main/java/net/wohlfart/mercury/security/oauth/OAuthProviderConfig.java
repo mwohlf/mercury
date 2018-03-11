@@ -38,14 +38,4 @@ public class OAuthProviderConfig {
         return resource;
     }
 
-    public ResponseEntity redirectForAuthentication(String stateId) {
-        return new AuthRedirectBuilder(this).state(stateId).build();   // redirect to provider
-    }
-
-    public String requestAccessToken(String code) {
-        ResponseEntity<HashMap> accessTokenResponse =  new AccessTokenRetriever(this, code).request();
-        log.info("<authenticate> {}", accessTokenResponse);
-        log.info("<authenticate> body: {}", accessTokenResponse.getBody());
-        return (String) accessTokenResponse.getBody().get("access_token");
-    }
 }

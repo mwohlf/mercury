@@ -18,11 +18,15 @@ import java.util.HashMap;
 public class UserDataRetriever {
 
     private final OAuthProviderConfig config;
-    private final String accessToken;
+    private String accessToken;
 
-    public UserDataRetriever(OAuthProviderConfig config, String accessToken) {
+    public UserDataRetriever(OAuthProviderConfig config) {
         this.config = config;
+    }
+
+    public UserDataRetriever accessToken(String accessToken) {
         this.accessToken = accessToken;
+        return this;
     }
 
     public ResponseEntity<HashMap> request() {

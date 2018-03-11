@@ -13,12 +13,16 @@ import java.util.HashMap;
 
 public class AccessTokenRetriever {
 
-    private final OAuthProviderConfig config;
-    private final String code;
+    private final AuthorizationCodeResourceDetails client;
+    private String code;
 
-    public AccessTokenRetriever(OAuthProviderConfig config, String code) {
-        this.config = config;
+    public AccessTokenRetriever(AuthorizationCodeResourceDetails client) {
+        this.client = client;
+    }
+
+    public AccessTokenRetriever code(String code) {
         this.code = code;
+        return this;
     }
 
     /*
@@ -30,7 +34,6 @@ public class AccessTokenRetriever {
      *    client_secret=[dfgsergsergseg]}
      */
     public ResponseEntity<HashMap> request() {
-        AuthorizationCodeResourceDetails client = this.config.getClient();
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("client_id", client.getClientId());
         form.add("client_secret", client.getClientSecret());

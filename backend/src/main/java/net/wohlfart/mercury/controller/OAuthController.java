@@ -38,7 +38,6 @@ import static net.wohlfart.mercury.SecurityConstants.OAUTH_ENDPOINT;
 public class OAuthController {
 
     private static final String STATE_KEY = "state";
-    private static final String CODE_KEY = "code";
 
     private static final String GITHUB_PROVIDER = "github";
     private static final String FACEBOOK_PROVIDER = "facebook";
@@ -78,48 +77,82 @@ public class OAuthController {
         String stateId = request.getParameter(STATE_KEY);
         if (StringUtils.isEmpty(stateId)) {
             stateId = STATE_MANAGER.createState().getKey();
-            return authProvider.redirectForAuthentication(stateId);
+            return redirectForAuthentication(authProvider, stateId);
         }
 
-        // returning from provider
-        // TODO: remove the state
+        // returning from provider, there is a stateId
         if (!STATE_MANAGER.hasState(stateId)) {
-            // TODO: store the ip and or nonce (in the state) and check here
+            // TODO: store the ip and or nounce (in the state) and check here
             // this happens when reusing or replaying the url from the redirect
             return ResponseEntity.ok("unknown state '" + stateId + "' for authProvider '" + authProvider + "'");
         }
+        final AuthContext authContext =  new AuthContext();
+        authContext.useProvider(provider);
 
+        final String code = authContext.collectRedirectParameters(request.getParameterMap()).getCode();
+        if (StringUtils.isEmpty(code)) {
+            log.error("no code found after redirect, back to start page");
+            return startPage();
+        }
+
+        final String accessToken = authContext.collectAccessTokenParameters(requestAccessToken(authProvider, authContext)).getAccessToken();
+        if (StringUtils.isEmpty(accessToken)) {
+            log.error("no accessToken found after request");
+            return startPage();
+        }
+        HashMap userProfile = requestUserProfile(authProvider, authContext);
+
+        User user = accountFactory.findOrCreate(provider, userProfile);
+        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
+
+        String jwtToken = jwtTokenUtil.generateToken(userDetails);
+        final String startPage = getStartPage();
+        return ResponseEntity
+            .ok()
+            .headers(jwtTokenUtil.cookies(jwtToken))
+            .contentLength(startPage.length())
+            .contentType(MediaType.TEXT_HTML)
+            .body(startPage);
+
+    }
+
+    private ResponseEntity startPage() throws IOException {
+        final String startPage = getStartPage();
+        return ResponseEntity
+            .ok()
+            .headers(jwtTokenUtil.cookies(""))
+            .contentLength(startPage.length())
+            .contentType(MediaType.TEXT_HTML)
+            .body(startPage);
+    }
+
+    private String getStartPage() throws IOException {
         final DefaultResourceLoader loader = new DefaultResourceLoader();
         final Resource indexFile = loader.getResource("classpath:public/index.html");
-        final String startPage = CharStreams.toString(new InputStreamReader(indexFile.getInputStream(), Charsets.UTF_8));
-
-        // request is the codeToken redirect
-        final String code = request.getParameter(CODE_KEY);
-        if (!StringUtils.isEmpty(code)) {
-            final String accessToken = authProvider.requestAccessToken(code);
-
-            ResponseEntity<HashMap> userResponse = new UserDataRetriever(authProvider, accessToken).request();
-            log.info("<authenticate> userResponse: {}", userResponse.getBody());
-            User user = accountFactory.findOrCreate(provider, userResponse.getBody());
-            UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
-
-            String jwtToken = jwtTokenUtil.generateToken(userDetails);
-            return ResponseEntity
-                    .ok()
-                    .headers(jwtTokenUtil.cookies(jwtToken))
-                    .contentLength(startPage.length())
-                    .contentType(MediaType.TEXT_HTML)
-                    .body(startPage);
-        } else {
-            log.error("no code key found in redirect");
-            return ResponseEntity
-                    .ok()
-                    .headers(jwtTokenUtil.cookies(""))
-                    .contentLength(startPage.length())
-                    .contentType(MediaType.TEXT_HTML)
-                    .body(startPage);
-        }
+        return CharStreams.toString(new InputStreamReader(indexFile.getInputStream(), Charsets.UTF_8));
     }
+
+    private ResponseEntity redirectForAuthentication(OAuthProviderConfig config, String stateId) {
+        return new AuthRedirectBuilder(config.getClient()).state(stateId).build();   // redirect to provider
+    }
+
+    private HashMap<String, String> requestAccessToken(OAuthProviderConfig config, AuthContext authContext) {
+        assert authContext.getCode() != null : "code must not be null";
+        final ResponseEntity<HashMap> accessTokenResponse =  new AccessTokenRetriever(config.getClient()).code(authContext.getCode()).request();
+        log.info("<requestAccessToken> {}", accessTokenResponse);
+        log.info("<requestAccessToken> body: {}", accessTokenResponse.getBody());
+        return accessTokenResponse.getBody();
+    }
+
+    private HashMap requestUserProfile(OAuthProviderConfig config, AuthContext authContext) {
+        assert authContext.getAccessToken() != null : "accessToken must not be null";
+        final ResponseEntity<HashMap> userProfileResponse = new UserDataRetriever(config).accessToken(authContext.getAccessToken()).request();
+        log.info("<requestUserProfile>: {}", userProfileResponse);
+        log.info("<requestUserProfile> body: {}", userProfileResponse.getBody());
+        return userProfileResponse.getBody();
+    }
+
+    // implementing strategies for different auth provider here
 
     @Bean
     @ConfigurationProperties(prefix=GITHUB_PROVIDER, ignoreUnknownFields = false)

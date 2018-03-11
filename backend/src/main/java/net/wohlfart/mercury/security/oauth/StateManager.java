@@ -27,12 +27,14 @@ public class StateManager {
         return cache.asMap().containsKey(key);
     }
 
-    public State getState(String key) {
+    public State popState(String key) {
         try {
             if (!hasState(key)) {
                 throw new IllegalArgumentException("state doesn't exists");
             }
-            return cache.get(key);
+            State result = cache.get(key);
+            cache.invalidate(key);
+            return result;
         } catch (ExecutionException ex) {
             throw new IllegalArgumentException("can't find state", ex);
         }
