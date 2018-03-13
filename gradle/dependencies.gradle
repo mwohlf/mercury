@@ -28,6 +28,7 @@ ext.libraries = [
 
         fox_swagger        :      "io.springfox:springfox-swagger2:${versions.spring_fox}",
         fox_swagger_ui     :      "io.springfox:springfox-swagger-ui:${versions.spring_fox}",
+        swagger_codegen    :      "io.swagger:swagger-codegen:${versions.swagger}",   // used in buildscript
 
         jasypt             :      "com.github.ulisesbocchio:jasypt-spring-boot-starter:1.16",
         lombok             :      "org.projectlombok:lombok:1.16.12",
