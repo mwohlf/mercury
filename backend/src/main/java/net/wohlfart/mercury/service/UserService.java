@@ -39,7 +39,7 @@ public class UserService {
         if (userRepository.exists(id)) {
             return userRepository.findOne(id);
         } else {
-            throw new UserNotFoundException(null);
+            throw new UserNotFoundException("unknown id " + id);
         }
     }
 
@@ -105,7 +105,7 @@ public class UserService {
         if(userRepository.exists(id)) {
             userRepository.delete(id);
         } else {
-            throw new UserNotFoundException(null);
+            throw new UserNotFoundException("can't delete");
         }
     }
 

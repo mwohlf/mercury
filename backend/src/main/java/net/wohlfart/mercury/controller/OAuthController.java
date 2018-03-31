@@ -3,6 +3,7 @@ package net.wohlfart.mercury.controller;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
+import net.wohlfart.mercury.model.OAuthProviderInfo;
 import net.wohlfart.mercury.model.User;
 import net.wohlfart.mercury.security.JwtTokenUtil;
 import net.wohlfart.mercury.security.UserDetailsImpl;
@@ -27,8 +28,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.function.BiConsumer;
 
 import static net.wohlfart.mercury.SecurityConstants.OAUTH_ENDPOINT;
 
@@ -42,8 +46,11 @@ public class OAuthController {
     private static final String GITHUB_PROVIDER = "github";
     private static final String FACEBOOK_PROVIDER = "facebook";
     private static final String GOOGLE_PROVIDER = "google";
+    private static final String TWITTER_PROVIDER = "twitter";
 
     private static final HashMap<String, OAuthProviderConfig> PROVIDER_CONFIGS = new HashMap<>();
+
+    private static final List<OAuthProviderInfo> PROVIDER_INFO = new ArrayList<>();
 
     private static final StateManager STATE_MANAGER = new StateManager();
 
@@ -61,6 +68,16 @@ public class OAuthController {
         PROVIDER_CONFIGS.put(GITHUB_PROVIDER, github());
         PROVIDER_CONFIGS.put(FACEBOOK_PROVIDER, facebook());
         PROVIDER_CONFIGS.put(GOOGLE_PROVIDER, google());
+        PROVIDER_CONFIGS.put(TWITTER_PROVIDER, google());
+        // infor for the UI
+        PROVIDER_CONFIGS.forEach(
+            (key, oAuthProviderConfig) -> PROVIDER_INFO.add(new OAuthProviderInfo(key, key))
+        );
+    }
+
+    @GetMapping(OAUTH_ENDPOINT)
+    public ResponseEntity<List<OAuthProviderInfo>> getProvider() {
+        return ResponseEntity.ok().body(PROVIDER_INFO);
     }
 
     @GetMapping(OAUTH_ENDPOINT + "/{provider}")
@@ -154,21 +171,23 @@ public class OAuthController {
 
     // implementing strategies for different auth provider here
 
-    @Bean
     @ConfigurationProperties(prefix=GITHUB_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig github() {
         return new OAuthProviderConfig();
     }
 
-    @Bean
     @ConfigurationProperties(prefix=FACEBOOK_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig facebook() {
         return new OAuthProviderConfig();
     }
 
-    @Bean
     @ConfigurationProperties(prefix=GOOGLE_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig google() {
+        return new OAuthProviderConfig();
+    }
+
+    @ConfigurationProperties(prefix=TWITTER_PROVIDER, ignoreUnknownFields = false)
+    public OAuthProviderConfig twitter() {
         return new OAuthProviderConfig();
     }
 

@@ -6,7 +6,8 @@ import {LabelComponent} from './components/label/label.component';
 import {LoginComponent} from './components/login/login.component';
 import {RegisterComponent} from './components/register/register.component';
 import {SettingsComponent} from './components/settings/settings.component';
-import {AdminTableUserComponent} from './components/admin/admin-table-user.component';
+import {AdminUserListComponent} from './components/admin/admin-user-list.component';
+import {AdminUserDetailsComponent} from './components/admin/admin-user-details.component';
 import {LogoutComponent} from './components/logout/logout.component';
 
 
@@ -15,7 +16,8 @@ const APP_ROUTES: Routes = [
     { path: "login", component: LoginComponent },
     { path: "register", component: RegisterComponent },
     { path: "settings", component: SettingsComponent },
-    { path: "admin", component: AdminTableUserComponent },
+    { path: "admin/users", component: AdminUserListComponent },
+    { path: "admin/users/:uid", component: AdminUserDetailsComponent },
     { path: "logout", component: LogoutComponent },
 
     { path: '**', component: LabelComponent },

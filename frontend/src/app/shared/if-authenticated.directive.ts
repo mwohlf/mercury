@@ -2,8 +2,9 @@ import {Directive, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef} from
 import {AuthService} from '../services/auth.service';
 import {Subscription} from 'rxjs/Subscription';
 
-@Directive({ selector: '[showAuthed]' })
-export class ShowAuthedDirective implements OnInit, OnDestroy {
+
+@Directive({ selector: '[ifAuthenticated]' })
+export class IfAuthenticatedDirective implements OnInit, OnDestroy {
 
     private subscription: Subscription;
 
@@ -15,7 +16,7 @@ export class ShowAuthedDirective implements OnInit, OnDestroy {
     condition: boolean;
 
     @Input()
-    set showAuthed(condition: boolean) {
+    set ifAuthenticated(condition: boolean) {
         this.condition = condition;
     }
 

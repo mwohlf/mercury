@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import static net.wohlfart.mercury.SecurityConstants.USERS_ENDPOINT;
@@ -32,6 +33,14 @@ public class UserController {
         Page<User> tablePage = userService.findAll(pageable);
         log.info("found userpage " + tablePage);
         return ResponseEntity.ok(tablePage);
+    }
+
+    @GetMapping(USERS_ENDPOINT + "/{uid}")
+    @PreAuthorize("isAuthenticated()") //
+    public ResponseEntity<User> find(@PathVariable(name="uid") Long uid) throws AuthenticationException {
+        User user = userService.findById(uid);
+        log.info("found user " + user);
+        return ResponseEntity.ok(user);
     }
 
 }

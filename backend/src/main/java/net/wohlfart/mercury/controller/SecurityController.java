@@ -79,6 +79,10 @@ public class SecurityController {
 
     @GetMapping(LOGIN_ENDPOINT)
     public ResponseEntity<PrincipalResponse> login(Principal principal) {
+        if (principal == null) {
+            throw new UserNotFoundException("not logged in");
+        }
+
         final String useranme = principal.getName();
         final UserDetailsImpl userDetails;
 
@@ -95,6 +99,9 @@ public class SecurityController {
 
     @GetMapping(LOGOUT_ENDPOINT)
     public ResponseEntity<PrincipalResponse> logout(Principal principal) {
+        if (principal == null) {
+            throw new UserNotFoundException("not logged in");
+        }
         final String useranme = principal.getName();
         final UserDetailsImpl userDetails;
 

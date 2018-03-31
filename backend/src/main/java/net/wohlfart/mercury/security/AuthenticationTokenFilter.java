@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.wohlfart.mercury.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,8 +20,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Null;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 
 
 /*
@@ -41,7 +42,8 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
         try {
-            setupAuthenticationBeforeRequest(servletRequest);
+            final Authentication authentication = getAuthenticationFromRequest(servletRequest);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(servletRequest, servletResponse);
             resetAuthenticationAfterRequest();
         } catch (UsernameNotFoundException ex) {
@@ -57,35 +59,35 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         }
     }
 
-    private void setupAuthenticationBeforeRequest(HttpServletRequest servletRequest) {
-        String resolvedToken = this.resolveTokenFromCookie(servletRequest);
+    private Authentication getAuthenticationFromRequest(HttpServletRequest servletRequest) {
+        final String resolvedToken = this.resolveTokenFromCookie(servletRequest);
 
         if (!StringUtils.hasText(resolvedToken)) {
-            log.info("<setupAuthenticationBeforeRequest> no token found");
-            return;
+            log.info("<getAuthenticationFromRequest> no token found");
+            return null;
         }
 
         if (!jwtTokenUtil.validateToken(resolvedToken)) {
-            log.info("<setupAuthenticationBeforeRequest> token is invalid");
-            return;
+            log.info("<getAuthenticationFromRequest> token is invalid");
+            return null;
         }
 
-        String username = this.jwtTokenUtil.getUsernameFromToken(resolvedToken);
+        final String username = this.jwtTokenUtil.getUsernameFromToken(resolvedToken);
         if (!StringUtils.hasText(username)) {
-            log.info("<setupAuthenticationBeforeRequest> no username found");
-            return;
+            log.info("<getAuthenticationFromRequest> no username found");
+            return null;
         }
 
         log.info("<doFilterInternal> found user: '{}'", username);
 
         // see: https://github.com/szerhusenBC/jwt-spring-security-demo/blob/master/src/main/java/org/zerhusen/security/JwtAuthenticationTokenFilter.java
         // TODO: we need to store the data in the token to avoid db roundtrip
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(servletRequest));
         logger.info("authenticated user '" + username + "', setting security context");
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 
     private void resetAuthenticationAfterRequest() {

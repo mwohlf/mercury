@@ -1,22 +1,26 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UserDataSource} from '../../models/user-data-source';
 import {User} from '../../../generated/model/user';
+import {ActivatedRoute} from "@angular/router";
 
 
 @Component({
-    selector: 'admin-table-user',
-    templateUrl: 'admin-table-user.component.html',
+    selector: 'admin-user-details',
+    templateUrl: 'admin-user-details.component.html',
 })
 
-export class AdminTableUserComponent implements OnInit, OnDestroy {
+export class AdminUserDetailsComponent implements OnInit, OnDestroy {
 
     displayedColumns = ['uid', 'name', 'email', 'action'];
+    private uid: any;
 
-    constructor(public userDataSource: UserDataSource) {
+    constructor(private route: ActivatedRoute,
+                public userDataSource: UserDataSource) {
     }
 
     ngOnInit(): void {
-        this.userDataSource.refresh()
+        this.uid = this.route.snapshot.params['uid'];
+        // this.userDataSource.
     }
 
     ngOnDestroy(): void {

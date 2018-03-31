@@ -349,6 +349,48 @@
                 }
             }
         },
+        "/api/users/{uid}": {
+            "get": {
+                "tags": [
+                    "user-controller"
+                ],
+                "summary": "find",
+                "operationId": "findUsingGET",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "path",
+                        "description": "uid",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
         "/error": {
             "get": {
                 "tags": [
@@ -670,6 +712,41 @@
                 }
             }
         },
+        "/oauth": {
+            "get": {
+                "tags": [
+                    "o-auth-controller"
+                ],
+                "summary": "getProvider",
+                "operationId": "getProviderUsingGET",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/OAuthProviderInfo"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
         "/oauth/{provider}": {
             "get": {
                 "tags": [
@@ -869,6 +946,17 @@
                     "items": {
                         "$ref": "#/definitions/OAuthToken"
                     }
+                }
+            }
+        },
+        "OAuthProviderInfo": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

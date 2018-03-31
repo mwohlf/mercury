@@ -10,7 +10,7 @@
     },
     "scripts": {
         "ng": "ng",
-        "start": "ng serve --proxy-config proxy.conf.json",
+        "start": "ng serve --watch --poll=2000 --proxy-config proxy.conf.json",
         "build": "ng build -dev --output-path build/dist/META-INF/resources",
         "lint": "tslint \"src/**/*.ts\"",
         "test": "karma start ./karma.conf.js",

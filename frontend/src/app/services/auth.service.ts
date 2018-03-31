@@ -15,10 +15,10 @@ import {PrincipalResponse} from '../../generated/model/principalResponse';
  * see: http://jasonwatmore.com/post/2016/09/29/angular-2-user-registration-and-login-example-tutorial#alert-service-ts
  *
  *
- * sessionstore: not hared between tabs
+ * sessionstore: not shared between tabs
  *               cleared after browser or tab close
  *
- *  localstore; shared between tabs
+ * localstore; shared between tabs
  *
  */
 @Injectable()
@@ -34,6 +34,7 @@ export class AuthService implements OnDestroy {
     }
 
     private init() {
+        // TODO: we can't just subscribe for an empty get here
         return this.securityControllerService.loginUsingGET().subscribe(
             principal => {
                 this.subject.next(principal);

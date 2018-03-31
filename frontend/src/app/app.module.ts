@@ -4,8 +4,6 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
-
 import {AppComponent} from './components/app.component';
 import {LoginComponent} from './components/login/login.component';
 import {AuthService} from './services/auth.service';
@@ -16,10 +14,8 @@ import {NavbarComponent} from './components/navbar/navbar.component';
 import {RegisterComponent} from './components/register/register.component';
 import {HeaderComponent} from './components/header/header.component';
 import {SettingsComponent} from './components/settings/settings.component';
-import {AdminTableUserComponent} from './components/admin/admin-table-user.component';
-
+import {AdminUserListComponent} from './components/admin/admin-user-list.component';
 import {Routing} from './routing';
-
 import {CdkTableModule} from '@angular/cdk/table';
 import {
     MatButtonModule,
@@ -39,12 +35,13 @@ import {
 import {AlertService} from './services/alert.service';
 import {AlertContainerComponent} from './components/alert/alertContainer.component';
 import {LogoutComponent} from './components/logout/logout.component';
-import {ShowAuthedDirective} from './shared/show-authenticated.directive';
+import {IfAuthenticatedDirective} from './shared/if-authenticated.directive';
 import {ApiModule} from '../generated/api.module';
 import {Configuration} from '../generated/configuration';
 import {HttpModule} from '@angular/http';
 import {AuthenticationInterceptor} from './shared/authentication-interceptor';
 import {UserDataSource} from './models/user-data-source';
+import {AdminUserDetailsComponent} from "./components/admin/admin-user-details.component";
 
 @NgModule({
     declarations: [
@@ -57,10 +54,11 @@ import {UserDataSource} from './models/user-data-source';
         SidebarComponent,
         NavbarComponent,
         SettingsComponent,
-        AdminTableUserComponent,
+        AdminUserListComponent,
+        AdminUserDetailsComponent,
         AlertContainerComponent,
         LogoutComponent,
-        ShowAuthedDirective,
+        IfAuthenticatedDirective,
     ],
     imports: [
         HttpModule,
