@@ -1,11 +1,11 @@
 # mercury
-springboot and angular playground
-
-#### run backend
-gradle clean build bootRun
+springboot and angular playground...
 
 #### cleanup
 gradle MrProper
+
+#### build and run
+gradle clean build bootRun
 
 #### package updates
 yarn install

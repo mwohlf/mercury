@@ -10,6 +10,7 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 
 sourceCompatibility = 1.8
@@ -63,6 +64,18 @@ compileJava.dependsOn(':frontend:publishWebJarPublicationToMavenLocal')
 jar {
   baseName='mercury'
   version='0.0.1'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'net.wohlfart.mercury'
+            artifactId 'backend'
+            version '0.0.1-SNAPSHOT'
+            from components.java
+            // more goes in here
+        }
+    }
 }
 
 task MrProper {
