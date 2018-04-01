@@ -26,7 +26,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(USERS_ENDPOINT)
-    @PreAuthorize("isAuthenticated()") //
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<User>> findPage(@RequestParam(name="page", defaultValue="0", required=false) Integer page,
                                                @RequestParam(name="size", defaultValue="25", required=false) Integer size) throws AuthenticationException {
         Pageable pageable = new PageRequest(page, size);
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping(USERS_ENDPOINT + "/{uid}")
-    @PreAuthorize("isAuthenticated()") //
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<User> find(@PathVariable(name="uid") Long uid) throws AuthenticationException {
         User user = userService.findById(uid);
         log.info("found user " + user);

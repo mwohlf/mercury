@@ -55,34 +55,18 @@ task generateApi {
     }
 }
 
-
-task MrProper {
-    dependsOn clean
-    doLast {
-        delete "${projectDir}/src/generated"
-        delete "${projectDir}/dist"
-        delete "${projectDir}/.gradle"
-        delete "${projectDir}/node_modules"
-    }
-}
-
-MrProper.dependsOn(clean)
-
-
 task yarnRunBuild(type: YarnTask) {
-    args = ['run', 'build']   // compiles into dist
+    dependsOn yarn_install
+    dependsOn generateApi
+    args = ['run', 'build']   // compiles into build/dist. the output dir in package.json for "ng build"
 }
 
-yarnRunBuild.dependsOn(generateApi)
-yarnRunBuild.dependsOn(yarn_install)
-
-
+// gradle webjar creates
 task webjar(type: Jar, dependsOn: "jar") {
     dependsOn yarnRunBuild
-    from(fileTree("dist")) {
-        into "META-INF/resources"
-    }
+    from(fileTree("build/dist"))
 }
+build.dependsOn(webjar)
 
 publishing {
     publications {
@@ -93,7 +77,18 @@ publishing {
             version '0.0.1-SNAPSHOT'
             // the content of the webjar:
             artifact webjar
+            // from webjar
         }
+    }
+}
+
+task MrProper {
+    dependsOn clean
+    doLast {
+        delete "${projectDir}/src/generated"
+        delete "${projectDir}/dist"
+        delete "${projectDir}/.gradle"
+        delete "${projectDir}/node_modules"
     }
 }
 

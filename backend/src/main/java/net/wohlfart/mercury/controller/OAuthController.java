@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static net.wohlfart.mercury.SecurityConstants.OAUTH_ENDPOINT;
 
@@ -40,6 +39,8 @@ import static net.wohlfart.mercury.SecurityConstants.OAUTH_ENDPOINT;
 @Controller
 @Configuration // for the bean annotation
 public class OAuthController {
+
+    private static final String STARTPAGE_RESOURCE = "classpath:/META-INF/resources/index.html";
 
     private static final String STATE_KEY = "state";
 
@@ -69,22 +70,24 @@ public class OAuthController {
         PROVIDER_CONFIGS.put(FACEBOOK_PROVIDER, facebook());
         PROVIDER_CONFIGS.put(GOOGLE_PROVIDER, google());
         PROVIDER_CONFIGS.put(TWITTER_PROVIDER, google());
-        // infor for the UI
+        // info for the UI
         PROVIDER_CONFIGS.forEach(
             (key, oAuthProviderConfig) -> PROVIDER_INFO.add(new OAuthProviderInfo(key, key))
         );
     }
 
     @GetMapping(OAUTH_ENDPOINT)
-    public ResponseEntity<List<OAuthProviderInfo>> getProvider() {
+    public ResponseEntity<List<OAuthProviderInfo>> providers() {
         return ResponseEntity.ok().body(PROVIDER_INFO);
     }
 
-    @GetMapping(OAUTH_ENDPOINT + "/{provider}")
-    public ResponseEntity authenticate(@PathVariable("provider") String provider,
-                                       HttpServletRequest request) throws AuthenticationException, URISyntaxException, IOException {
+    @GetMapping(value = OAUTH_ENDPOINT + "/{provider}")
+    public ResponseEntity authenticate(@PathVariable("provider") String provider, HttpServletRequest request)
+        throws AuthenticationException, URISyntaxException, IOException {
+
         log.info("<authenticate> provider '{}' detected", provider);
 
+        // 1. redirect to provider for consent
         final OAuthProviderConfig authProvider = PROVIDER_CONFIGS.get(provider);
         if (authProvider == null) {
             return ResponseEntity.ok("unknown provider '" + provider + "'"
@@ -97,7 +100,7 @@ public class OAuthController {
             return redirectForAuthentication(authProvider, stateId);
         }
 
-        // returning from provider, there is a stateId
+        // 2. returning from provider, read code
         if (!STATE_MANAGER.hasState(stateId)) {
             // TODO: store the ip and or nounce (in the state) and check here
             // this happens when reusing or replaying the url from the redirect
@@ -112,17 +115,20 @@ public class OAuthController {
             return startPage();
         }
 
+        // 3. use code to get access token
         final String accessToken = authContext.collectAccessTokenParameters(requestAccessToken(authProvider, authContext)).getAccessToken();
         if (StringUtils.isEmpty(accessToken)) {
             log.error("no accessToken found after request");
             return startPage();
         }
-        HashMap userProfile = requestUserProfile(authProvider, authContext);
 
-        User user = accountFactory.findOrCreate(provider, userProfile);
-        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
+        // 4. use access token to get user info
+        final HashMap userProfile = requestUserProfile(authProvider, authContext);
 
-        String jwtToken = jwtTokenUtil.generateToken(userDetails);
+        final User user = accountFactory.findOrCreate(provider, userProfile);
+        final UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
+
+        final String jwtToken = jwtTokenUtil.generateToken(userDetails);
         final String startPage = getStartPage();
         return ResponseEntity
             .ok()
@@ -145,7 +151,7 @@ public class OAuthController {
 
     private String getStartPage() throws IOException {
         final DefaultResourceLoader loader = new DefaultResourceLoader();
-        final Resource indexFile = loader.getResource("classpath:public/index.html");
+        final Resource indexFile = loader.getResource(STARTPAGE_RESOURCE);
         return CharStreams.toString(new InputStreamReader(indexFile.getInputStream(), Charsets.UTF_8));
     }
 
@@ -171,21 +177,25 @@ public class OAuthController {
 
     // implementing strategies for different auth provider here
 
+    @Bean
     @ConfigurationProperties(prefix=GITHUB_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig github() {
         return new OAuthProviderConfig();
     }
 
+    @Bean
     @ConfigurationProperties(prefix=FACEBOOK_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig facebook() {
         return new OAuthProviderConfig();
     }
 
+    @Bean
     @ConfigurationProperties(prefix=GOOGLE_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig google() {
         return new OAuthProviderConfig();
     }
 
+    @Bean
     @ConfigurationProperties(prefix=TWITTER_PROVIDER, ignoreUnknownFields = false)
     public OAuthProviderConfig twitter() {
         return new OAuthProviderConfig();

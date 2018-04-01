@@ -58,7 +58,7 @@ dependencies {
 }
 
 // make sure the frontend is compiled and in mavenLocal
-compileJava.dependsOn(':frontend:publishToMavenLocal')
+compileJava.dependsOn(':frontend:publishWebJarPublicationToMavenLocal')
 
 jar {
   baseName='mercury'
@@ -70,5 +70,9 @@ task MrProper {
   doLast {
     // out is created when the server was started in IDEA
     delete "${projectDir}/out"
+    // storage for mongodb and other stuff
+    delete "${projectDir}/.gradle"
+    // storage for the webjar, we should get it from maven
+    delete "${projectDir}/src/main/resources/public"
   }
 }
