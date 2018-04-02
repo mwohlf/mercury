@@ -9,9 +9,17 @@ import {FormGroup} from '@angular/forms';
 })
 export class RegisterComponent implements OnInit {
 
-    registrationForm: FormGroup;
+    public registrationForm: FormGroup;
 
     ngOnInit(): void {
+        this.createForm();
+    }
+
+
+    private createForm() {
+        this.registrationForm = new FormGroup({
+
+        });
     }
 
     public login() {

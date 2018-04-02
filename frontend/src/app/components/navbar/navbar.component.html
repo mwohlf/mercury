@@ -6,12 +6,12 @@
 
     <nav class="main-menu">
 
-        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="true" [routerLink]="['logout']">Logout</a>
-        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="false" [routerLink]="['login']">Login</a>
-        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="false" [routerLink]="['register']">Register</a>
-        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="true" [routerLink]="['label']">Label</a>
-        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="true" [routerLink]="['settings']">Settings</a>
-        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="true" [routerLink]="['admin', 'users']">Admin</a>
+        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="true" keepWidth [routerLink]="['logout']">Logout</a>
+        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="false" keepWidth [routerLink]="['login']">Login</a>
+        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="false" keepWidth [routerLink]="['register']">Register</a>
+        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="true" keepWidth [routerLink]="['label']">Label</a>
+        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="true" keepWidth [routerLink]="['settings']">Settings</a>
+        <a class="menu-button" routerLinkActive="activeLink" *ifAuthenticated="true" keepWidth [routerLink]="['admin', 'users']">Admin</a>
 
     </nav>
 

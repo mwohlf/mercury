@@ -36,9 +36,9 @@ import {AlertService} from './services/alert.service';
 import {AlertContainerComponent} from './components/alert/alertContainer.component';
 import {LogoutComponent} from './components/logout/logout.component';
 import {IfAuthenticatedDirective} from './shared/if-authenticated.directive';
+import {KeepWidth} from './shared/keep-width';
 import {ApiModule} from '../generated/api.module';
 import {Configuration} from '../generated/configuration';
-import {HttpModule} from '@angular/http';
 import {AuthenticationInterceptor} from './shared/authentication-interceptor';
 import {UserDataSource} from './models/user-data-source';
 import {AdminUserDetailsComponent} from "./components/admin/admin-user-details.component";
@@ -59,9 +59,9 @@ import {AdminUserDetailsComponent} from "./components/admin/admin-user-details.c
         AlertContainerComponent,
         LogoutComponent,
         IfAuthenticatedDirective,
+        KeepWidth,
     ],
     imports: [
-        HttpModule,
         HttpClientModule,
         Routing,
         BrowserModule,

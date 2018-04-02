@@ -73,6 +73,7 @@ task webjar(type: Jar) {
     from(fileTree("build/dist"))
 }
 build.dependsOn(webjar)
+build.dependsOn(publishToMavenLocal)
 
 publishing {
     publications {

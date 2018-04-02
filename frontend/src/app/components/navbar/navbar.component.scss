@@ -21,14 +21,12 @@
 }
 
 .main-menu a {  // menu item
-    letter-spacing: .1em;
-    width: 100%;
     text-align: center;
     text-decoration: none;
-    padding: .75rem 2rem;
+    padding: 0.75rem 0.5rem;
     display: block;
-    color: #222;
-    border-bottom: 3px solid #ddd;
+    color: $primary-color;
+    border-bottom: 3px solid $secondary-color;
 }
 
 .main-menu a:hover {
@@ -42,6 +40,6 @@
 .main-menu a.activeLink {
     color: $accent-color;
     font-weight: bold;
-    background-color: lightgrey;
+    background-color: $secondary-color;
     border-bottom-color: $accent-color;
 }
