@@ -35,7 +35,7 @@ repositories {
 }
 
 task generateApi {
-    group 'API Generation'
+    group "API Generation"
     description "Create angular API from the swagger definition in ${rootProject.ext.apiDefinitionPath}"
 
     inputs.files(file("${rootProject.ext.apiDefinitionPath}"))
@@ -56,13 +56,19 @@ task generateApi {
 }
 
 task yarnRunBuild(type: YarnTask) {
+    group "Frontend Generation"
+    description "compile the frontend with yarn"
+
     dependsOn yarn_install
     dependsOn generateApi
     args = ['run', 'build']   // compiles into build/dist. the output dir in package.json for "ng build"
 }
 
 // gradle webjar creates
-task webjar(type: Jar, dependsOn: "jar") {
+task webjar(type: Jar) {
+    group "Artifact Generation"
+    description "assemble the maven artifact"
+
     dependsOn yarnRunBuild
     from(fileTree("build/dist"))
 }

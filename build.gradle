@@ -16,9 +16,6 @@ ext {
     apiDefinitionSource = "http://localhost:8080/v2/api-docs"
 }
 
-// make sure frontend is deployed before we run the backend
-//project('backend').task('compileJava').mustRunAfter('frontend:publishToMavenLocal')
-
 // download the api docs from swagger backend to generate frontend code
 // see: https://github.com/thebignet/swagger-codegen-gradle-plugin-example/blob/master/build.gradle
 task downloadApiDocs {
@@ -43,5 +40,12 @@ task downloadApiDocs {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.6' //we want gradle 2.10 to run this project
+    gradleVersion = '4.6'
+}
+
+task MrProper {
+    dependsOn clean
+    doLast {
+        delete "./.gradle"
+    }
 }

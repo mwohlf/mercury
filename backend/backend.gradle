@@ -1,12 +1,15 @@
 
 buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    // for the "gradle bootRun" task:
-    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE")
-  }
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        // for the "gradle bootRun" task:
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE")
+    }
 }
 
 apply plugin: 'java'
@@ -17,53 +20,49 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-  jcenter()
-  mavenCentral()
-  mavenLocal()
+    jcenter()
+    mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-  // the frontend webjar
-  compile('net.wohlfart.mercury:frontend:0.0.1-SNAPSHOT')
+    // the frontend webjar
+    compile('net.wohlfart.mercury:frontend:0.0.1-SNAPSHOT')
 
-  // spring components
-  compile libraries.starter_web
-  compile libraries.starter_data_jpa
-  compile libraries.starter_security
-  compile libraries.starter_mongodb
-  compile libraries.conf_processor
+    // spring components
+    compile libraries.starter_web
+    compile libraries.starter_data_jpa
+    compile libraries.starter_security
+    compile libraries.starter_mongodb
+    compile libraries.conf_processor
+    // api
+    compile libraries.security_oauth
+    compile libraries.json_webtoken
+    compile libraries.fox_swagger
+    compile libraries.fox_swagger_ui
+    // database
+    compile libraries.h2
+    compile libraries.embedded_mongodb
 
-  compile libraries.security_oauth
+    compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:1.16")
 
-  compile libraries.json_webtoken
+    compile('org.hibernate:hibernate-envers')
+    compile('org.liquibase:liquibase-core')
+    compile('org.projectlombok:lombok:1.16.12')
 
-  compile libraries.fox_swagger
-  compile libraries.fox_swagger_ui
-
-  compile libraries.h2
-  compile libraries.embedded_mongodb
-
-  compile("com.github.ulisesbocchio:jasypt-spring-boot-starter:1.16")
-
-  compile('org.hibernate:hibernate-envers')
-  compile('org.liquibase:liquibase-core')
-  compile('org.projectlombok:lombok:1.16.12')
-
-  compile('org.springframework.hateoas:spring-hateoas:0.23.0.RELEASE')
+    compile('org.springframework.hateoas:spring-hateoas:0.23.0.RELEASE')
 
 
-  testCompile('org.springframework.boot:spring-boot-starter-test')
-  testCompile libraries.junit
-
-
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile libraries.junit
 }
 
 // make sure the frontend is compiled and in mavenLocal
 compileJava.dependsOn(':frontend:publishWebJarPublicationToMavenLocal')
 
 jar {
-  baseName='mercury'
-  version='0.0.1'
+    baseName='mercury'
+    version='0.0.1'
 }
 
 publishing {
@@ -73,19 +72,18 @@ publishing {
             artifactId 'backend'
             version '0.0.1-SNAPSHOT'
             from components.java
-            // more goes in here
         }
     }
 }
 
 task MrProper {
-  dependsOn clean
-  doLast {
-    // out is created when the server was started in IDEA
-    delete "${projectDir}/out"
-    // storage for mongodb and other stuff
-    delete "${projectDir}/.gradle"
-    // storage for the webjar, we should get it from maven
-    delete "${projectDir}/src/main/resources/public"
-  }
+    dependsOn clean
+    doLast {
+        // out is created when the server was started in IDEA
+        delete "${projectDir}/out"
+        // storage for mongodb and other stuff
+        delete "${projectDir}/.gradle"
+        // storage for the webjar, we should get it from maven
+        delete "${projectDir}/src/main/resources/public"
+    }
 }

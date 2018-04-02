@@ -7,6 +7,16 @@ gradle MrProper
 #### build and run
 gradle clean build bootRun
 
+#### download api definition (from running backend)
+gradle bootRun
+gradle downloadApiDocs
+
+#### create maven artifacts
+gradle publishToMavenLocal
+
+#### generat frontend interface
+gradle generateApi
+
 #### package updates
 yarn install
 yarn upgrade-interactive
