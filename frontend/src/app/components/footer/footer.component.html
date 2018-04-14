@@ -1,6 +1,16 @@
 <div class="layout-footer">
-    {{userId}}
-    {{username}}
 
-    testing
+    <ng-container
+        *ngIf="userId; then loggedIn; else loggedOut">
+    </ng-container>
+
+    <ng-template #loggedIn>
+        {{userId}}
+        {{username}}
+    </ng-template>
+
+    <ng-template #loggedOut>
+        logged out
+    </ng-template>
+
 </div>

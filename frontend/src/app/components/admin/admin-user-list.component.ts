@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UserDataSource} from '../../models/user-data-source';
-import {User} from '../../../generated/model/user';
+import {Subject} from '../../../generated/model/subject';
 
 
 @Component({
@@ -22,13 +22,13 @@ export class AdminUserListComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
     }
 
-    onDelete(user: User) {
+    onDelete(user: Subject) {
     }
 
-    onDisable(user: User) {
+    onDisable(user: Subject) {
     }
 
-    onEnable(user: User) {
+    onEnable(user: Subject) {
     }
 
 }

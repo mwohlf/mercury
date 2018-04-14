@@ -6,14 +6,14 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
   <include file="db/changelog/010-schema.sql"/>
-  <include file="db/changelog/020-user.sql"/>
+  <include file="db/changelog/020-subject.sql"/>
   <include file="db/changelog/022-insert-testuser.sql"/>
   <include file="db/changelog/030-role.sql"/>
   <include file="db/changelog/040-membership.sql"/>
   <include file="db/changelog/050-permission.sql"/>
   <include file="db/changelog/060-permissionrole.sql"/>
   <include file="db/changelog/070-revision.sql"/>
-  <include file="db/changelog/080-oauth-account.sql"/>
+  <include file="db/changelog/080-remote-principal.sql"/>
   <include file="db/changelog/090-oauth-token.sql"/>
 
 </databaseChangeLog>

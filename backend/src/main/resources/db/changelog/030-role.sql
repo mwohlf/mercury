@@ -7,7 +7,7 @@ create table MC.ROLE (
     PARENT_ID bigint
 );
 
-insert into MC.ROLE (ID, NAME) values (1, 'user');
+insert into MC.ROLE (ID, NAME) values (1, 'subject');
 insert into MC.ROLE (ID, NAME) values (2, 'admin');
 
 --rollback drop table MC.ROLE;

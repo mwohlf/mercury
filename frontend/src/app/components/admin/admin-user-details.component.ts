@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UserDataSource} from '../../models/user-data-source';
-import {User} from '../../../generated/model/user';
+import {Subject} from '../../../generated/model/subject';
 import {ActivatedRoute} from "@angular/router";
 
 
@@ -27,19 +27,19 @@ export class AdminUserDetailsComponent implements OnInit, OnDestroy {
 
     }
 
-    onEdit(user: User) {
+    onEdit(user: Subject) {
 
     }
 
-    onDelete(user: User) {
+    onDelete(user: Subject) {
 
     }
 
-    onDisable(user: User) {
+    onDisable(user: Subject) {
 
     }
 
-    onEnable(user: User) {
+    onEnable(user: Subject) {
 
     }
 

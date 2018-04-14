@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class OAuthProviderInfo {
+public class AuthProviderInfo {
 
     String name;
 

@@ -1,6 +1,6 @@
 package net.wohlfart.mercury.service;
 
-import net.wohlfart.mercury.model.OAuthAccount;
+import net.wohlfart.mercury.model.RemotePrincipal;
 import net.wohlfart.mercury.repository.OAuthAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,22 +15,22 @@ public class OAuthAccountService {
     // private AuthDocumentRepository authDocumentRepository;
 
 
-    public OAuthAccount findByProviderUid(String provider, String uid) {
-        return oauthAccountRepository.findByProviderNameAndProviderUid(provider, uid);
+    public RemotePrincipal findByRemoteUserId(String provider, String uid) {
+        return oauthAccountRepository.findByProviderNameAndRemoteUserId(provider, uid);
     }
 
-    public OAuthAccount create(OAuthAccount oauthAccount) {
+    public RemotePrincipal create(RemotePrincipal oauthAccount) {
         // todo: check for update, id
         return oauthAccountRepository.save(oauthAccount);
     }
 
     /*
     public AuthContext create(AuthContext authContext) {
-        return authDocumentRepository.save(authContext);
+        return authDocumentRepository.create(authContext);
     }
     */
 
-    public OAuthAccount save(OAuthAccount oauthAccount) {
+    public RemotePrincipal save(RemotePrincipal oauthAccount) {
         return oauthAccountRepository.save(oauthAccount);
     }
 

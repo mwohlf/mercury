@@ -1,6 +1,6 @@
 package net.wohlfart.mercury.service;
 
-import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.model.Subject;
 import net.wohlfart.mercury.security.UserNotFoundException;
 import net.wohlfart.mercury.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class UserService {
      * Returns all users
      * @return List of users
      */
-    public List<User> findAll() {
+    public List<Subject> findAll() {
         return userRepository.findAll();
     }
 
@@ -35,7 +35,7 @@ public class UserService {
      * @return user with given id
      * @throws UserNotFoundException if user with given id does not exists
      */
-    public User findById(Long id) {
+    public Subject findById(Long id) {
         if (userRepository.exists(id)) {
             return userRepository.findOne(id);
         } else {
@@ -49,7 +49,7 @@ public class UserService {
      * @return user with given email
      * @throws UserNotFoundException if user with given email does not exists
      */
-    public User findByEmail(String email) {
+    public Subject findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
@@ -59,40 +59,40 @@ public class UserService {
      * @return name with given email
      * @throws UserNotFoundException if user with given name does not exists
      */
-    public User findByName(String name) {
+    public Subject findByName(String name) {
         return userRepository.findByUsername(name);
     }
 
     /**
-     * Adds user.
-     * If user with following id already exists it will be updated elsewhere added as the new one.
-     * @param user to add
-     * @return Added user
+     * Create subject.
+     * If subject with following id already exists it will be updated elsewhere added as the new one.
+     * @param subject to add
+     * @return Added subject
      */
-    public User save(User user) {
-        if (user.getId() != null) {
-            throw new IllegalArgumentException("userid must be null for save, was " + user.getId());
+    public Subject create(Subject subject) {
+        if (subject.getId() != null) {
+            throw new IllegalArgumentException("userid must be null for create, was " + subject.getId());
         }
-        if (user.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (subject.getPassword() != null) {
+            subject.setPassword(passwordEncoder.encode(subject.getPassword()));
         }
-        return userRepository.save(user);
+        return userRepository.save(subject);
     }
 
     /**
-     * Update user.
-     * If user with following id already exists it will be updated elsewhere added as the new one.
-     * @param user to update
-     * @return Updated user
+     * Update subject.
+     * If subject with following id already exists it will be updated elsewhere added as the new one.
+     * @param subject to update
+     * @return Updated subject
      */
-    public User update(User user) {
-        if (user.getId() == null) {
-            throw new IllegalArgumentException("userid must be not be null for save, username was " + user.getUsername());
+    public Subject update(Subject subject) {
+        if (subject.getId() == null) {
+            throw new IllegalArgumentException("userid must be not be null for create, username was " + subject.getUsername());
         }
-        if (user.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (subject.getPassword() != null) {
+            subject.setPassword(passwordEncoder.encode(subject.getPassword()));
         }
-        return userRepository.save(user);
+        return userRepository.save(subject);
     }
 
 
@@ -109,7 +109,7 @@ public class UserService {
         }
     }
 
-    public Page<User> findAll(Pageable pageable) {
+    public Page<Subject> findAll(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 

@@ -8,7 +8,7 @@ server:
 spring:
   datasource:
     driverClassName: org.h2.Driver
-    url: jdbc:h2:~/test;AUTO_SERVER=TRUE
+    url: jdbc:h2:mem:test
     username: sa
     password: sa
   jpa:
@@ -81,7 +81,7 @@ github: # see: https://developers.facebook.com/apps
   client:
     clientId: 1480763144c36b2301b6
     scope:
-      - read:user
+      - read:subject
     userAuthorizationUri: https://github.com/login/oauth/authorize
     preEstablishedRedirectUri: http://localhost:8080/oauth/github  # 1st leg, callback
     grantType: authorization_code
@@ -91,7 +91,7 @@ github: # see: https://developers.facebook.com/apps
     clientAuthenticationScheme: form
     clientSecret: ENC(rAXAh2ILLtKLOf9nIDKo2+IWF6kaG/wlZnKXISEZiLwD/B3pCb4v5nuyJj5wWwQx1ddN128gl80=)
   resource:
-    userInfoUri: https://api.github.com/user
+    userInfoUri: https://api.github.com/subject
     preferTokenInfo: false
 
 google: # see: https://developers.google.com/identity/protocols/OAuth2WebServer

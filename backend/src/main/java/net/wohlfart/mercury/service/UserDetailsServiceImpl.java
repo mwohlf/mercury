@@ -1,6 +1,6 @@
 package net.wohlfart.mercury.service;
 
-import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.model.Subject;
 import net.wohlfart.mercury.repository.UserRepository;
 import net.wohlfart.mercury.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,22 +22,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id);
-        if (user == null) {
+        Subject subject = userRepository.findById(id);
+        if (subject == null) {
             throw new UsernameNotFoundException("iid: " + id);
         }
         final Set<GrantedAuthority> authorities = new HashSet<>();
-        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
+        return new UserDetailsImpl(subject.getId(), subject.getUsername(), subject.getPassword(), authorities);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
+        Subject subject = userRepository.findByUsername(username);
+        if (subject == null) {
             throw new UsernameNotFoundException(username);
         }
         final Set<GrantedAuthority> authorities = new HashSet<>();
-        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
+        return new UserDetailsImpl(subject.getId(), subject.getUsername(), subject.getPassword(), authorities);
     }
 
 }

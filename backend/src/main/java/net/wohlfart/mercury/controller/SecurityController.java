@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.model.Subject;
 import net.wohlfart.mercury.security.JwtTokenUtil;
 import net.wohlfart.mercury.security.UserDetailsImpl;
 import net.wohlfart.mercury.security.UserNotFoundException;
@@ -131,8 +131,8 @@ public class SecurityController {
 
         final UserDetailsImpl userDetails;
 
-        final User user = User.builder().username(register.username).password(register.password).build();
-        userService.save(user);
+        final Subject subject = Subject.builder().username(register.username).password(register.password).build();
+        userService.create(subject);
 
         try {
             userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(register.username);

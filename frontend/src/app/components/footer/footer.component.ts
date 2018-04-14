@@ -10,8 +10,8 @@ import {Subscription} from 'rxjs/Subscription';
 export class FooterComponent implements OnDestroy {
 
     private subscription: Subscription;
-    private userId: number = 0;
-    private username: string = '';
+    private userId: number | undefined;
+    private username: string | undefined;
 
     constructor(private authService: AuthService) {
         this.subscription = authService.getPrincipal().subscribe(
@@ -20,8 +20,8 @@ export class FooterComponent implements OnDestroy {
                     this.userId = principal.userId;
                     this.username = principal.username;
                 } else {
-                    this.userId = 0;
-                    this.username = '';
+                    this.userId = undefined;
+                    this.username = undefined;
                 }
             }
         );

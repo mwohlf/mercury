@@ -3,8 +3,8 @@ package net.wohlfart.mercury.controller;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
-import net.wohlfart.mercury.model.OAuthProviderInfo;
-import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.model.AuthProviderInfo;
+import net.wohlfart.mercury.model.Subject;
 import net.wohlfart.mercury.security.JwtTokenUtil;
 import net.wohlfart.mercury.security.UserDetailsImpl;
 import net.wohlfart.mercury.security.oauth.*;
@@ -38,7 +38,7 @@ import static net.wohlfart.mercury.SecurityConstants.OAUTH_ENDPOINT;
 @Slf4j
 @Controller
 @Configuration // for the bean annotation
-public class OAuthController {
+public class AuthController {
 
     private static final String STARTPAGE_RESOURCE = "classpath:/META-INF/resources/index.html";
 
@@ -51,7 +51,7 @@ public class OAuthController {
 
     private static final HashMap<String, OAuthProviderConfig> PROVIDER_CONFIGS = new HashMap<>();
 
-    private static final List<OAuthProviderInfo> PROVIDER_INFO = new ArrayList<>();
+    private static final List<AuthProviderInfo> PROVIDER_INFO = new ArrayList<>();
 
     private static final StateManager STATE_MANAGER = new StateManager();
 
@@ -72,12 +72,12 @@ public class OAuthController {
         PROVIDER_CONFIGS.put(TWITTER_PROVIDER, google());
         // info for the UI
         PROVIDER_CONFIGS.forEach(
-            (key, oAuthProviderConfig) -> PROVIDER_INFO.add(new OAuthProviderInfo(key, key))
+            (key, oAuthProviderConfig) -> PROVIDER_INFO.add(new AuthProviderInfo(key, key))
         );
     }
 
     @GetMapping(OAUTH_ENDPOINT)
-    public ResponseEntity<List<OAuthProviderInfo>> providers() {
+    public ResponseEntity<List<AuthProviderInfo>> providers() {
         return ResponseEntity.ok().body(PROVIDER_INFO);
     }
 
@@ -122,11 +122,11 @@ public class OAuthController {
             return startPage();
         }
 
-        // 4. use access token to get user info
+        // 4. use access token to get subject info
         final HashMap userProfile = requestUserProfile(authProvider, authContext);
 
-        final User user = accountFactory.findOrCreate(provider, userProfile);
-        final UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(user.getId());
+        final Subject subject = accountFactory.findOrCreate(provider, userProfile);
+        final UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserById(subject.getId());
 
         final String jwtToken = jwtTokenUtil.generateToken(userDetails);
         final String startPage = getStartPage();

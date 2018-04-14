@@ -1,4 +1,4 @@
-import {User} from '../../generated/model/user';
+import {Subject} from '../../generated/model/subject';
 import {UserControllerService} from '../../generated/api/userController.service';
 import {Observable} from 'rxjs/Observable';
 import {CollectionViewer, DataSource} from '@angular/cdk/collections';
@@ -7,9 +7,9 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 @Injectable()
-export class UserDataSource extends DataSource<User> {
+export class UserDataSource extends DataSource<Subject> {
 
-    private subject = new BehaviorSubject<User[]>([]); // start with null subject
+    private subject = new BehaviorSubject<Subject[]>([]); // start with null subject
 
 
     // Observable<User[]> content: = Observable.create();
@@ -23,7 +23,7 @@ export class UserDataSource extends DataSource<User> {
 
     // see: https://github.com/angular/material2/issues/5917
     /** Connect function called by the table to retrieve one stream containing the data to render. */
-    connect(collectionViewer: CollectionViewer): Observable<User[]> {
+    connect(collectionViewer: CollectionViewer): Observable<Subject[]> {
         return this.subject.asObservable();
     }
 

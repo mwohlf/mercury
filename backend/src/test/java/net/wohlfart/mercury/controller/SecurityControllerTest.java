@@ -50,7 +50,7 @@ public class SecurityControllerTest {
     /*
     @Test(timeout=1000)
     public void signUpTest() throws Exception {
-        User user = DummyDataGenerator.getUsers(1).get(0);
+        Subject user = DummyDataGenerator.getUsers(1).get(0);
         UserDetailsImpl jwtUser = new UserDetailsImpl(0L, user.getName(), user.getEmail(), user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRoles()[0])));
 
@@ -60,7 +60,7 @@ public class SecurityControllerTest {
 
         SecurityController.AuthenticationRequest expectedResponse = new SecurityController.AuthenticationRequest(TOKEN);
 
-        when(userService.save(any(User.class))).thenReturn(user);
+        when(userService.create(any(Subject.class))).thenReturn(user);
 
         when(userDetailsService.loadUserByUsername(anyString()))
                 .thenReturn(jwtUser);
@@ -80,7 +80,7 @@ public class SecurityControllerTest {
         String content = result.getResponse().getContentAsString();
         int status = result.getResponse().getStatus();
 
-        verify(userService, times(1)).save(any(User.class));
+        verify(userService, times(1)).create(any(Subject.class));
         verify(userDetailsService, times(1)).loadUserByUsername(anyString());
         verify(jwtTokenUtil, times(1)).generateToken(any(UserDetails.class));
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
@@ -93,7 +93,7 @@ public class SecurityControllerTest {
 
     @Test(timeout=10000)
     public void signInTest() throws Exception {
-        User user = DummyDataGenerator.getUsers(1).get(0);
+        Subject user = DummyDataGenerator.getUsers(1).get(0);
 
         String password = passwordEncoder.encode(user.getPassword());
         UserDetailsImpl jwtUser = new UserDetailsImpl(0L, user.getName(), user.getEmail(), password,

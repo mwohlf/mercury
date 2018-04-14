@@ -1,8 +1,8 @@
 package net.wohlfart.mercury.security.oauth;
 
 
-import net.wohlfart.mercury.model.OAuthAccount;
-import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.model.RemotePrincipal;
+import net.wohlfart.mercury.model.Subject;
 import net.wohlfart.mercury.service.OAuthAccountService;
 import net.wohlfart.mercury.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,24 +41,24 @@ public class AccountFactory {
     @Autowired
     OAuthAccountService oauthAccountService;
 
-    public User findOrCreate(String provider, HashMap userValues) {
+    public Subject findOrCreate(String provider, HashMap userValues) {
         String uid = this.findFirst(USER_UID_KEYS, userValues).get();
-        OAuthAccount oauthAccount = oauthAccountService.findByProviderUid(provider, uid);
+        RemotePrincipal oauthAccount = oauthAccountService.findByRemoteUserId(provider, uid);
         if (oauthAccount != null) {
-            return oauthAccount.getOwner();
+            return oauthAccount.getSubject();
         }
 
-        oauthAccount = OAuthAccount.builder().providerName(provider).providerUid(uid).build();
+        oauthAccount = RemotePrincipal.builder().providerName(provider).remoteUserId(uid).build();
         String name = provider + ":" + this.findFirst(LOGIN_OR_ID_KEY, userValues).get();
         String email = this.findFirst(USER_EMAIL_KEYS, userValues).orElse(this.findFirst(LOGIN_OR_ID_KEY, userValues).get() + "@" + provider);
-        User user = User.builder().username(name).email(email).build();
+        Subject subject = Subject.builder().username(name).email(email).build();
 
-        user.setOauthAccounts(new HashSet<>());
-        user.addOAuthAccount(oauthAccount);
+        subject.setRemotePrincipals(new HashSet<>());
+        subject.addRemotePrincipal(oauthAccount);
         oauthAccountService.create(oauthAccount);
 
         // TODO: add token
-        return user;
+        return subject;
     }
 
     private Optional<String> findFirst(String[] keys, HashMap values) {
@@ -84,7 +84,7 @@ userValues = {HashMap@12012}  size = 37
  4 = {HashMap$Node@12062} "bio" -> "null"
  5 = {HashMap$Node@12063} "created_at" -> "2011-06-02T17:41:39Z"
  6 = {HashMap$Node@12064} "login" -> "mwohlf"
- 7 = {HashMap$Node@12065} "type" -> "User"
+ 7 = {HashMap$Node@12065} "type" -> "Subject"
  8 = {HashMap$Node@12066} "blog" ->
  9 = {HashMap$Node@12067} "private_gists" -> "0"
  10 = {HashMap$Node@12068} "total_private_repos" -> "0"

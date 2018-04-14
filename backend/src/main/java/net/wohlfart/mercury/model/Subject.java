@@ -9,7 +9,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,9 +18,9 @@ import java.util.Set;
 @Audited
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "user")
-@Table(name = "USER", schema = "MC")
-public class User implements Serializable {
+@Entity(name = "subject")
+@Table(name = "SUBJECT", schema = "MC")
+public class Subject implements Serializable {
 
     @Id
     @GenericGenerator(name = "sequenceGenerator",
@@ -47,16 +46,16 @@ public class User implements Serializable {
     @ManyToMany
     @JoinTable(name = "MEMBERSHIP", schema = "MC",
             joinColumns = @JoinColumn(name = "ROLE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "USER_ID")
+            inverseJoinColumns = @JoinColumn(name = "SUBJECT_ID")
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST})
-    private Set<OAuthAccount> oauthAccounts = new HashSet<>();
+    @OneToMany(mappedBy = "subject", cascade = {CascadeType.PERSIST})
+    private Set<RemotePrincipal> remotePrincipals = new HashSet<>();
 
-    public void addOAuthAccount(OAuthAccount account) {
-        oauthAccounts.add(account);
-        account.setOwner(this);
+    public void addRemotePrincipal(RemotePrincipal account) {
+        remotePrincipals.add(account);
+        account.setSubject(this);
     }
 
 }

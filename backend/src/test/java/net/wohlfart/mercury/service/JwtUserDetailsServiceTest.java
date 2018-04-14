@@ -2,7 +2,7 @@ package net.wohlfart.mercury.service;
 
 import net.wohlfart.mercury.App;
 import net.wohlfart.mercury.BaseTest;
-import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.model.Subject;
 import net.wohlfart.mercury.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,14 +41,14 @@ public class JwtUserDetailsServiceTest extends BaseTest {
 
     @Test(timeout = 3000)
     public void loadUserByUsernameTest() {
-        User user = User.builder().email("some@email.com").build();
-        when(userRepository.findByUsername(anyString())).thenReturn(user);
+        Subject subject = Subject.builder().email("some@email.com").build();
+        when(userRepository.findByUsername(anyString())).thenReturn(subject);
         UserDetails fetchedUserDetails = jwtUserDetailsService.loadUserByUsername("random name");
 
         verify(userRepository, times(1)).findByUsername(anyString());
-        assertNotNull("Fetched user details shouldn't be NULL", fetchedUserDetails);
-        assertEquals("Should return appropriate username", user.getUsername(), fetchedUserDetails.getUsername());
-        assertEquals("Should return appropriate password", user.getPassword(), fetchedUserDetails.getPassword());
+        assertNotNull("Fetched subject details shouldn't be NULL", fetchedUserDetails);
+        assertEquals("Should return appropriate username", subject.getUsername(), fetchedUserDetails.getUsername());
+        assertEquals("Should return appropriate password", subject.getPassword(), fetchedUserDetails.getPassword());
     }
 
     @Test(timeout = 3000, expected = UsernameNotFoundException.class)

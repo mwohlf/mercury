@@ -1,13 +1,12 @@
 package net.wohlfart.mercury.admin;
 
 import lombok.extern.slf4j.Slf4j;
-import net.wohlfart.mercury.model.User;
+import net.wohlfart.mercury.model.Subject;
 import net.wohlfart.mercury.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
@@ -27,20 +26,20 @@ public class UserController {
 
     @GetMapping(USERS_ENDPOINT)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Page<User>> findPage(@RequestParam(name="page", defaultValue="0", required=false) Integer page,
-                                               @RequestParam(name="size", defaultValue="25", required=false) Integer size) throws AuthenticationException {
+    public ResponseEntity<Page<Subject>> findPage(@RequestParam(name="page", defaultValue="0", required=false) Integer page,
+                                                  @RequestParam(name="size", defaultValue="25", required=false) Integer size) throws AuthenticationException {
         Pageable pageable = new PageRequest(page, size);
-        Page<User> tablePage = userService.findAll(pageable);
+        Page<Subject> tablePage = userService.findAll(pageable);
         log.info("found userpage " + tablePage);
         return ResponseEntity.ok(tablePage);
     }
 
     @GetMapping(USERS_ENDPOINT + "/{uid}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<User> find(@PathVariable(name="uid") Long uid) throws AuthenticationException {
-        User user = userService.findById(uid);
-        log.info("found user " + user);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<Subject> find(@PathVariable(name="uid") Long uid) throws AuthenticationException {
+        Subject subject = userService.findById(uid);
+        log.info("found subject " + subject);
+        return ResponseEntity.ok(subject);
     }
 
 }

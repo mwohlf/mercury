@@ -3,11 +3,11 @@
 
 create table MC.MEMBERSHIP (
     ID bigint primary key,
-    USER_ID bigint,
+    SUBJECT_ID bigint,
     ROLE_ID bigint,
 
-    foreign key (USER_ID) references MC.USER(ID),
-    foreign key (ROLE_ID) references MC.ROLE(ID)
+    foreign key (SUBJECT_ID) references MC.SUBJECT(ID) on delete cascade,
+    foreign key (ROLE_ID) references MC.ROLE(ID) on delete cascade
 );
 
 --rollback drop table MC.MEMBERSHIP;

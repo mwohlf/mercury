@@ -3,11 +3,11 @@
 
 create table MC.OAUTH_TOKEN (
     ID bigint primary key,
-    OAUTH_ACCOUNT_ID bigint,
+    REMOTE_PRINCIPAL_ID bigint,
     KEY character varying(255) NOT NULL,
     VALUE character varying(255) NOT NULL,
 
-    foreign key (OAUTH_ACCOUNT_ID) references MC.OAUTH_ACCOUNT(ID)
+    foreign key (REMOTE_PRINCIPAL_ID) references MC.REMOTE_PRINCIPAL(ID) on delete cascade
 );
 
 --rollback drop table MC.OAUTH_TOKEN;
