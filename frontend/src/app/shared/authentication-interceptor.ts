@@ -11,6 +11,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // decorate the request, not needed atm because the cookie is added by the browser
+        // TODO: uc.setRequestProperty("Authorization","Bearer " + jwt);
         return next.handle(request);
     }
 
